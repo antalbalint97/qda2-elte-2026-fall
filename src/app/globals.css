@@ -1,26 +1,194 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface-2: #f3f1ec;
+  --surface-3: #e9e6df;
+  --border: #e3dfd6;
+  --border-strong: #cfc9bc;
+  --ink: #1b1c20;
+  --muted: #585b66;
+  --faint: #8a8d97;
+  --accent: #2e4fb8;
+  --accent-ink: #ffffff;
+  --accent-soft: #e8edfb;
+  --pos: #1d7a55;
+  --pos-soft: #e3f3eb;
+  --neg: #b0412c;
+  --neg-soft: #fbe9e4;
+  --warn: #9a6512;
+  --warn-soft: #fbf1dc;
+  /* Variable-role colours are used consistently across the whole site */
+  --x: #2f6fd6;
+  --x-soft: #e6eefb;
+  --y: #c8691b;
+  --y-soft: #fbeedf;
+  --z: #7b4cc0;
+  --z-soft: #f0e9fa;
+  --grid: #ebe8e1;
+}
+
+.dark {
+  --bg: #0f1115;
+  --surface: #161920;
+  --surface-2: #1c2029;
+  --surface-3: #252a35;
+  --border: #282d38;
+  --border-strong: #3a404d;
+  --ink: #e8e9ed;
+  --muted: #a5a9b5;
+  --faint: #767b88;
+  --accent: #8aa2ff;
+  --accent-ink: #0f1115;
+  --accent-soft: #1d2540;
+  --pos: #4fc28e;
+  --pos-soft: #13281f;
+  --neg: #f08068;
+  --neg-soft: #2e1914;
+  --warn: #e5b35a;
+  --warn-soft: #2b2212;
+  --x: #72a3ff;
+  --x-soft: #172440;
+  --y: #f0a45e;
+  --y-soft: #2d1f12;
+  --z: #b893f2;
+  --z-soft: #241a36;
+  --grid: #222731;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-pos: var(--pos);
+  --color-pos-soft: var(--pos-soft);
+  --color-neg: var(--neg);
+  --color-neg-soft: var(--neg-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-rx: var(--x);
+  --color-rx-soft: var(--x-soft);
+  --color-ry: var(--y);
+  --color-ry-soft: var(--y-soft);
+  --color-rz: var(--z);
+  --color-rz-soft: var(--z-soft);
+  --color-grid: var(--grid);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif4), ui-serif, Georgia, serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-feature-settings: "cv11", "ss01";
+}
+
+::selection {
+  background: var(--accent-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Range input styling shared by every slider */
+input[type="range"].range {
+  appearance: none;
+  width: 100%;
+  height: 1.5rem;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"].range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--surface-3);
+}
+input[type="range"].range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--surface-3);
+}
+input[type="range"].range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  margin-top: -7px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+}
+input[type="range"].range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.35s ease-out both;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: var(--len, 200);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.animate-draw {
+  stroke-dasharray: var(--len, 200);
+  animation: draw 0.6s ease-out both;
+}
+
+/* Grid items may shrink below their content (wide tables scroll inside their own wrapper). */
+@layer base {
+  .grid > * {
+    min-width: 0;
+  }
 }

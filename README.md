@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QDA2 Interactive Lab
 
-## Getting Started
+An interactive study companion for **Quantitative Data Analysis 2**: measurement levels, crosstabs, the Lazarsfeld paradigm, p-values, correlation and t-tests.
 
-First, run the development server:
+> Understand the logic. Practice the decisions. Read the output.
+
+## Run it
+
+Requires Node.js 18.18+ (tested with Node 22).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Production build:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Checks: `npm run lint`, `npx tsc --noEmit`.
 
-## Learn More
+No backend and no login. Quiz progress, self-ratings and the theme are stored in the browser's `localStorage` (`qda2-lab-progress-v1`).
 
-To learn more about Next.js, take a look at the following resources:
+## Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+  app/                      one route per module + /review (quick review)
+  components/
+    learning/               ModuleShell + Step (Understand → Try → SPSS → Test), ChainBar,
+                            Feedback, Formula, MiniTable, Spss (BeforeSpss, MenuPath, SpssDialog, SpssOutput)
+    quiz/                   quiz engine: ChoiceQuestionView, OrderQuestionView, QuizRunner,
+                            ReviewMode, AiExplain (mocked)
+    viz/                    DistributionChart, Scatter (pure SVG)
+    modules/<module>/       module-specific interactives and data
+    ui/                     Button, Segmented, Slider, Term (glossary tooltip), Callout, Disclosure, Role chips
+  content/                  concepts, glossary, modules, question bank (30 questions)
+  lib/                      stats (t, χ², normal, Pearson, Spearman, seeded RNG), progress store, AI payload
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+All statistics shown in the visualisations are computed live (`src/lib/stats.ts`); random samples use a seeded generator so every student sees the same plots.
 
-## Deploy on Vercel
+X, Y and Z have fixed colours across the whole site (blue, orange, purple).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Adding questions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Add a `ChoiceQuestion` or `OrderQuestion` to `src/content/questions.tsx`. Every wrong option should carry a `why` that names the exact conceptual mistake; `explanation` says why the right answer is right. Add it to `QUICK_REVIEW` to include it in the mixed quiz.
+
+## Optional AI explanation
+
+`src/lib/ai.ts` builds the payload (topic, question, correct answer, student answer, course definition, instructions) and currently returns a deterministic mock. To connect a model, add a server route (e.g. `src/app/api/explain/route.ts`) that forwards the payload to the model API with a server-side key, and replace the body of `explainMistake` with a `fetch` to that route.
