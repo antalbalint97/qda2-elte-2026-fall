@@ -6,6 +6,11 @@ import { useState } from "react";
 
 const QS = [
   {
+    q: "Are both variables at least ordinal (not purely nominal)?",
+    noResult: "Neither",
+    noWhy: "Pearson and Spearman both require variables with meaningful order. For a purely nominal variable, use a method designed for categorical data instead (for example, a crosstab with χ²).",
+  },
+  {
     q: "Are both variables continuous / scale?",
     noResult: "Spearman",
     noWhy: "At least one variable is ordinal, so the distances between its codes are not meaningful. Use a rank-based measure.",
@@ -27,7 +32,7 @@ export function PearsonSpearman() {
   const [answers, setAnswers] = useState<Array<"yes" | "no">>([]);
   const noAt = answers.indexOf("no");
   const done = noAt >= 0 || answers.length === QS.length;
-  const result = noAt >= 0 ? "Spearman" : answers.length === QS.length ? "Pearson" : null;
+  const result = noAt >= 0 ? QS[noAt].noResult : answers.length === QS.length ? "Pearson" : null;
   const visible = noAt >= 0 ? noAt + 1 : Math.min(answers.length + 1, QS.length);
 
   return (
