@@ -13,7 +13,7 @@ const CARDS = [
 
 export function ChiDemo() {
   const [f, setF] = useState(0.5);
-  const table = COUNTS.map((r) => r.map((c) => Math.round((c * f) / 10)));
+  const table = COUNTS.map((r) => r.map((c) => (c * f) / 10));
   const t = chiSquareTest(table);
   return (
     <div className="space-y-6">
