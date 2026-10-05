@@ -478,11 +478,11 @@ export const qCorrOutput: ChoiceQuestion = {
     />
   ),
   options: [
-    { id: "modneg", label: "Moderate negative association, statistically significant." },
+    { id: "strongneg", label: "Strong negative association, statistically significant." },
     {
       id: "weakneg",
       label: "Weak negative association, not significant.",
-      why: "Sig. < .001 is well below .05, so the association is statistically significant; |r| = .42 is usually called moderate.",
+      why: "Sig. < .001 is well below .05, so the association is statistically significant; under this course's convention, |r| = .42 is strong.",
     },
     {
       id: "cause",
@@ -491,13 +491,13 @@ export const qCorrOutput: ChoiceQuestion = {
     },
     {
       id: "pos",
-      label: "Moderate positive association.",
+      label: "Strong positive association.",
       why: "The minus sign shows direction: more TV hours go together with lower trust.",
     },
   ],
-  correct: "modneg",
+  correct: "strongneg",
   explanation:
-    "r = −.42: negative direction (higher TV hours, lower trust), moderate strength, p < .001 with N = 850. It is an association, not a demonstrated effect.",
+    "r = −.42: negative direction (higher TV hours, lower trust), strong under this course's convention, p < .001 with N = 850. It is an association, not a demonstrated effect.",
 };
 
 export const qCorrU: ChoiceQuestion = {
@@ -575,7 +575,7 @@ export const qCorrCause: ChoiceQuestion = {
   ],
   correct: "no",
   explanation:
-    "We can say education and income are positively associated (moderate, significant). Causal claims need a design that supports them; correlation alone does not.",
+    "We can say education and income are positively associated (strong under this course's convention, statistically significant). Causal claims need a design that supports them; correlation alone does not.",
 };
 
 /* ---------------- t-tests ---------------- */
