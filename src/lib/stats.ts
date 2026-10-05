@@ -283,3 +283,84 @@ export function noLeadingZero(x: number, digits = 2): string {
 export function linspace(a: number, b: number, n: number): number[] {
   return Array.from({ length: n }, (_, i) => a + ((b - a) * i) / (n - 1));
 }
+
+export function median(xs: number[]): number {
+  const s = [...xs].sort((a, b) => a - b);
+  const m = s.length >> 1;
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+/** Sample skewness with the small-sample adjustment SPSS reports (G1). */
+export function skewness(xs: number[]): number {
+  const n = xs.length;
+  const m = mean(xs);
+  const m2 = xs.reduce((a, x) => a + (x - m) ** 2, 0) / n;
+  const m3 = xs.reduce((a, x) => a + (x - m) ** 3, 0) / n;
+  const g1 = m3 / m2 ** 1.5;
+  return (Math.sqrt(n * (n - 1)) / (n - 2)) * g1;
+}
+
+/** Upper-tail p-value of the F distribution. */
+export function fP(f: number, d1: number, d2: number): number {
+  if (f <= 0) return 1;
+  return incompleteBeta(d2 / (d2 + d1 * f), d2 / 2, d1 / 2);
+}
+
+/** Levene's test for two groups, centred on the mean (as in SPSS). */
+export function leveneTest(a: number[], b: number[]): { f: number; df1: number; df2: number; p: number } {
+  const za = a.map((x) => Math.abs(x - mean(a)));
+  const zb = b.map((x) => Math.abs(x - mean(b)));
+  const all = [...za, ...zb];
+  const n = all.length;
+  const zbar = mean(all);
+  const between = za.length * (mean(za) - zbar) ** 2 + zb.length * (mean(zb) - zbar) ** 2;
+  const within = za.reduce((s, z) => s + (z - mean(za)) ** 2, 0) + zb.reduce((s, z) => s + (z - mean(zb)) ** 2, 0);
+  const f = (n - 2) * (between / within);
+  return { f, df1: 1, df2: n - 2, p: fP(f, 1, n - 2) };
+}
+
+export interface TResult {
+  t: number;
+  df: number;
+  p: number;
+  meanDiff: number;
+  se: number;
+}
+
+export function oneSampleT(xs: number[], mu0: number): TResult {
+  const se = sd(xs) / Math.sqrt(xs.length);
+  const t = (mean(xs) - mu0) / se;
+  const df = xs.length - 1;
+  return { t, df, p: tTwoTailedP(t, df), meanDiff: mean(xs) - mu0, se };
+}
+
+/** Independent-samples t-test: both SPSS rows (equal variances assumed / not assumed). */
+export function independentT(a: number[], b: number[]): { equal: TResult; welch: TResult } {
+  const [na, nb] = [a.length, b.length];
+  const [va, vb] = [sd(a) ** 2, sd(b) ** 2];
+  const diff = mean(a) - mean(b);
+  const sp2 = ((na - 1) * va + (nb - 1) * vb) / (na + nb - 2);
+  const seEq = Math.sqrt(sp2 * (1 / na + 1 / nb));
+  const dfEq = na + nb - 2;
+  const seW = Math.sqrt(va / na + vb / nb);
+  const dfW = (va / na + vb / nb) ** 2 / ((va / na) ** 2 / (na - 1) + (vb / nb) ** 2 / (nb - 1));
+  return {
+    equal: { t: diff / seEq, df: dfEq, p: tTwoTailedP(diff / seEq, dfEq), meanDiff: diff, se: seEq },
+    welch: { t: diff / seW, df: dfW, p: tTwoTailedP(diff / seW, dfW), meanDiff: diff, se: seW },
+  };
+}
+
+/** Hedges' g (Cohen's d with the small-sample correction), as reported by SPSS 27+. */
+export function hedgesG(a: number[], b: number[]): number {
+  const [na, nb] = [a.length, b.length];
+  const sp = Math.sqrt(((na - 1) * sd(a) ** 2 + (nb - 1) * sd(b) ** 2) / (na + nb - 2));
+  const d = (mean(a) - mean(b)) / sp;
+  return d * (1 - 3 / (4 * (na + nb) - 9));
+}
+
+export function pairedT(a: number[], b: number[]): TResult {
+  return oneSampleT(
+    a.map((x, i) => x - b[i]),
+    0,
+  );
+}

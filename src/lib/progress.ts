@@ -95,6 +95,13 @@ export function setSelfRating(topic: string, rating: "review" | "ok" | null) {
   emit({ ...state, selfRatings });
 }
 
+/** Clears the answers whose question id starts with the prefix (e.g. one bonus lab), keeping everything else. */
+export function resetAnswers(prefix: string) {
+  load();
+  const answers = Object.fromEntries(Object.entries(state.answers).filter(([id]) => !id.startsWith(prefix)));
+  emit({ ...state, answers });
+}
+
 export function resetProgress() {
   emit(EMPTY);
 }

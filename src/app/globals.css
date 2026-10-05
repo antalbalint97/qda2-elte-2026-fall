@@ -192,3 +192,42 @@ input[type="range"].range::-moz-range-thumb {
     min-width: 0;
   }
 }
+
+/* Sopranos bonus lab: warm "case file" paper on a charcoal page, fixed in light and dark mode.
+   Overriding the tokens on the wrapper re-skins every shared component inside it. */
+.sopranos {
+  color-scheme: light;
+  --bg: #f3ead8;
+  --surface: #fbf7ee;
+  --surface-2: #efe5d0;
+  --surface-3: #e2d5bb;
+  --border: #dacaa9;
+  --border-strong: #c0aa84;
+  --ink: #1f1a15;
+  --muted: #54493d;
+  --faint: #827360;
+  --accent: #7e2620;
+  --accent-ink: #fff8ef;
+  --accent-soft: #f3dbd3;
+  --pos: #2b6a45;
+  --pos-soft: #e0eedb;
+  --neg: #b23a26;
+  --neg-soft: #f8e0d7;
+  --warn: #87570c;
+  --warn-soft: #f5e6c4;
+  --x: #2c5fb3;
+  --x-soft: #e2e9f5;
+  --y: #b05a14;
+  --y-soft: #f6e4cf;
+  --z: #6c44a9;
+  --z-soft: #eae1f5;
+  --grid: #e4d7bf;
+  --charcoal: #1b1917;
+  --charcoal-2: #252220;
+  --cream: #efe5d1;
+  --cream-muted: #b9ad99;
+  --stamp: #c4473a;
+}
+.sopranos .paper-grain {
+  background-image: repeating-linear-gradient(0deg, transparent 0 27px, rgb(126 38 32 / 0.06) 27px 28px);
+}
