@@ -36,12 +36,12 @@ const OUTPUT_QS: ChoiceQuestion[] = [
     format: "Interpret SPSS output",
     prompt: "How strong is the relationship?",
     options: [
-      { id: "weak", label: "Weak to moderate (|r| ≈ .3)" },
+      { id: "moderate", label: "Moderate (|r| = .31)" },
       { id: "strong", label: "Strong, because it is significant", why: "You confused statistical significance with strength. Strength is read from |r|, not from Sig." },
       { id: "31", label: "31% of trust is explained by education", why: "r is not a percentage. (r² = .10 would be the share of shared variance, and even that is not ‘explained’ in a causal sense.)" },
     ],
-    correct: "weak",
-    explanation: "|r| = .31 is usually described as a weak-to-moderate association in social-science data.",
+    correct: "moderate",
+    explanation: "Using this course's convention (0–.20 weak, .21–.40 moderate, .41–1 strong), |r| = .31 is a moderate association.",
   },
   {
     kind: "choice",
