@@ -12,10 +12,9 @@ const PRESETS = [-0.9, -0.5, 0, 0.5, 0.9];
 
 function strengthWord(r: number) {
   const a = Math.abs(r);
-  if (a < 0.1) return "no linear association";
-  if (a < 0.3) return "weak";
-  if (a < 0.5) return "moderate";
-  if (a < 0.7) return "fairly strong";
+  if (a < 0.005) return "no linear association";
+  if (a <= 0.2) return "weak";
+  if (a <= 0.4) return "moderate";
   return "strong";
 }
 
