@@ -95,8 +95,8 @@ export default function Page() {
           />
           <Callout tone="note" title="Reporting">
             “The mean interview length (M = 64.0, SD = 9.7) did not differ significantly from 60 minutes, t(24) = 2.06,
-            p = .050.” At exactly .050 the result is not below α = .05: report the value and avoid treating .049 and .051
-            as different worlds.
+            p = .050.” SPSS rounds here: for t = 2.06 with df = 24, the exact two-sided p is about .0504, so it is not
+            below α = .05. Report the value and avoid treating .049 and .051 as different worlds.
           </Callout>
         </div>
       </Step>

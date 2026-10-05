@@ -282,11 +282,17 @@ export function SpssOutput({
                     >
                       <span
                         className={cn(
-                          "relative inline-flex items-center gap-1",
+                          "relative inline-flex items-center",
                           !!cell.hl && "rounded bg-warn-soft px-1 ring-1 ring-warn/40",
                         )}
+                        aria-describedby={cell.hl ? `spss-annotation-${cell.hl}` : undefined}
                       >
-                        {!!cell.hl && <Badge n={cell.hl} className="bg-warn text-white" />}
+                        {!!cell.hl && (
+                          <span
+                            aria-hidden
+                            className="mr-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-warn"
+                          />
+                        )}
                         {cell.v}
                       </span>
                     </td>
@@ -300,7 +306,7 @@ export function SpssOutput({
       {annotations && (
         <ol className="grid gap-2 text-sm sm:grid-cols-2">
           {Object.entries(annotations).map(([k, v]) => (
-            <li key={k} className="flex gap-2.5">
+            <li key={k} id={`spss-annotation-${k}`} className="flex gap-2.5">
               <Badge n={Number(k)} className="mt-0.5 bg-warn text-white" />
               <span className="leading-relaxed text-muted">{v}</span>
             </li>
