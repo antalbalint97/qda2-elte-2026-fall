@@ -81,6 +81,45 @@ export default function Home() {
         </ol>
       </section>
 
+
+      <section className="border-t border-line py-14">
+        <div className="mb-7">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-faint">Explore more</p>
+          <h2 className="mt-1 font-serif text-3xl font-semibold tracking-tight text-ink">Optional labs</h2>
+          <p className="mt-2 max-w-2xl text-muted">
+            These are deliberately outside the core mastery requirements. Use them when you want to go deeper or apply the course logic in a richer case.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Link
+            href="/go-further"
+            className="group rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-line-strong"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <span className="rounded-full bg-warn-soft px-2.5 py-1 text-xs font-semibold text-warn">OPTIONAL / ADVANCED</span>
+              <span className="text-muted transition-transform group-hover:translate-x-1">→</span>
+            </div>
+            <h3 className="mt-5 font-serif text-2xl font-semibold text-ink group-hover:text-accent">Go Further</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Residuals, pairwise follow-ups, trends, survey weights, Lambda, Gamma, p-value mathematics and reproducible SPSS.
+            </p>
+          </Link>
+          <Link
+            href="/bonus/sopranos"
+            className="group rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-line-strong"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <span className="rounded-full bg-surface-2 px-2.5 py-1 text-xs font-semibold text-muted">BONUS CASE LAB</span>
+              <span className="text-muted transition-transform group-hover:translate-x-1">→</span>
+            </div>
+            <h3 className="mt-5 font-serif text-2xl font-semibold text-ink group-hover:text-accent">The Sopranos QDA2 Lab</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              A themed case lab for practicing descriptives, crosstabs and statistical reasoning on a concrete dataset.
+            </p>
+          </Link>
+        </div>
+      </section>
+
       <section className="border-t border-line py-14">
         <div className="grid gap-8 rounded-2xl bg-surface-2 p-6 sm:p-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div>

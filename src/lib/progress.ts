@@ -17,9 +17,10 @@ export interface ProgressState {
   streak: number;
   bestStreak: number;
   selfRatings: Record<string, "review" | "ok">;
+  advancedCompleted: string[];
 }
 
-const EMPTY: ProgressState = { answers: {}, streak: 0, bestStreak: 0, selfRatings: {} };
+const EMPTY: ProgressState = { answers: {}, streak: 0, bestStreak: 0, selfRatings: {}, advancedCompleted: [] };
 
 let state: ProgressState = EMPTY;
 let loaded = false;
@@ -93,6 +94,14 @@ export function setSelfRating(topic: string, rating: "review" | "ok" | null) {
   if (rating) selfRatings[topic] = rating;
   else delete selfRatings[topic];
   emit({ ...state, selfRatings });
+}
+
+export function setAdvancedCompleted(topic: string, completed: boolean) {
+  load();
+  const current = new Set(state.advancedCompleted ?? []);
+  if (completed) current.add(topic);
+  else current.delete(topic);
+  emit({ ...state, advancedCompleted: [...current] });
 }
 
 /** Clears the answers whose question id starts with the prefix (e.g. one bonus lab), keeping everything else. */

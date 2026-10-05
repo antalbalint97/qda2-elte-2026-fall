@@ -64,6 +64,24 @@ export function SiteHeader() {
         </nav>
         <div className="ml-auto flex items-center gap-1">
           <Link
+            href="/go-further"
+            className={cn(
+              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium xl:block",
+              path === "/go-further" ? "bg-warn-soft text-warn" : "text-muted hover:bg-surface-2 hover:text-ink",
+            )}
+          >
+            Go Further
+          </Link>
+          <Link
+            href="/bonus/sopranos"
+            className={cn(
+              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium xl:block",
+              path === "/bonus/sopranos" ? "bg-surface-2 text-ink" : "text-muted hover:bg-surface-2 hover:text-ink",
+            )}
+          >
+            Sopranos
+          </Link>
+          <Link
             href="/review"
             className={cn(
               "hidden rounded-md px-3 py-1.5 text-sm font-medium sm:block",
@@ -101,6 +119,26 @@ export function SiteHeader() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link
+                href="/go-further"
+                onClick={() => setOpen(false)}
+                className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm font-medium text-warn hover:bg-warn-soft"
+              >
+                <span className="font-mono text-xs text-faint">+</span>
+                Go Further (optional)
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/bonus/sopranos"
+                onClick={() => setOpen(false)}
+                className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm font-medium text-ink hover:bg-surface-2"
+              >
+                <span className="font-mono text-xs text-faint">★</span>
+                The Sopranos bonus lab
+              </Link>
+            </li>
             <li>
               <Link
                 href="/review"
