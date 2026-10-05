@@ -1,5 +1,6 @@
 export type ConceptId =
   | "measurement"
+  | "descriptives"
   | "roles"
   | "crosstab-percent"
   | "chi-square"
@@ -25,6 +26,12 @@ export const CONCEPTS: Record<ConceptId, ConceptMeta> = {
     href: "/measurement#understand",
     definition:
       "Measurement level describes what the values of a variable mean: nominal = categories without order; ordinal = ordered categories without equal distances; scale (continuous) = numbers where distances are meaningful.",
+  },
+  descriptives: {
+    label: "Descriptive statistics",
+    href: "/bonus/sopranos#frequencies",
+    definition:
+      "Descriptive statistics summarise one variable: N, mean, median, minimum, maximum and standard deviation. In a right-skewed distribution a few large values pull the mean above the median, so the median better describes a typical case.",
   },
   roles: {
     label: "Variable roles (X / Y / Z)",
