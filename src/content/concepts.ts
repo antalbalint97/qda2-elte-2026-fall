@@ -12,7 +12,8 @@ export type ConceptId =
   | "pearson-spearman"
   | "t-test-choice"
   | "t-test-output"
-  | "effect-size";
+  | "effect-size"
+  | "anova";
 
 export interface ConceptMeta {
   label: string;
@@ -104,5 +105,11 @@ export const CONCEPTS: Record<ConceptId, ConceptMeta> = {
     href: "/p-values#n",
     definition:
       "Statistical significance depends on both effect size and sample size. A tiny effect can be significant in a huge sample; effect size measures (Cramer's V, r, Cohen's d) describe magnitude.",
+  },
+  anova: {
+    label: "One-way ANOVA logic",
+    href: "/anova#try",
+    definition:
+      "One-way ANOVA splits the total sum of squares into a between-group part (group means around the grand mean) and a within-group part (observations around their own group mean). F = MS between / MS within; η² = SS between / SS total describes the share of variation associated with group membership, not a causal effect.",
   },
 };
