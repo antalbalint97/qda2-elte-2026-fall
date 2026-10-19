@@ -1,6 +1,6 @@
 # QDA2 Interactive Lab
 
-An interactive study companion for **Quantitative Data Analysis 2**: measurement levels, crosstabs, the Lazarsfeld paradigm, p-values, correlation and t-tests.
+An interactive study companion for **Quantitative Data Analysis 2**: measurement levels, crosstabs, the Lazarsfeld paradigm, p-values, correlation, t-tests and a worked ANOVA mathematics lab.
 
 > Understand the logic. Practice the decisions. Read the output.
 
@@ -44,6 +44,10 @@ src/
 All statistics shown in the visualisations are computed live (`src/lib/stats.ts`); random samples use a seeded generator so every student sees the same plots.
 
 X, Y and Z have fixed colours across the whole site (blue, orange, purple).
+
+## ANOVA mathematics lab
+
+The `/anova` module reproduces the 11-observation variance decomposition from the teaching video, derives SST, SSW, SSB, MS, F and eta squared, and provides an interactive slider-driven dot plot. It also revisits row percentages, chi-square / Cramér's V and Pearson / Spearman before the ANOVA, and clarifies the distinction between one-way, two-way and stratified analysis. Its simulation is illustrative and does not make new empirical claims. SPSS syntax and output remain the reference for inference.
 
 ## Adding questions
 
