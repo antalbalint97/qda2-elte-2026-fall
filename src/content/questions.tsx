@@ -700,6 +700,163 @@ export const qEffectSize: ChoiceQuestion = {
   explanation: "Significant does not mean large. With a huge N, even d = 0.08 is significant; relative to the spread of scores it is negligible.",
 };
 
+/* ---------------- ANOVA ---------------- */
+
+export const qAnovaGrandMean: ChoiceQuestion = {
+  kind: "choice",
+  id: "a-grand-mean",
+  concept: "anova",
+  format: "Explain the calculation",
+  prompt:
+    "The three groups have n = 4, 3, 4 and means 58, 17 and 25.25. Why is the grand mean 34.909 and not (58 + 17 + 25.25) / 3 = 33.417?",
+  options: [
+    { id: "weighted", label: "The grand mean is the mean of all 11 observations, so each group counts in proportion to its size." },
+    {
+      id: "rounding",
+      label: "It is a rounding difference.",
+      why: "A gap of 1.5 points is not rounding. The simple average of the three means gives Group 2 (n = 3) the same weight as the groups with n = 4.",
+    },
+    {
+      id: "median",
+      label: "The grand mean is the median of the group means.",
+      why: "The grand mean is an ordinary mean of every observation; medians play no part in the ANOVA decomposition.",
+    },
+  ],
+  correct: "weighted",
+  explanation:
+    "Grand mean = sum of all 11 values / 11 = 384 / 11 = 34.909. Averaging the group means only gives the same result when all groups have the same n.",
+};
+
+export const qAnovaWithinZero: ChoiceQuestion = {
+  kind: "choice",
+  id: "a-within-zero",
+  concept: "anova",
+  format: "Explain the calculation",
+  prompt:
+    "Suppose every observation in a group equals its group mean (no scatter inside any group), but the group means still differ. What is SS Within?",
+  options: [
+    { id: "zero", label: "0" },
+    {
+      id: "total",
+      label: "The same as SS Total.",
+      why: "That describes SS Between in this situation: with no scatter inside the groups, all of the total variation lies between the groups.",
+    },
+    {
+      id: "undefined",
+      label: "It cannot be calculated.",
+      why: "SS Within can be calculated: it is a sum of zeros. It is F that breaks down, because MS Within = 0 is in the denominator.",
+    },
+  ],
+  correct: "zero",
+  explanation:
+    "SS Within adds up the squared distances of observations from their own group mean. If every distance is 0, SS Within = 0, so SS Between = SS Total and η² = 1.",
+};
+
+export const qAnovaEta: ChoiceQuestion = {
+  kind: "choice",
+  id: "a-eta",
+  concept: "anova",
+  format: "Interpret effect size",
+  prompt:
+    "In a cross-sectional survey, a one-way ANOVA of monthly income by occupational group gives η² = .87. What is the best interpretation?",
+  options: [
+    {
+      id: "share",
+      label: "87% of the sample's variation in income (sum of squares) is associated with occupational group.",
+    },
+    {
+      id: "cause",
+      label: "Occupational group causes 87% of the differences in income.",
+      why: "η² describes how strongly group membership and the outcome are associated. Without a design that supports it (e.g. random assignment), it says nothing about cause: other variables may be related to both.",
+    },
+    {
+      id: "people",
+      label: "87% of respondents earn a different amount from the average of their group.",
+      why: "η² is a share of the sum of squared deviations, not a share of people.",
+    },
+  ],
+  correct: "share",
+  explanation:
+    "η² = SS Between / SS Total. A large value means a strong association between group membership and the outcome in this sample, not a causal effect.",
+};
+
+export const qAnovaLargeN: ChoiceQuestion = {
+  kind: "choice",
+  id: "a-large-n",
+  concept: "effect-size",
+  format: "Interpret p",
+  prompt: "In a survey of N = 50,000 people, two scale variables correlate at r = .03 with p < .001. How do you summarise this?",
+  options: [
+    {
+      id: "strong",
+      label: "A strong association, because p is very small.",
+      why: "You confused significance with strength. p depends on sample size; r = .03 is a negligible linear association.",
+    },
+    { id: "tiny", label: "A statistically significant but negligible association." },
+    {
+      id: "error",
+      label: "There must be a calculation error: such a small r cannot be significant.",
+      why: "With a very large N the standard error is tiny, so even a very small correlation can be distinguished from exactly zero.",
+    },
+  ],
+  correct: "tiny",
+  explanation:
+    "With 50,000 cases even r = .03 is unlikely under H0 (r = 0), so p is small. The effect size (r) shows the association is negligible.",
+};
+
+export const qAnovaPaired: ChoiceQuestion = {
+  kind: "choice",
+  id: "a-paired",
+  concept: "t-test-choice",
+  format: "Choose method",
+  prompt:
+    "The same respondents rate how much cars and how much industry contribute to air pollution (0–10). Which method compares the two ratings?",
+  options: [
+    ...TTESTS({
+      one: "There is no fixed reference value; the two ratings are compared with each other.",
+      ind: "The two ratings come from the same respondents, so they are not two independent groups.",
+    }),
+    {
+      id: "anova",
+      label: "One-way ANOVA",
+      why: "One-way ANOVA compares independent groups defined by a grouping variable. Here every respondent gives both ratings, so the observations are paired, and there are only two of them.",
+    },
+  ],
+  correct: "paired",
+  explanation:
+    "Two measurements from the same people: the paired-samples t-test works with each respondent's difference (cars − industry).",
+};
+
+export const qAnovaTwoWay: ChoiceQuestion = {
+  kind: "choice",
+  id: "a-two-way",
+  concept: "anova",
+  format: "Choose method",
+  prompt:
+    "Life satisfaction (0–10) is compared by education (3 levels) and by gender. What can a two-way ANOVA answer that a one-way ANOVA by education cannot?",
+  options: [
+    { id: "interaction", label: "Whether the education differences depend on gender (an interaction)." },
+    {
+      id: "cause",
+      label: "Whether education causes higher life satisfaction.",
+      why: "Adding a second factor does not turn survey data into a causal design. Two-way ANOVA still describes associations.",
+    },
+    {
+      id: "variance",
+      label: "Whether the group variances are equal.",
+      why: "That is the question of Levene's test, which can accompany either a one-way or a two-way ANOVA.",
+    },
+    {
+      id: "split",
+      label: "Nothing: it is the same as running a one-way ANOVA separately for men and for women.",
+      why: "Separate analyses by gender are a stratified (control-variable) analysis. They show the education pattern in each subsample but do not test, in one model, whether the two patterns differ.",
+    },
+  ],
+  correct: "interaction",
+  explanation:
+    "Two-way ANOVA has two grouping factors. It estimates the main effect of each and tests their interaction: whether the differences between education levels are the same for men and women.",
+};
+
 /* ---------------- Banks ---------------- */
 
 export const QUICK_REVIEW: Question[] = [
@@ -733,4 +890,7 @@ export const QUICK_REVIEW: Question[] = [
   qPearsonScale,
   qTOutput,
   qEffectSize,
+  qAnovaGrandMean,
+  qAnovaEta,
+  qAnovaTwoWay,
 ];

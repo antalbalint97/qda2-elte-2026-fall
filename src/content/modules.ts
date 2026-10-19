@@ -76,6 +76,15 @@ export const MODULES: ModuleMeta[] = [
     blurb: "One-sample, independent-samples and paired-samples: choose the comparison, read the output.",
     chain: [4, 5, 6, 7],
   },
+  {
+    slug: "anova",
+    href: "/anova",
+    number: "07",
+    title: "ANOVA Mathematics Lab",
+    short: "ANOVA",
+    blurb: "Derive sums of squares, F and eta squared by hand, then change the data interactively.",
+    chain: [1, 3, 4, 5, 6, 7, 8],
+  },
 ];
 
 export const REVIEW_TOPICS = [
@@ -87,4 +96,5 @@ export const REVIEW_TOPICS = [
   { id: "lazarsfeld", label: "Lazarsfeld paradigm", href: "/lazarsfeld#understand" },
   { id: "pearson", label: "Pearson vs Spearman", href: "/correlation#choose" },
   { id: "ttest", label: "t-test selection", href: "/t-tests#understand" },
+  { id: "anova", label: "ANOVA by hand", href: "/anova#try" },
 ] as const;
