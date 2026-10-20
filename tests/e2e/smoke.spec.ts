@@ -85,3 +85,11 @@ test("presentation mode fits a 1024×768 projector on every page", async ({ page
     await expectNoHorizontalScroll(page);
   }
 });
+
+test("content reflows at 320 CSS px (WCAG 1.4.10) without page-level horizontal scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  for (const route of ROUTES) {
+    await page.goto(route);
+    await expectNoHorizontalScroll(page);
+  }
+});

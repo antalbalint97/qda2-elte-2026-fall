@@ -20,15 +20,46 @@ npm run build
 npm start
 ```
 
-Checks: `npm run lint`, `npx tsc --noEmit`.
+## Checks and tests
 
-No backend and no login. Quiz progress, self-ratings and the theme are stored in the browser's `localStorage` (`qda2-lab-progress-v1`).
+```bash
+npm run lint
+npm run typecheck
+npm run test:unit                 # statistics vs SciPy reference values, identities, header config (node:test)
+npm run build && node scripts/check-build.mjs   # build-output scan: no secrets, source maps or external scripts
+npx playwright install chromium   # once
+npm run test:e2e                  # routes, keyboard, axe accessibility rules, viewports, network, links, headers
+```
+
+`npm run validate:reference` regenerates `tests/unit/fixtures/reference.json` with SciPy (needs numpy + scipy).
+CI runs the same steps on every pull request (`.github/workflows/ci.yml`).
+
+## Privacy, presentation mode and embedding
+
+No backend, no login, no cookies, no analytics and no third-party requests. Quiz progress, the theme, presentation mode
+and bonus-lab notes are stored only in the browser's `localStorage` (keys listed in `src/lib/theme.ts` → `STORAGE_KEYS`);
+`/privacy` shows them and lets the visitor reset or delete them.
+
+- **Presentation mode** for projectors: the header button, or `?present=1` on any URL (`?present=0` switches it off).
+- **Security headers** (CSP, HSTS, framing policy and others) are defined in `src/lib/security-headers.ts`.
+- **Embedding** in an LMS iframe is off by default. To allow specific origins, set
+  `EMBED_ALLOWED_ORIGINS="https://lms.example.edu"` (exact `https://` origins, space- or comma-separated) at build time
+  and redeploy. See `docs/institutional/lms-integration.md`.
+
+## Institutional review package
+
+`docs/institutional/` contains the technical audit, privacy and data-flow description, statistical validation,
+accessibility report, security review, LMS and network-access guidance (with a Hungarian summary for IT), a teaching
+pilot proposal and the list of open issues.
+
+StatisztikaMetis is an independently developed educational resource. References to university courses or institutions
+do not imply official institutional endorsement.
 
 ## Structure
 
 ```
 src/
-  app/                      one route per module + /review (quick review)
+  app/                      one route per module + /review (quick review), /about, /privacy, error and 404 pages
   components/
     learning/               ModuleShell + Step (Understand → Try → SPSS → Test), ChainBar,
                             Feedback, Formula, MiniTable, Spss (BeforeSpss, MenuPath, SpssDialog, SpssOutput)
