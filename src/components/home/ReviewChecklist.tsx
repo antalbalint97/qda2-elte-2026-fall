@@ -34,10 +34,10 @@ export function ReviewChecklist() {
                   )}
                   aria-hidden
                 />
-                <Link href={t.href} className="flex-1 text-sm font-medium text-ink hover:text-accent">
+                <Link href={t.href} className="min-w-0 flex-1 break-words text-sm font-medium text-ink hover:text-accent">
                   {t.label}
                 </Link>
-                <div className="flex gap-1" role="group" aria-label={`Confidence: ${t.label}`}>
+                <div className="flex shrink-0 gap-1" role="group" aria-label={`Confidence: ${t.label}`}>
                   <button
                     type="button"
                     aria-pressed={r === "review"}
@@ -61,7 +61,7 @@ export function ReviewChecklist() {
                     Confident
                   </button>
                 </div>
-                <Link href={t.href} aria-label={`Go to ${t.label}`} className="text-faint hover:text-accent">
+                <Link href={t.href} aria-label={`Go to ${t.label}`} className="shrink-0 text-faint hover:text-accent">
                   →
                 </Link>
               </li>
