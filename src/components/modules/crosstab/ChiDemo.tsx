@@ -1,5 +1,6 @@
 "use client";
 
+import { Announce } from "@/components/ui/Announce";
 import { Slider } from "@/components/ui/Slider";
 import { chiSquareTest, formatP, noLeadingZero } from "@/lib/stats";
 import { useState } from "react";
@@ -15,6 +16,7 @@ export function ChiDemo() {
   const [f, setF] = useState(0.5);
   const table = COUNTS.map((r) => r.map((c) => (c * f) / 10));
   const t = chiSquareTest(table);
+  const nText = t.n.toLocaleString("en", { maximumFractionDigits: 0 });
   return (
     <div className="space-y-6">
       <div className="grid gap-px overflow-hidden rounded-2xl border border-line bg-line md:grid-cols-3">
@@ -40,26 +42,30 @@ export function ChiDemo() {
             max={40}
             step={0.2}
             onChange={setF}
-            display={`N = ${t.n.toLocaleString("en")}`}
+            display={`N = ${nText}`}
+            valueText={`N = ${nText}`}
           />
         </div>
-        <dl className="grid grid-cols-3 gap-2 self-center">
-          <div className="rounded-xl bg-surface-2 p-3">
-            <dt className="text-[11px] text-muted">χ²({t.df})</dt>
-            <dd className="font-mono text-xl font-semibold tabular-nums text-ink">{t.chi2.toFixed(1)}</dd>
-          </div>
-          <div className="rounded-xl bg-surface-2 p-3">
-            <dt className="text-[11px] text-muted">p</dt>
-            <dd className="font-mono text-xl font-semibold tabular-nums text-ink">{formatP(t.p).replace("= ", "")}</dd>
-          </div>
-          <div className="rounded-xl bg-accent-soft p-3">
-            <dt className="text-[11px] text-muted">Cramer&apos;s V</dt>
-            <dd className="font-mono text-xl font-semibold tabular-nums text-accent">{noLeadingZero(t.cramersV)}</dd>
-          </div>
+        <div className="grid grid-cols-3 gap-2 self-center">
+          <dl className="col-span-3 grid grid-cols-3 gap-2">
+            <div className="rounded-xl bg-surface-2 p-3">
+              <dt className="text-[11px] text-muted">χ²({t.df})</dt>
+              <dd className="font-mono text-xl font-semibold tabular-nums text-ink">{t.chi2.toFixed(1)}</dd>
+            </div>
+            <div className="rounded-xl bg-surface-2 p-3">
+              <dt className="text-[11px] text-muted">p</dt>
+              <dd className="font-mono text-xl font-semibold tabular-nums text-ink">{formatP(t.p).replace("= ", "")}</dd>
+            </div>
+            <div className="rounded-xl bg-accent-soft p-3">
+              <dt className="text-[11px] text-muted">Cramer&apos;s V</dt>
+              <dd className="font-mono text-xl font-semibold tabular-nums text-accent">{noLeadingZero(t.cramersV)}</dd>
+            </div>
+          </dl>
           <p className="col-span-3 text-xs text-faint">
             χ² and p react to N; V stays at about {noLeadingZero(t.cramersV)} because the pattern is the same.
           </p>
-        </dl>
+          <Announce>{`N = ${nText}: chi-square ${t.chi2.toFixed(1)}, p ${formatP(t.p)}, Cramer's V ${noLeadingZero(t.cramersV)}.`}</Announce>
+        </div>
       </div>
     </div>
   );

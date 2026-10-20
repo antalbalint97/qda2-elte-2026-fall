@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/Button";
 import { Segmented } from "@/components/ui/Segmented";
+import { Announce } from "@/components/ui/Announce";
 import { Slider } from "@/components/ui/Slider";
 import { Scatter } from "@/components/viz/Scatter";
 import { noLeadingZero, pearson } from "@/lib/stats";
@@ -45,7 +46,8 @@ export function Playground() {
           <p className="mt-1 text-sm text-muted">
             {r > 0.1 ? "positive" : r < -0.1 ? "negative" : ""} {strengthWord(r)}
           </p>
-          <div className="relative mt-3 h-1.5 rounded-full bg-gradient-to-r from-neg/50 via-surface-3 to-pos/50">
+          <Announce>{`Pearson r = ${noLeadingZero(r)}, ${r > 0.1 ? "positive " : r < -0.1 ? "negative " : ""}${strengthWord(r)}.`}</Announce>
+          <div aria-hidden className="relative mt-3 h-1.5 rounded-full bg-gradient-to-r from-neg/50 via-surface-3 to-pos/50">
             <span
               className="absolute top-1/2 h-3.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-ink transition-all duration-300"
               style={{ left: `${((r + 1) / 2) * 100}%` }}

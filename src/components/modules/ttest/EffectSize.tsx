@@ -1,6 +1,7 @@
 "use client";
 
 import { Formula, Frac } from "@/components/learning/Formula";
+import { Announce } from "@/components/ui/Announce";
 import { Slider } from "@/components/ui/Slider";
 import { linspace, normalCdf, normalPdf } from "@/lib/stats";
 import { useState } from "react";
@@ -42,10 +43,11 @@ export function EffectSize() {
             <p className="text-xs text-muted">d = {d.toFixed(2)}</p>
             <p className="font-serif text-2xl font-semibold capitalize text-ink">{label(d)}</p>
             <p className="mt-1 text-xs text-muted">The distributions overlap by about {Math.round(overlap * 100)}%.</p>
+            <Announce>{`Cohen's d ${d.toFixed(2)}: ${label(d)}; the distributions overlap by about ${Math.round(overlap * 100)}%.`}</Announce>
           </div>
           <div className="flex gap-1.5">
             {[0.2, 0.5, 0.8].map((v) => (
-              <button key={v} type="button" onClick={() => setD(v)} className="flex-1 rounded-md border border-line py-1 font-mono text-xs text-ink hover:border-accent">
+              <button key={v} type="button" aria-label={`Set d to ${v.toFixed(1)}`} onClick={() => setD(v)} className="flex-1 rounded-md border border-line py-1 font-mono text-xs text-ink hover:border-accent">
                 {v.toFixed(1)}
               </button>
             ))}

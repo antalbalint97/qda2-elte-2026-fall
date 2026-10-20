@@ -50,7 +50,7 @@ export function Chooser() {
             onClick={() => setPick(x.id)}
             aria-pressed={pick === x.id}
             className={cn(
-              "rounded-xl border p-4 text-left transition-all",
+              "rounded-xl border p-4 text-left transition",
               pick === x.id ? "border-accent bg-accent-soft" : "border-line hover:border-accent/50",
               pick && pick !== x.id && "opacity-50",
             )}

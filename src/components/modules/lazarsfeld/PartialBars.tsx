@@ -80,7 +80,7 @@ export function PartialBars({
                   className={cn(
                     "mt-0.5 font-mono text-sm font-semibold tabular-nums transition-opacity",
                     show ? "opacity-100" : "opacity-0",
-                    g.kind === "zero" ? "text-ink" : "text-rz",
+                    g.kind === "zero" ? "text-ink" : "text-rz-ink",
                   )}
                 >
                   {diff > 0 ? "+" : ""}

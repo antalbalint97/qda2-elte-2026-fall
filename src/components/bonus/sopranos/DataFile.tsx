@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 
 const SOURCE_STYLE: Record<Source, string> = {
   real: "border-solid border-pos/50 bg-pos-soft text-pos",
-  coded: "border-solid border-rx/50 bg-rx-soft text-rx",
+  coded: "border-solid border-rx/50 bg-rx-soft text-rx-ink",
   synthetic: "border-dashed border-warn/60 bg-warn-soft text-warn",
 };
 
@@ -52,7 +52,7 @@ export function DataFile() {
         {(Object.keys(SOURCE_META) as Source[]).map((s) => {
           const count = VARIABLES.filter((v) => v.source === s).length;
           return (
-            <div key={s} className={cn("rounded-xl border bg-surface p-3", count === 0 && "opacity-75")}>
+            <div key={s} className="rounded-xl border bg-surface p-3">
               <span className={cn("inline-block rounded-sm border px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider", SOURCE_STYLE[s])}>
                 {SOURCE_META[s].label}
               </span>

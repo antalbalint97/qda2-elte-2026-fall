@@ -2,8 +2,9 @@
 
 import { useSyncExternalStore } from "react";
 import type { ConceptId } from "@/content/concepts";
+import { STORAGE_KEYS } from "@/lib/theme";
 
-const KEY = "qda2-lab-progress-v1";
+const KEY = STORAGE_KEYS.progress;
 
 export interface AnswerRecord {
   concept: ConceptId;

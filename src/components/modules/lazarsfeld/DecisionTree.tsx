@@ -27,7 +27,7 @@ function Choice({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "flex h-full w-full flex-col rounded-xl border p-3.5 text-left text-sm transition-all duration-300",
+        "flex h-full w-full flex-col rounded-xl border p-3.5 text-left text-sm transition duration-300",
         active ? "border-accent bg-accent-soft shadow-sm" : "border-line bg-surface hover:border-accent/50",
         dimmed && "opacity-40",
       )}

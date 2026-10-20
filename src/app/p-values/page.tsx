@@ -42,6 +42,7 @@ export default function Page() {
       <Step
         kind="try"
         id="n"
+        alias="try"
         title="Same effect, different sample size"
         intro="The p-value depends on two things: how big the difference is and how precisely it is measured. Precision grows with N."
       >

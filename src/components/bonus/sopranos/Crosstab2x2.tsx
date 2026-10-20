@@ -101,7 +101,7 @@ export function Crosstab2x2({
                   {mode === "row" ? (
                     <>
                       <span className="block">{rowTot[i]}</span>
-                      <span className="block text-[10px] font-normal text-rx">denominator</span>
+                      <span className="block text-[10px] font-normal text-rx-ink">denominator</span>
                     </>
                   ) : mode === "col" ? (
                     ((rowTot[i] / n) * 100).toFixed(1) + "%"
@@ -126,7 +126,7 @@ export function Crosstab2x2({
                   {mode === "col" ? (
                     <>
                       <span className="block">{t}</span>
-                      <span className="block text-[10px] font-normal text-ry">denominator</span>
+                      <span className="block text-[10px] font-normal text-ry-ink">denominator</span>
                     </>
                   ) : mode === "row" ? (
                     ((t / n) * 100).toFixed(1) + "%"

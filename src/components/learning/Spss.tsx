@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 
 /* ---------- "Before you open SPSS" prelude ---------- */
 
@@ -228,9 +228,11 @@ export function SpssOutput({
   activeRow?: number;
   footnote?: ReactNode;
 }) {
+  const uid = useId();
   return (
     <figure className="space-y-3">
-      <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+      {/* Focusable so keyboard users can scroll wide output tables sideways. */}
+      <div className="overflow-x-auto rounded-xl border border-line bg-surface" tabIndex={0} role="region" aria-label={title}>
         <table className="w-full min-w-[34rem] border-collapse text-[13px]">
           <caption className="border-b border-line px-3 py-2 text-left font-semibold text-ink">{title}</caption>
           <thead>
@@ -277,7 +279,7 @@ export function SpssOutput({
                         "border-b border-line px-2.5 py-1.5 font-mono tabular-nums",
                         ci === 0 || cell.align === "left" ? "text-left font-sans text-ink" : "text-right",
                         cell.dim ? "text-faint" : "text-ink",
-                        activeRow !== undefined && activeRow !== ri && !cell.hl && "opacity-40",
+                        activeRow !== undefined && activeRow !== ri && !cell.hl && "opacity-65",
                       )}
                     >
                       <span
@@ -285,7 +287,7 @@ export function SpssOutput({
                           "relative inline-flex items-center",
                           !!cell.hl && "rounded bg-warn-soft px-1 ring-1 ring-warn/40",
                         )}
-                        aria-describedby={cell.hl ? `spss-annotation-${cell.hl}` : undefined}
+                        aria-describedby={cell.hl ? `${uid}-note-${cell.hl}` : undefined}
                       >
                         {!!cell.hl && (
                           <span
@@ -306,7 +308,7 @@ export function SpssOutput({
       {annotations && (
         <ol className="grid gap-2 text-sm sm:grid-cols-2">
           {Object.entries(annotations).map(([k, v]) => (
-            <li key={k} id={`spss-annotation-${k}`} className="flex gap-2.5">
+            <li key={k} id={`${uid}-note-${k}`} className="flex gap-2.5">
               <Badge n={Number(k)} className="mt-0.5 bg-warn text-white" />
               <span className="leading-relaxed text-muted">{v}</span>
             </li>

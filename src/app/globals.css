@@ -11,7 +11,8 @@
   --border-strong: #cfc9bc;
   --ink: #1b1c20;
   --muted: #585b66;
-  --faint: #8a8d97;
+  /* faint and warn were darkened to reach WCAG AA (4.5:1) contrast for small text */
+  --faint: #676a74;
   --accent: #2e4fb8;
   --accent-ink: #ffffff;
   --accent-soft: #e8edfb;
@@ -19,7 +20,7 @@
   --pos-soft: #e3f3eb;
   --neg: #b0412c;
   --neg-soft: #fbe9e4;
-  --warn: #9a6512;
+  --warn: #865a12;
   --warn-soft: #fbf1dc;
   /* Variable-role colours are used consistently across the whole site */
   --x: #2f6fd6;
@@ -28,6 +29,10 @@
   --y-soft: #fbeedf;
   --z: #7b4cc0;
   --z-soft: #f0e9fa;
+  /* Darker shades of X/Y/Z for text on the soft backgrounds (AA contrast); charts keep the base colours */
+  --x-ink: #2a5fb8;
+  --y-ink: #9a4d10;
+  --z-ink: #6b3fae;
   --grid: #ebe8e1;
 }
 
@@ -40,7 +45,7 @@
   --border-strong: #3a404d;
   --ink: #e8e9ed;
   --muted: #a5a9b5;
-  --faint: #767b88;
+  --faint: #8a8f9c;
   --accent: #8aa2ff;
   --accent-ink: #0f1115;
   --accent-soft: #1d2540;
@@ -56,6 +61,9 @@
   --y-soft: #2d1f12;
   --z: #b893f2;
   --z-soft: #241a36;
+  --x-ink: var(--x);
+  --y-ink: var(--y);
+  --z-ink: var(--z);
   --grid: #222731;
 }
 
@@ -84,6 +92,9 @@
   --color-ry-soft: var(--y-soft);
   --color-rz: var(--z);
   --color-rz-soft: var(--z-soft);
+  --color-rx-ink: var(--x-ink);
+  --color-ry-ink: var(--y-ink);
+  --color-rz-ink: var(--z-ink);
   --color-grid: var(--grid);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif4), ui-serif, Georgia, serif;
@@ -121,6 +132,30 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Presentation mode (header toggle or ?present=1): larger content for projectors, secondary text at
+   full strength, no animation. Zooming the content (not the header) scales text, tables and charts
+   together and keeps the navigation on one line. */
+html.present {
+  --faint: var(--muted);
+}
+html.present main,
+html.present body > footer {
+  zoom: 1.2;
+}
+/* sticky offsets inside the zoomed content are zoomed too; keep them flush with the header */
+html.present main .top-14 {
+  top: calc(3.5rem / 1.2);
+}
+html.present :focus-visible {
+  outline-width: 3px;
+}
+html.present *,
+html.present *::before,
+html.present *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
 }
 
 /* Range input styling shared by every slider */
@@ -197,6 +232,8 @@ input[type="range"].range::-moz-range-thumb {
    Overriding the tokens on the wrapper re-skins every shared component inside it. */
 .sopranos {
   color-scheme: light;
+  /* re-resolve inherited text colour from the overridden tokens (otherwise dark mode leaks in) */
+  color: var(--ink);
   --bg: #f3ead8;
   --surface: #fbf7ee;
   --surface-2: #efe5d0;
@@ -205,7 +242,7 @@ input[type="range"].range::-moz-range-thumb {
   --border-strong: #c0aa84;
   --ink: #1f1a15;
   --muted: #54493d;
-  --faint: #827360;
+  --faint: #6c5f4f;
   --accent: #7e2620;
   --accent-ink: #fff8ef;
   --accent-soft: #f3dbd3;
@@ -221,6 +258,9 @@ input[type="range"].range::-moz-range-thumb {
   --y-soft: #f6e4cf;
   --z: #6c44a9;
   --z-soft: #eae1f5;
+  --x-ink: #2c5fb3;
+  --y-ink: #8f4a10;
+  --z-ink: #6c44a9;
   --grid: #e4d7bf;
   --charcoal: #1b1917;
   --charcoal-2: #252220;

@@ -68,6 +68,7 @@ export default function AnovaPage() {
             </div>
           ))}
         </div>
+        <h3 className="sr-only">The step-by-step derivation</h3>
         <AnovaDerivation />
         <h3 className="mt-14 mb-4 font-serif text-xl font-semibold text-ink">Now change the data</h3>
         <VarianceExplorer />

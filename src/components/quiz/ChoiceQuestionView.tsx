@@ -66,12 +66,12 @@ export function ChoiceQuestionView({
               disabled={answered && state === "rest"}
               aria-pressed={o.id === picked}
               className={cn(
-                "flex items-start gap-3 rounded-xl border px-3.5 py-3 text-left text-sm transition-all",
-                state === "idle" && "border-line bg-surface hover:border-accent/50 hover:bg-accent-soft/40",
+                "flex items-start gap-3 rounded-xl border px-3.5 py-3 text-left text-sm transition",
+                state === "idle" && "border-line bg-surface text-ink hover:border-accent/50 hover:bg-accent-soft/40",
                 state === "correct" && "border-pos/50 bg-pos-soft text-ink",
                 state === "wrong" && "border-neg/50 bg-neg-soft text-ink",
                 state === "partial" && "border-warn/50 bg-warn-soft text-ink",
-                state === "rest" && "border-line bg-surface opacity-50",
+                state === "rest" && "border-line bg-surface text-ink opacity-50",
                 answered && "cursor-default",
               )}
             >
@@ -87,6 +87,11 @@ export function ChoiceQuestionView({
                 )}
               />
               <span className="leading-snug">{o.label}</span>
+              {state !== "idle" && state !== "rest" && (
+                <span className="sr-only">
+                  {state === "correct" ? " (correct answer)" : state === "partial" ? " (your answer, defensible)" : " (your answer, incorrect)"}
+                </span>
+              )}
             </button>
           );
         })}

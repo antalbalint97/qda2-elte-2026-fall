@@ -5,6 +5,7 @@ import type { OrderQuestion } from "@/content/quiz-types";
 import { cn } from "@/lib/cn";
 import { recordAnswer } from "@/lib/progress";
 import { useLayoutEffect, useRef, useState } from "react";
+import { Announce } from "@/components/ui/Announce";
 import { AiExplain } from "./AiExplain";
 
 /** Ordering task: drag and drop with the mouse, or move items with the arrow buttons (keyboard and touch). */
@@ -27,6 +28,7 @@ export function OrderQuestionView({
   const correctIds = q.items.map((it) => it.id);
   const firstWrongOrder = useRef<string[] | null>(null);
   const [placedRight, setPlacedRight] = useState(0);
+  const [moved, setMoved] = useState("");
 
   // FLIP animation: every reorder slides items from their old to their new position.
   function snapshot() {
@@ -56,6 +58,7 @@ export function OrderQuestionView({
     const [it] = next.splice(from, 1);
     next.splice(to, 0, it);
     setOrder(next);
+    setMoved(`“${byId[it].label}” moved to position ${to + 1} of ${next.length}.`);
   }
 
   function submit() {
@@ -91,6 +94,7 @@ export function OrderQuestionView({
           <p className="mt-1 text-xs text-faint">Drag the steps, or use the arrow buttons to move them.</p>
         )}
       </div>
+      <Announce delay={200}>{moved}</Announce>
       <ol className="space-y-2">
         {order.map((id, i) => {
           const it = byId[id];
@@ -128,6 +132,7 @@ export function OrderQuestionView({
                 )}
               >
                 {i + 1}
+                {status !== "idle" && <span className="sr-only">{status === "ok" ? " (correct position)" : " (wrong position)"}</span>}
               </span>
               <span className="flex-1 leading-snug text-ink">{it.label}</span>
               {submitted === null && (
@@ -137,7 +142,7 @@ export function OrderQuestionView({
                     aria-label={`Move “${it.label}” up`}
                     disabled={i === 0}
                     onClick={() => move(i, i - 1)}
-                    className="rounded p-0.5 text-faint hover:bg-surface-2 hover:text-ink disabled:opacity-25"
+                    className="grid h-6 w-6 place-items-center rounded text-faint hover:bg-surface-2 hover:text-ink disabled:opacity-25"
                   >
                     <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden>
                       <path d="M4 10l4-4 4 4" fill="none" stroke="currentColor" strokeWidth="1.5" />
@@ -148,7 +153,7 @@ export function OrderQuestionView({
                     aria-label={`Move “${it.label}” down`}
                     disabled={i === order.length - 1}
                     onClick={() => move(i, i + 1)}
-                    className="rounded p-0.5 text-faint hover:bg-surface-2 hover:text-ink disabled:opacity-25"
+                    className="grid h-6 w-6 place-items-center rounded text-faint hover:bg-surface-2 hover:text-ink disabled:opacity-25"
                   >
                     <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden>
                       <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />

@@ -67,6 +67,7 @@ export default function Page() {
       <Step
         kind="try"
         id="sequence"
+        alias="try"
         title="Put the analysis in order"
         intro="A Lazarsfeld analysis has five steps. Drag them into the right order (or use the arrow buttons)."
       >
