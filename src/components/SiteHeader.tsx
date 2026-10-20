@@ -2,10 +2,49 @@
 
 import { MODULES } from "@/content/modules";
 import { cn } from "@/lib/cn";
-import { THEME_KEY } from "@/lib/theme";
+import { PRESENT_KEY, THEME_KEY } from "@/lib/theme";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+
+function subscribeHtmlClass(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+  return () => observer.disconnect();
+}
+
+/** Projector-friendly setting: larger type, stronger secondary text, no animation. Also `?present=1`. */
+function PresentationToggle() {
+  const on = useSyncExternalStore(
+    subscribeHtmlClass,
+    () => document.documentElement.classList.contains("present"),
+    () => false,
+  );
+  function toggle() {
+    document.documentElement.classList.toggle("present", !on);
+    try {
+      localStorage.setItem(PRESENT_KEY, on ? "0" : "1");
+    } catch {}
+  }
+  return (
+    <button
+      type="button"
+      onClick={toggle}
+      aria-pressed={on}
+      aria-label="Presentation mode"
+      title="Presentation mode: larger text for projectors"
+      className={cn(
+        "grid h-8 w-8 place-items-center rounded-md hover:bg-surface-2 hover:text-ink",
+        on ? "bg-accent-soft text-accent" : "text-muted",
+      )}
+    >
+      <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden>
+        <rect x="1.8" y="2.5" width="12.4" height="8" rx="1" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        <path d="M8 10.5v2.5M5.5 13.5h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      </svg>
+    </button>
+  );
+}
 
 function ThemeToggle() {
   function toggle() {
@@ -90,6 +129,7 @@ export function SiteHeader() {
           >
             Quick review
           </Link>
+          <PresentationToggle />
           <ThemeToggle />
           <button
             type="button"

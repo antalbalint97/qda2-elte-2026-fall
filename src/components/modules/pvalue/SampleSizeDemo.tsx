@@ -1,6 +1,7 @@
 "use client";
 
 import { DistributionChart } from "@/components/viz/DistributionChart";
+import { Announce } from "@/components/ui/Announce";
 import { Slider } from "@/components/ui/Slider";
 import { Term } from "@/components/ui/Term";
 import { cn } from "@/lib/cn";
@@ -72,6 +73,7 @@ export function SampleSizeDemo() {
             </div>
           ))}
         </dl>
+        <Announce>{`N = ${n}: standard error ${se.toFixed(2)}, t ${t.toFixed(2)}, two-tailed p ${formatP(p)}, ${p < 0.05 ? "significant" : "not significant"} at .05. The difference stays 4 points.`}</Announce>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { Slider } from "@/components/ui/Slider";
 import { DistributionChart } from "@/components/viz/DistributionChart";
-import { formatP, gaussian, mulberry32, tPdf, tTwoTailedP, chiSquareTest } from "@/lib/stats";
+import { formatP, pBoundaryNote, simulateNullT, tPdf, tTwoTailedP, chiSquareTest } from "@/lib/stats";
 import { setAdvancedCompleted, useProgress } from "@/lib/progress";
 import { useMemo, useState, type ReactNode } from "react";
 
@@ -37,14 +37,17 @@ export function AdvancedLab() {
             <div className="text-xs text-faint">Curious enough to click further.</div>
           </div>
         </div>
-        <div className="mt-5 grid grid-cols-4 gap-1 sm:grid-cols-8" aria-label="Advanced topics completed">
+        <div className="mt-5 grid grid-cols-4 gap-1 sm:grid-cols-8" role="group" aria-label="Advanced topics completed">
           {TOPICS.map(([id, title]) => (
             <a
               key={id}
               href={`#${id}`}
               title={title}
-              className={`h-2 rounded-full ${completed.includes(id) ? "bg-pos" : "bg-surface-3"}`}
-            />
+              aria-label={`${title}: ${completed.includes(id) ? "explored" : "not explored yet"}`}
+              className="flex h-6 items-center"
+            >
+              <span aria-hidden className={`block h-2 w-full rounded-full ${completed.includes(id) ? "bg-pos" : "bg-surface-3"}`} />
+            </a>
           ))}
         </div>
       </section>
@@ -219,13 +222,22 @@ function Pairwise() {
         <div className="rounded-2xl border border-line bg-surface p-5 sm:p-6">
           <p className="text-sm font-semibold text-ink">Select two categories</p>
           <div className="mt-4 grid grid-cols-2 gap-4">
-            <select value={a} onChange={(e) => setA(Number(e.target.value))} className="rounded-lg border border-line bg-bg p-2 text-sm text-ink">
-              {AGE_ROWS.map(([label], i) => <option value={i} key={label}>{label}</option>)}
-            </select>
-            <select value={b} onChange={(e) => setB(Number(e.target.value))} className="rounded-lg border border-line bg-bg p-2 text-sm text-ink">
-              {AGE_ROWS.map(([label], i) => <option value={i} key={label}>{label}</option>)}
-            </select>
+            <label className="grid gap-1 text-xs text-muted">
+              First group
+              <select value={a} onChange={(e) => setA(Number(e.target.value))} className="rounded-lg border border-line bg-bg p-2 text-sm text-ink">
+                {AGE_ROWS.map(([label], i) => <option value={i} key={label}>{label}</option>)}
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs text-muted">
+              Second group
+              <select value={b} onChange={(e) => setB(Number(e.target.value))} className="rounded-lg border border-line bg-bg p-2 text-sm text-ink">
+                {AGE_ROWS.map(([label], i) => <option value={i} key={label}>{label}</option>)}
+              </select>
+            </label>
           </div>
+          <p className="mt-2 text-xs text-faint">
+            Teaching assumption: each age group has 100 respondents, so the percentages are also the counts used for χ².
+          </p>
           {result ? (
             <div className="mt-5 rounded-xl bg-surface-2 p-4">
               <div className="font-mono text-sm leading-7 text-ink">
@@ -449,21 +461,7 @@ function PValueDeep() {
   const df = n - 1;
   const p = tTwoTailedP(t, df);
 
-  const sim = useMemo(() => {
-    const rand = mulberry32(20261005 + n * 13 + sd * 7);
-    const z = gaussian(rand);
-    const threshold = Math.abs(t);
-    let extreme = 0;
-    const total = 500;
-    const values: number[] = [];
-    for (let i = 0; i < total; i++) {
-      const sampleMeanUnderH0 = (sd / Math.sqrt(n)) * z();
-      const tsim = sampleMeanUnderH0 / (sd / Math.sqrt(n));
-      values.push(tsim);
-      if (Math.abs(tsim) >= threshold) extreme++;
-    }
-    return { extreme, total, empirical: extreme / total, values };
-  }, [n, sd, t]);
+  const sim = useMemo(() => simulateNullT(n, sd, Math.abs(t), 20261005 + n * 13 + sd * 7), [n, sd, t]);
 
   return (
     <OptionalSection id="pvalue" title="p-value: test statistic, reference distribution, simulation">
@@ -480,6 +478,7 @@ function PValueDeep() {
             t = {diff.toFixed(1)} / {se.toFixed(2)} = {t.toFixed(2)}<br />
             df = {df}<br />
             p {formatP(p)}
+            {pBoundaryNote(p) && <span className="mt-1 block font-sans text-xs leading-relaxed text-muted">{pBoundaryNote(p)}</span>}
           </div>
         </div>
         <div className="space-y-5">

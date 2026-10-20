@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { Announce } from "@/components/ui/Announce";
 import { Slider } from "@/components/ui/Slider";
 import { Scatter } from "@/components/viz/Scatter";
 import { cn } from "@/lib/cn";
@@ -22,7 +23,7 @@ export function GuessR() {
 
   return (
     <div className="grid gap-6 rounded-2xl border border-line bg-surface p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_17rem]">
-      <Scatter xs={xs} ys={ys} tone="z" ariaLabel="Scatterplot: guess the correlation" />
+      <Scatter xs={xs} ys={ys} tone="z" ariaLabel={`Scatterplot of ${xs.length} points for round ${round + 1}: guess the correlation`} />
       <div className="space-y-5">
         <p className="text-sm text-muted">Round {round + 1}. Look at the cloud and estimate r.</p>
         <Slider
@@ -31,9 +32,12 @@ export function GuessR() {
           min={-1}
           max={1}
           step={0.05}
-          onChange={(v) => !revealed && setGuess(v)}
+          onChange={setGuess}
+          disabled={revealed}
           display={noLeadingZero(guess)}
+          valueText={`r = ${noLeadingZero(guess)}`}
         />
+        <Announce>{revealed ? `r = ${noLeadingZero(r)}. Your guess was off by ${err.toFixed(2)}.` : ""}</Announce>
         {!revealed ? (
           <Button
             variant="primary"

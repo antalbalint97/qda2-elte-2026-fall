@@ -14,7 +14,8 @@ export function MiniTable({
   className?: string;
 }) {
   return (
-    <div className={cn("overflow-x-auto rounded-xl border border-line bg-surface", className)}>
+    // Focusable so keyboard users can scroll wide tables sideways.
+    <div className={cn("overflow-x-auto rounded-xl border border-line bg-surface", className)} tabIndex={0}>
       <table className="w-full border-collapse text-sm">
         {caption && (
           <caption className="border-b border-line px-3 py-2 text-left text-xs font-medium text-muted">{caption}</caption>

@@ -1,9 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/cn";
+import { STORAGE_KEYS } from "@/lib/theme";
 import { useState, useSyncExternalStore } from "react";
 
-const KEY = "qda2-sopranos-notes-v1";
+const KEY = STORAGE_KEYS.sopranosNotes;
 const listeners = new Set<() => void>();
 let cache: Record<string, string> | null = null;
 

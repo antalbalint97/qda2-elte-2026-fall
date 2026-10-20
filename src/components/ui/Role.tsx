@@ -2,9 +2,9 @@ import { cn } from "@/lib/cn";
 import type { ReactNode } from "react";
 
 const styles = {
-  X: "bg-rx-soft text-rx ring-rx/30",
-  Y: "bg-ry-soft text-ry ring-ry/30",
-  Z: "bg-rz-soft text-rz ring-rz/30",
+  X: "bg-rx-soft text-rx-ink ring-rx/30",
+  Y: "bg-ry-soft text-ry-ink ring-ry/30",
+  Z: "bg-rz-soft text-rz-ink ring-rz/30",
 };
 
 /** Colour-coded role chip. X, Y and Z use the same colours everywhere on the site. */

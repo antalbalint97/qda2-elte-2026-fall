@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Source_Serif_4 } from "next/font/google";
+import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { themeInitScript } from "@/lib/theme";
 import "./globals.css";
@@ -36,10 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </a>
         <SiteHeader />
         <main id="main">{children}</main>
-        <footer className="border-t border-line py-8 text-center text-xs text-faint">
-          QDA2 Interactive Lab · a study companion for Quantitative Data Analysis 2 · progress is stored only in this
-          browser
-        </footer>
+        <SiteFooter />
       </body>
     </html>
   );

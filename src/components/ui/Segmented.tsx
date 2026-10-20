@@ -59,7 +59,7 @@ export function Segmented<T extends string>({
             tabIndex={active ? 0 : -1}
             onClick={() => onChange(o.value)}
             className={cn(
-              "rounded-md font-medium transition-all",
+              "rounded-md font-medium transition",
               size === "sm" ? "px-2.5 py-1 text-xs" : "px-3.5 py-1.5 text-sm",
               active ? "bg-surface text-ink shadow-sm ring-1 ring-line" : "text-muted hover:text-ink",
             )}

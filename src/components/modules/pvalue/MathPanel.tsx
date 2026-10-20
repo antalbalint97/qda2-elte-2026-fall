@@ -4,7 +4,7 @@ import { Formula, Frac, Sqrt } from "@/components/learning/Formula";
 import { DistributionChart } from "@/components/viz/DistributionChart";
 import { Disclosure } from "@/components/ui/Disclosure";
 import { Slider } from "@/components/ui/Slider";
-import { formatP, tPdf, tTwoTailedP } from "@/lib/stats";
+import { formatP, pBoundaryNote, tPdf, tTwoTailedP } from "@/lib/stats";
 import { useState } from "react";
 
 const NS = [5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 300, 500, 1000];
@@ -66,6 +66,7 @@ export function MathPanel() {
             <div>
               p (two-tailed) <strong>{formatP(p)}</strong>
             </div>
+            {pBoundaryNote(p) && <p className="font-sans text-xs leading-relaxed text-muted">{pBoundaryNote(p)}</p>}
           </div>
           <div className="mt-3">
             <DistributionChart

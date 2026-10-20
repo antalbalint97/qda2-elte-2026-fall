@@ -274,6 +274,17 @@ export function formatP(p: number): string {
   return "= " + s.replace(/^0/, "");
 }
 
+/**
+ * When a p-value rounds to exactly α at three decimals (e.g. .04996 or .05004 both print as ".050"),
+ * the rounded value cannot show which side of α it is on. Returns a short note with more digits for
+ * that case, otherwise null. The decision itself always uses the unrounded p.
+ */
+export function pBoundaryNote(p: number, alpha = 0.05): string | null {
+  if (p.toFixed(3) !== alpha.toFixed(3)) return null;
+  const exact = p.toFixed(5).replace(/^0/, "");
+  return `Rounded to three decimals. Unrounded p ≈ ${exact}, which is ${p < alpha ? "just below" : "not below"} α = ${noLeadingZero(alpha, 2)}.`;
+}
+
 /** Number without leading zero (for r, V, p). */
 export function noLeadingZero(x: number, digits = 2): string {
   const s = x.toFixed(digits);
@@ -363,4 +374,31 @@ export function pairedT(a: number[], b: number[]): TResult {
     a.map((x, i) => x - b[i]),
     0,
   );
+}
+
+/**
+ * Simulates `total` one-sample studies of size n from a population where H0 is true (mean 0, SD sd)
+ * and computes each study's t statistic with its own sample SD, exactly like the observed study.
+ * The simulated t values therefore follow the t distribution with n − 1 df, and the share with
+ * |t| ≥ threshold estimates the two-tailed p-value.
+ */
+export function simulateNullT(n: number, sd: number, threshold: number, seed: number, total = 500) {
+  const z = gaussian(mulberry32(seed));
+  const values: number[] = [];
+  let extreme = 0;
+  for (let i = 0; i < total; i++) {
+    let sum = 0;
+    let sumSq = 0;
+    for (let k = 0; k < n; k++) {
+      const x = sd * z();
+      sum += x;
+      sumSq += x * x;
+    }
+    const m = sum / n;
+    const s = Math.sqrt(Math.max(0, sumSq - n * m * m) / (n - 1));
+    const t = m / (s / Math.sqrt(n));
+    values.push(t);
+    if (Math.abs(t) >= threshold) extreme++;
+  }
+  return { extreme, total, empirical: extreme / total, values };
 }

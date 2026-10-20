@@ -2,6 +2,7 @@
 
 import { DistributionChart } from "@/components/viz/DistributionChart";
 import { Segmented } from "@/components/ui/Segmented";
+import { Announce } from "@/components/ui/Announce";
 import { Slider } from "@/components/ui/Slider";
 import { Term } from "@/components/ui/Term";
 import { cn } from "@/lib/cn";
@@ -78,6 +79,7 @@ export function PValueExplorer() {
               ? "If μ really were 60, results at least this far from 60 would be rare. The data are hard to reconcile with H₀."
               : "If μ really were 60, results this far from 60 would not be unusual. The data are statistically compatible with H₀."}
           </p>
+          <Announce>{`Observed t ${t.toFixed(2)}, ${tails === "two" ? "two" : "one"}-tailed p ${formatP(p)}. ${sig ? "p below .05: reject H0." : "p at or above .05: do not reject H0."}`}</Announce>
           <p className="text-xs leading-relaxed text-faint">
             Two-tailed: extreme in <em>either</em> direction counts, so both tails are shaded. The dashed line marks the{" "}
             <Term k="alpha">α = .05</Term> boundary.

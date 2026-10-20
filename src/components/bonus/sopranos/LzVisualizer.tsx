@@ -58,7 +58,7 @@ export function LzVisualizer() {
         <div className="space-y-3" aria-live="polite">
           <p className="text-sm leading-relaxed text-ink">{v.text}</p>
           <div className="rounded-xl border border-rz/30 bg-rz-soft px-3.5 py-2.5">
-            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-rz">Where does Z live in the story?</p>
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-rz-ink">Where does Z live in the story?</p>
             <p className="mt-1 text-sm text-ink">{v.where}</p>
           </div>
         </div>

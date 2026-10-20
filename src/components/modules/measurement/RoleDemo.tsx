@@ -30,7 +30,7 @@ const RQS = {
 
 function Node({ label, role, highlight }: { label: string; role: "X" | "Y" | "Z"; highlight: boolean }) {
   const color = { X: "border-rx bg-rx-soft", Y: "border-ry bg-ry-soft", Z: "border-rz bg-rz-soft" }[role];
-  const text = { X: "text-rx", Y: "text-ry", Z: "text-rz" }[role];
+  const text = { X: "text-rx-ink", Y: "text-ry-ink", Z: "text-rz-ink" }[role];
   return (
     <div
       className={cn(
@@ -68,7 +68,7 @@ export function RoleDemo() {
       <div key={`d-${k}`} className="mt-6 flex flex-col items-center gap-3">
         {r.z && <Node label={r.z} role="Z" highlight={r.z === "Age"} />}
         {r.z && (
-          <svg viewBox="0 0 20 20" className="h-5 w-5 text-rz" aria-hidden>
+          <svg viewBox="0 0 20 20" className="h-5 w-5 text-rz-ink" aria-hidden>
             <path d="M10 2v14m-4-4l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="2 2" />
           </svg>
         )}

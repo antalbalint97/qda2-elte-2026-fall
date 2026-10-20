@@ -2,6 +2,7 @@
 
 import { Panel } from "@/components/learning/ModuleShell";
 import { Button } from "@/components/ui/Button";
+import { Announce } from "@/components/ui/Announce";
 import { Slider } from "@/components/ui/Slider";
 import { useMemo, useState } from "react";
 import { anova, fmt, LABELS, mean, ORIGINAL } from "./data";
@@ -106,6 +107,7 @@ export function VarianceExplorer() {
       <p className="text-xs text-muted">
         Dots = observations; thick lines = group means; dashed line = grand mean ({fmt(r.overall)}).
       </p>
+      <Announce>{`Between SS ${fmt(r.between)}, within SS ${fmt(r.within)}, total SS ${fmt(r.total)}, F ${fmt(r.f)} with df ${r.dfBetween} and ${r.dfWithin}, eta squared ${fmt(r.eta, 3)}.`}</Announce>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           ["Within SS", fmt(r.within)],
@@ -123,27 +125,27 @@ export function VarianceExplorer() {
         <table className="w-full border-collapse text-left text-sm tabular-nums">
           <thead>
             <tr className="border-b border-line text-muted">
-              <th className="py-2 pr-3 font-medium">Source</th>
-              <th className="pr-3 font-medium">SS</th>
-              <th className="pr-3 font-medium">df</th>
-              <th className="font-medium">MS</th>
+              <th scope="col" className="py-2 pr-3 font-medium">Source</th>
+              <th scope="col" className="pr-3 font-medium">SS</th>
+              <th scope="col" className="pr-3 font-medium">df</th>
+              <th scope="col" className="font-medium">MS</th>
             </tr>
           </thead>
           <tbody className="text-ink">
             <tr className="border-b border-line">
-              <td className="py-2 pr-3">Between groups</td>
+              <th scope="row" className="py-2 pr-3 text-left font-normal">Between groups</th>
               <td className="pr-3">{fmt(r.between)}</td>
               <td className="pr-3">{r.dfBetween}</td>
               <td>{fmt(r.msBetween)}</td>
             </tr>
             <tr className="border-b border-line">
-              <td className="py-2 pr-3">Within groups</td>
+              <th scope="row" className="py-2 pr-3 text-left font-normal">Within groups</th>
               <td className="pr-3">{fmt(r.within)}</td>
               <td className="pr-3">{r.dfWithin}</td>
               <td>{fmt(r.msWithin)}</td>
             </tr>
             <tr>
-              <td className="py-2 pr-3">Total</td>
+              <th scope="row" className="py-2 pr-3 text-left font-normal">Total</th>
               <td className="pr-3">{fmt(r.total)}</td>
               <td className="pr-3">{r.dfBetween + r.dfWithin}</td>
               <td>—</td>

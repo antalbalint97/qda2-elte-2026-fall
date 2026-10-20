@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Type check
+        run: npm run typecheck
+      - name: Statistical and unit tests
+        run: npm run test:unit
+      # Fails on critical advisories. The known high-severity PostCSS advisories come from the copy
+      # bundled inside next 15.x, which only processes this repository's own CSS at build time; they
+      # are reviewed in docs/institutional/security-review.md and resolved by the Next 16 upgrade.
+      - name: Dependency audit (runtime dependencies)
+        run: |
+          npm audit --omit=dev || true
+          npm audit --omit=dev --audit-level=critical
+      - name: Production build
+        run: npm run build
+      - name: Build output check (secrets, source maps, external scripts)
+        run: node scripts/check-build.mjs
+      - name: Install Chromium for browser tests
+        run: npx playwright install --with-deps chromium
+      - name: Browser tests (routes, keyboard, accessibility, network, links, headers)
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

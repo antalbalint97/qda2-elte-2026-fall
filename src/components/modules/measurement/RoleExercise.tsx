@@ -42,7 +42,7 @@ export function RoleExercise() {
                         recordAnswer(`m-role-${it.id}`, "roles", r === it.answer);
                       }}
                       className={cn(
-                        "rounded-lg border p-1 transition-all",
+                        "rounded-lg border p-1 transition",
                         !pick && "border-transparent hover:border-line-strong",
                         pick && pick !== r && it.answer !== r && "opacity-35",
                         pick && it.answer === r && "border-pos/60",

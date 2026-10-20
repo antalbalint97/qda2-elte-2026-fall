@@ -18,24 +18,33 @@ export function QuizRunner({ questions, title }: { questions: Question[]; title?
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-6">
         <p className="text-sm font-medium text-ink">{title ?? "Mastery check"}</p>
         <div className="flex items-center gap-3">
-          <div className="flex gap-1" aria-label={`Question ${i + 1} of ${questions.length}`}>
-            {questions.map((qq, k) => (
-              <button
-                key={qq.id}
-                type="button"
-                aria-label={`Go to question ${k + 1}`}
-                aria-current={k === i}
-                onClick={() => setI(k)}
-                className={cn(
-                  "h-2 rounded-full transition-all",
-                  k === i ? "w-5 bg-accent" : "w-2",
-                  k !== i && (results[qq.id] === true ? "bg-pos" : results[qq.id] === false ? "bg-neg" : "bg-surface-3"),
-                )}
-              />
-            ))}
+          <div className="flex" role="group" aria-label={`Question ${i + 1} of ${questions.length}`}>
+            {questions.map((qq, k) => {
+              const state = results[qq.id] === true ? "answered correctly" : results[qq.id] === false ? "answered incorrectly" : "not answered yet";
+              return (
+                <button
+                  key={qq.id}
+                  type="button"
+                  aria-label={`Go to question ${k + 1}, ${state}`}
+                  aria-current={k === i ? "step" : undefined}
+                  onClick={() => setI(k)}
+                  className="group grid h-6 min-w-6 place-items-center px-0.5"
+                >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "block h-2 rounded-full transition-all group-hover:ring-2 group-hover:ring-line-strong",
+                      k === i ? "w-5 bg-accent" : "w-2",
+                      k !== i && (results[qq.id] === true ? "bg-pos" : results[qq.id] === false ? "bg-neg" : "bg-surface-3"),
+                    )}
+                  />
+                </button>
+              );
+            })}
           </div>
           <span className="font-mono text-xs tabular-nums text-faint">
             {right}/{done}
+            <span className="sr-only"> correct on first attempt</span>
           </span>
         </div>
       </div>
