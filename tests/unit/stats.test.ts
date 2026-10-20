@@ -120,7 +120,7 @@ describe("crosstab statistics", () => {
 });
 
 describe("correlation", () => {
-  const { x, y } = REF.correlation;
+  const { x, y } = REF.correlation as { x: number[]; y: number[] };
   test("Pearson r and its p-value match SciPy", () => {
     close(pearson(x, y), REF.correlation.pearson, 1e-12, "r");
     close(correlationP(pearson(x, y), x.length), REF.correlation.pearsonP, 1e-8, "p");
