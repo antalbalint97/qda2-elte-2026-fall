@@ -8,7 +8,7 @@ and they make the site's behaviour explicit for reviewers. No formal penetration
 
 | Area | Finding |
 | --- | --- |
-| Server-side code | None at runtime. All 17 routes are prerendered; there are no API routes, middleware, server actions or form handlers |
+| Server-side code | None at runtime. All 18 routes are prerendered; there are no API routes, middleware, server actions or form handlers |
 | User input | Quiz clicks, sliders, two `<select>`s, free-text notes in the bonus lab. Input is rendered by React as text (escaped); none is sent anywhere |
 | `dangerouslySetInnerHTML` | Three uses: the inline theme script (a constant) and KaTeX output (`Tex.tsx`), rendered at build time from formulas written in the source code with `trust` disabled and `throwOnError: true`. No user or URL input reaches them |
 | URL parameters | Only `?present=0/1`, compared against fixed strings in the inline script |

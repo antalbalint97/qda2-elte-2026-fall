@@ -20,6 +20,7 @@ a Page/Label). This needs no configuration and no approval beyond the course's n
   | Correlation | `/correlation` | `#try`, `#choose`, `#spss`, `#test` |
   | t-tests | `/t-tests` | `#understand`, `#spss`, `#test` |
   | ANOVA lab | `/anova` | `#understand`, `#foundations`, `#try`, `#spss`, `#test` |
+  | Spread, variance & error | `/variance` | `#understand`, `#squares`, `#residuals`, `#try`, `#hetero`, `#spss`, `#test` |
   | Quick review | `/review` | |
   | Optional: Go Further | `/go-further` | `#residuals`, `#pairwise`, `#pvalue`, `#spss` |
 

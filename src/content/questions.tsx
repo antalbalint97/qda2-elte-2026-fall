@@ -857,6 +857,228 @@ export const qAnovaTwoWay: ChoiceQuestion = {
     "Two-way ANOVA has two grouping factors. It estimates the main effect of each and tests their interaction: whether the differences between education levels are the same for men and women.",
 };
 
+/* ---------------- 08 Spread, variance & error ---------------- */
+
+export const qVarSameMean: ChoiceQuestion = {
+  kind: "choice",
+  id: "v-same-mean",
+  concept: "variance",
+  format: "Interpret a summary",
+  prompt:
+    "Two seminar groups both have a mean of 5.0 and a median of 5 on a 0–10 trust scale. What can you conclude about how similar the two groups' answers are?",
+  options: [
+    {
+      id: "nothing",
+      label: "Nothing yet: the same centre fits very different distributions, so we need a measure of spread (e.g. SD) or the distribution itself.",
+    },
+    {
+      id: "same",
+      label: "The groups answered in much the same way.",
+      why: "Mean and median only locate the middle. A group where everyone says 5 and a group split between 0 and 10 can share both.",
+    },
+    {
+      id: "symmetric",
+      label: "Both distributions are symmetric, because mean = median.",
+      why: "Mean = median is consistent with symmetry but does not prove it: the polarised and long-tail groups on this page also have mean = median = 5.",
+    },
+    {
+      id: "consensus",
+      label: "Most respondents in both groups answered 5.",
+      why: "The median says half answered 5 or less and half 5 or more; it does not say how many answered exactly 5.",
+    },
+  ],
+  correct: "nothing",
+  explanation:
+    "Measures of central tendency summarise where the data are, not how much cases differ. Report a measure of spread (SD, range, IQR) and look at the distribution.",
+};
+
+export const qVarOutlier: ChoiceQuestion = {
+  kind: "choice",
+  id: "v-outlier",
+  concept: "variance",
+  format: "Predict the effect",
+  prompt:
+    "One respondent's monthly income is mistyped as 4,500 thousand HUF instead of 450 in a sample of 200. Which statistic is practically unaffected?",
+  options: [
+    {
+      id: "mean",
+      label: "The mean",
+      why: "The mean is a balance point: every unit of distance counts, so one value 4,050 too high adds about 4,050 ÷ 200 ≈ 20 to the mean.",
+    },
+    {
+      id: "sd",
+      label: "The standard deviation",
+      why: "The SD is built from squared deviations, so one far-away value has an outsized effect: its squared deviation can exceed all others combined.",
+    },
+    { id: "median", label: "The median" },
+    {
+      id: "variance",
+      label: "The variance",
+      why: "The variance is the average squared deviation; squaring makes one extreme value count enormously.",
+    },
+  ],
+  correct: "median",
+  explanation:
+    "The median depends only on the order of the values: moving the largest value even further up leaves the middle case unchanged. Mean, variance and SD all react, the last two most strongly.",
+};
+
+export const qVarWhySquare: ChoiceQuestion = {
+  kind: "choice",
+  id: "v-why-square",
+  concept: "variance",
+  format: "Explain the formula",
+  prompt: "Why do we not simply average the deviations from the mean to measure spread?",
+  options: [
+    {
+      id: "easier",
+      label: "Because squared numbers are easier to calculate with.",
+      why: "Squaring is not done for convenience. Without it (or an absolute value) the deviations would always sum to exactly zero, whatever the spread.",
+    },
+    { id: "zero", label: "Because deviations from the mean always add up to zero: positive and negative ones cancel." },
+    {
+      id: "negative",
+      label: "Because the average deviation would be negative.",
+      why: "It would not be negative: it would be exactly zero for every dataset, because the mean is the balance point.",
+    },
+    {
+      id: "outliers",
+      label: "Because squaring reduces the influence of outliers.",
+      why: "The opposite: squaring makes large deviations count much more (a deviation of 8 contributes 64, a deviation of 2 only 4).",
+    },
+  ],
+  correct: "zero",
+  explanation:
+    "The mean is the point where deviations balance, so they sum to zero. Squaring makes every deviation positive (and weights large ones more); dividing the sum of squares by n − 1 gives the variance.",
+};
+
+export const qVarSdUnit: ChoiceQuestion = {
+  kind: "choice",
+  id: "v-sd-unit",
+  concept: "variance",
+  format: "Calculate and interpret",
+  prompt: "The variance of the number of books read is 25. What is the standard deviation, and in which unit?",
+  options: [
+    {
+      id: "25",
+      label: "25 books",
+      why: "25 is the variance, measured in squared units (books²): the area of the average square. The SD is its side, √25.",
+    },
+    {
+      id: "5sq",
+      label: "5 books²",
+      why: "Taking the square root also undoes the squared unit: the SD is back in the original unit, books.",
+    },
+    { id: "five", label: "5 books" },
+    {
+      id: "12.5",
+      label: "12.5 books",
+      why: "The SD is the square root of the variance, not half of it.",
+    },
+  ],
+  correct: "five",
+  explanation:
+    "Variance = area of the average square (books²); SD = √variance = its side, in the variable's own unit. That is why the SD is the one we report next to the mean.",
+};
+
+export const qVarResidual: ChoiceQuestion = {
+  kind: "choice",
+  id: "v-residual",
+  concept: "variance",
+  format: "Interpret sums of squares",
+  prompt:
+    "Predicting everyone's knowledge score with the mean leaves a sum of squares of 400. Using the best straight line on news hours (X) leaves 100. What does this mean?",
+  options: [
+    {
+      id: "cause",
+      label: "News use causes 75% of the differences in knowledge.",
+      why: "r² describes how much of the spread a line on X accounts for. Without a design that supports it, it is an association: other variables (e.g. education) may relate to both.",
+    },
+    {
+      id: "share",
+      label: "75% of the variation in knowledge scores (sum of squares) is associated with news hours in this sample (r² = .75); 100 is the residual, unexplained part.",
+    },
+    {
+      id: "points",
+      label: "75% of the respondents lie exactly on the line.",
+      why: "r² is a share of the total squared deviation, not a share of people. Possibly no one lies exactly on the line.",
+    },
+    {
+      id: "error",
+      label: "The prediction is wrong for 100 respondents.",
+      why: "100 is a sum of squared errors (an area), not a count of respondents.",
+    },
+  ],
+  correct: "share",
+  explanation:
+    "Total SS = 400 is all the spread around the mean. The line leaves 100 as residual SS, so 1 − 100/400 = .75 is accounted for. ANOVA's η² = SS between / SS total is the same idea with group means as predictions.",
+};
+
+export const qVarNoise: ChoiceQuestion = {
+  kind: "choice",
+  id: "v-noise",
+  concept: "variance",
+  format: "Predict the effect",
+  prompt:
+    "Two studies have the same sample size and the same spread of X and find the same slope, but in study B the residual SD is twice as large as in study A. What follows for study B?",
+  options: [
+    {
+      id: "same",
+      label: "Nothing: the slope is the same, so the test result is the same.",
+      why: "The test does not look at the slope alone but at the slope relative to its standard error, and the standard error grows with the residual spread.",
+    },
+    {
+      id: "smaller-p",
+      label: "Its p-value is smaller, because there is more variation to explain.",
+      why: "More unexplained variation makes the estimate less precise: t shrinks and p grows.",
+    },
+    {
+      id: "steeper",
+      label: "Its slope must actually be steeper in the population.",
+      why: "The residual spread says how far cases fall from the line, not how steep the line is.",
+    },
+    {
+      id: "se",
+      label: "Its standard error is about twice as large and its t about half as large: we can be less sure about the slope.",
+    },
+  ],
+  correct: "se",
+  explanation:
+    "SE(slope) = residual SD ÷ √Σ(x − x̄)². Doubling the residual SD doubles the SE and halves t = slope ÷ SE. Larger samples are what shrink the SE.",
+};
+
+export const qVarHetero: ChoiceQuestion = {
+  kind: "choice",
+  id: "v-hetero",
+  concept: "variance",
+  format: "Read a residual plot",
+  prompt:
+    "In a plot of residuals against X, the residuals form a funnel: close to zero for small X and widely scattered for large X. What does this show?",
+  options: [
+    {
+      id: "nonlinear",
+      label: "The relationship is not linear.",
+      why: "Non-linearity shows up as a curved pattern in the centre of the residuals (e.g. mostly positive at both ends). A funnel is about the size of the spread, not its centre.",
+    },
+    {
+      id: "negative",
+      label: "The correlation between X and Y is negative.",
+      why: "Residuals always centre on zero; their funnel shape says nothing about the direction of the relationship.",
+    },
+    {
+      id: "hetero",
+      label: "Heteroscedasticity: the error spread is not constant, so one common standard error may misstate how precise the estimate is.",
+    },
+    {
+      id: "fine",
+      label: "Nothing to worry about: residuals are always more spread out for large X.",
+      why: "Under the usual assumption the residual spread is the same at every X (homoscedasticity). A funnel is a warning sign.",
+    },
+  ],
+  correct: "hetero",
+  explanation:
+    "Unequal spread of the errors is heteroscedasticity. You have met the group version already: unequal variances in the t-test, which is why SPSS shows Levene's test and the 'equal variances not assumed' (Welch) row.",
+};
+
 /* ---------------- Banks ---------------- */
 
 export const QUICK_REVIEW: Question[] = [

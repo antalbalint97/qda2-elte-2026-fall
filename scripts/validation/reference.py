@@ -91,6 +91,31 @@ out["anova"] = dict(groups=groups, ssb=ssb, ssw=ssw, sst=sst, dfb=2, dfw=8, f=fo
 # Overlap of two unit normals separated by d (Effect size module) -----------------------------
 out["overlap"] = [[dd, 2 * stats.norm.cdf(-dd / 2)] for dd in [0, 0.2, 0.5, 0.8, 1.5]]
 
+# Spread, variance & error (module 08) ----------------------------------------------------------
+trust = {
+    "consensus": [3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7],
+    "spread": [0, 1, 1, 2, 3, 3, 4, 4, 5, 5, 5, 5, 6, 6, 7, 7, 8, 9, 9, 10],
+    "polarised": [0, 0, 0, 1, 1, 1, 1, 2, 2, 5, 5, 8, 8, 9, 9, 9, 9, 10, 10, 10],
+    "tail": [3, 3, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 6, 6, 9, 10],
+}
+books = [2, 4, 5, 7, 9, 15]
+news_x = [1, 2, 3, 5, 6, 8, 10, 12]
+news_y = [28, 45, 33, 52, 47, 60, 74, 66]
+lr = stats.linregress(news_x, news_y)
+fitted = lr.intercept + lr.slope * np.array(news_x, float)
+ss_res = float(((np.array(news_y) - fitted) ** 2).sum())
+out["variance"] = dict(
+    trust={
+        k: dict(values=v, mean=np.mean(v), median=float(np.median(v)), var=np.var(v, ddof=1), sd=np.std(v, ddof=1), skew=stats.skew(v, bias=False))
+        for k, v in trust.items()
+    },
+    books=dict(values=books, ss=float(((np.array(books) - np.mean(books)) ** 2).sum()), var=np.var(books, ddof=1), sd=np.std(books, ddof=1)),
+    news=dict(
+        x=news_x, y=news_y, slope=lr.slope, intercept=lr.intercept, r=lr.rvalue, p=lr.pvalue, seSlope=lr.stderr,
+        ssTotal=float(((np.array(news_y) - np.mean(news_y)) ** 2).sum()), ssResidual=ss_res, residualSd=np.sqrt(ss_res / (len(news_x) - 2)),
+    ),
+)
+
 
 def clean(o):
     if isinstance(o, dict):

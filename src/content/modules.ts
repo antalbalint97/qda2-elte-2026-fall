@@ -85,6 +85,15 @@ export const MODULES: ModuleMeta[] = [
     blurb: "Derive sums of squares, F and eta squared by hand, then change the data interactively.",
     chain: [1, 3, 4, 5, 6, 7, 8],
   },
+  {
+    slug: "variance",
+    href: "/variance",
+    number: "08",
+    title: "Spread, Variance & Error",
+    short: "Variance",
+    blurb: "Why averages are not enough: variance as squares, residuals, error terms and unequal spread.",
+    chain: [5, 7, 8],
+  },
 ];
 
 export const REVIEW_TOPICS = [
@@ -97,4 +106,5 @@ export const REVIEW_TOPICS = [
   { id: "pearson", label: "Pearson vs Spearman", href: "/correlation#choose" },
   { id: "ttest", label: "t-test selection", href: "/t-tests#understand" },
   { id: "anova", label: "ANOVA by hand", href: "/anova#try" },
+  { id: "variance", label: "Variance and residuals", href: "/variance#squares" },
 ] as const;

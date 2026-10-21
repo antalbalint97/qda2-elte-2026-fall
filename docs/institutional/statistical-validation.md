@@ -16,7 +16,7 @@ which simplifications are deliberate teaching choices rather than errors.
 4. **Decision logic.** For every slider combination that prints a p-value, the printed (rounded) value is checked
    against the significance decision shown next to it.
 
-Run with `npm run test:unit` (Node's built-in test runner; 93 checks, all passing on 20 October 2026). The bonus lab
+Run with `npm run test:unit` (Node's built-in test runner; 93 checks, all passing on 20 October 2026; 106 checks after module 08 was added on 21 October 2026). The bonus lab
 has its own check: `python3 scripts/sopranos/verify.py` (43/43 statistics agree with SciPy).
 
 Tolerances: distribution functions within 2 × 10⁻⁷ (normal CDF) or 10⁻⁸ (t, χ², F tails); test statistics within
@@ -40,6 +40,8 @@ what a student can see.
 | `oneSampleT`, `pairedT` | `ttest_1samp`, `ttest_rel` | pass |
 | `hedgesG` | Cohen's d × (1 − 3/(4(n₁+n₂) − 9)), as SPSS 27+ | pass |
 | `skewness` | `scipy.stats.skew(bias=False)` (SPSS G1) | pass |
+| `variance`, `sumOfSquares` | `numpy.var(ddof=1)`; sum of squared deviations, on the four trust groups and the books example of module 08 | pass; a constant variable gives 0 |
+| `linearFit`, `ssAroundLine` | `scipy.stats.linregress` (slope, intercept, r, SE of the slope, p) on the module 08 news/knowledge data | pass; residuals sum to 0; r² equals Pearson r²; the slope t-test p equals `correlationP` |
 | `formatP` | SPSS/APA conventions | ".000"-style values shown as "< .001"; three decimals; no leading zero |
 
 ## 3. Modules
@@ -54,6 +56,7 @@ what a student can see.
 | 05 Correlation | Generator `rhoSample` reproduces its stated population ρ (n = 20,000, within ±.02) for six values; playground presets give the requested population r; slider extremes are finite; U-shape example has |r| < .2; the monotonic example has Spearman > Pearson | pass |
 | 06 t-tests | Static SPSS mock-ups recomputed: t(1198) = 2.14 → .033; Welch t(961.4) = 2.08 → .038; Levene F(1, 1198) = 0.67 → .412 (consistent with the rounding of F) and 8.32 → .004; one-sample t(199) = 3.12 → .002 with 95 % CI 1.04 to 4.64; paired mean 0.42, SD 2.10, n = 1050 → t = 6.48, Sig. < .001. Effect-size overlap 2Φ(−d/2) equals the numerically integrated overlap of the two curves | pass |
 | 07 ANOVA | The 11 observations match `scipy.stats.f_oneway`: SSB = 3468.16, SSW = 520.75, SST = 3988.91, F(2, 8) = 26.64, p = .00029 (printed ".000"), η² = .869. For all 25 × 17 slider positions: SST = SSB + SSW (to 10⁻¹⁰), df add up to 10, F = MSB/MSW, η² = SSB/SST, and F = (η²/df₁)/((1 − η²)/df₂). Spreading individuals scales SSW by spread² and leaves SSB unchanged | pass |
+| 08 Spread, variance & error | The four trust groups (n = 20 each) all have mean 5 and median 5 and four different SDs (0.92, 2.83, 4.07, 1.75), checked against SciPy with variance, SD and skewness (G1) for the SPSS mock-up; income slider (all 91 positions): median fixed at 390, mean strictly rising; squares chart (21 values × 6 respondents): deviations sum to 0, variance = SS/(n − 1), the average square fits the chart; residual squares (101 tilt positions): SS(b) = SS residual + (b − b̂)²Σ(x − x̄)², so the least-squares line leaves the smallest area and slope 0 leaves SS total; r² = .825; error demo: over 2,000 seeded samples the SD of the fitted slopes equals the average standard error within 7 % and the slopes centre on the population slope; every slider position (29 error SDs × 20 sample sizes) prints an unambiguous p; spread patterns: equal average error SD (10) in all three patterns, residual spread ratio high/low X between 0.75 and 1.33 for constant spread, above 2 for the growing and below 0.5 for the shrinking funnel | pass |
 | Go Further (optional) | Residual table: χ², p and V checked against SciPy; the adjusted standardized residual formula (O − E)/√(E(1 − rᵢ/n)(1 − cⱼ/n)) reviewed against the standard definition (reference values are in the fixture); pairwise 2×2 χ² values checked against SciPy; every slider combination of the p-value panel checked for unambiguous rounding; simulated p-value | **found and fixed**: see §4 |
 | Sopranos bonus lab | `scripts/sopranos/verify.py` recomputes all 43 quoted statistics from the synthetic dataset with SciPy | 43/43 agree |
 
@@ -86,6 +89,8 @@ No other wording, curriculum content or conventions were changed.
 - The chi-square demo multiplies counts by a non-integer factor, producing non-integer "counts"; χ² and V are still
   well defined and the demo's point (V does not depend on N) holds exactly.
 - The ANOVA explorer is labelled a teaching simulation and computes no p-values.
+- Module 08 introduces the least-squares line and the standard error of its slope only at intuition level, framed as the line behind Pearson r (its t-test is the correlation t-test). Heteroscedasticity is shown visually with a typical residual per third of the X range (root mean square), not with a formal test; the page points to Levene/Welch as the group version the course already uses.
+- The explanation of n − 1 ("deviations from the sample's own mean come out slightly too small") is an intuition, not a derivation.
 - Language throughout is associational ("is associated with", "differs between"); the Lazarsfeld module states that
   arrows reflect theory and timing, not the tables.
 
@@ -96,6 +101,7 @@ No other wording, curriculum content or conventions were changed.
 | Core modules (crosstab, Lazarsfeld, SPSS mock-ups, scatterplots) | Constructed numbers or seeded simulations written for teaching | New line under every module title: "Examples on this page use constructed or simulated teaching data, not empirical findings", linking to `/about`. Owner to confirm that no numbers were copied from a real dataset ([open-issues.md](open-issues.md)) |
 | SPSS variable names (`stfedu`, `stfhlth`, `trustprl`, `polint`) | Follow European Social Survey naming; no ESS data included | — |
 | ANOVA lab | 11 observations from the course's calculation video | Stated on the page |
+| Spread, variance & error (module 08) | Constructed small datasets (trust groups, incomes, books, news/knowledge) and seeded simulations from an invented population model (knowledge = 30 + 3 × hours + error) | "Synthetic data" / "simulation" stated in every panel, plus the module-wide notice |
 | Sopranos bonus lab | Fully synthetic, generated by `scripts/sopranos/generate.py` (seeded); no real episode data | Prominent synthetic-data notice and non-affiliation statement on the page |
 
 ## 7. Not covered

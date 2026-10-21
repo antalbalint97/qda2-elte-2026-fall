@@ -53,6 +53,15 @@ export function ModuleGlyph({ slug }: { slug: string }) {
           ))}
         </svg>
       );
+    case "variance":
+      return (
+        <svg {...common}>
+          <line x1="4" y1="22" x2="60" y2="22" className="stroke-muted" strokeDasharray="3 2" />
+          <rect x="10" y="10" width="12" height="12" className="fill-ry/30 stroke-ry" />
+          <rect x="28" y="22" width="6" height="6" className="fill-ry/30 stroke-ry" />
+          <rect x="40" y="4" width="18" height="18" className="fill-ry/30 stroke-ry" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>

@@ -402,3 +402,58 @@ export function simulateNullT(n: number, sd: number, threshold: number, seed: nu
   }
   return { extreme, total, empirical: extreme / total, values };
 }
+
+/** Sum of squared deviations from `center` (by default the mean). */
+export function sumOfSquares(xs: number[], center = mean(xs)): number {
+  return xs.reduce((a, x) => a + (x - center) ** 2, 0);
+}
+
+/** Sample variance (n − 1 in the denominator, as SPSS reports it). */
+export function variance(xs: number[]): number {
+  return sumOfSquares(xs) / (xs.length - 1);
+}
+
+/** Sum of squared vertical distances between the points and the line y = intercept + slope · x. */
+export function ssAroundLine(xs: number[], ys: number[], slope: number, intercept: number): number {
+  return xs.reduce((a, x, i) => a + (ys[i] - intercept - slope * x) ** 2, 0);
+}
+
+export interface LinearFit {
+  slope: number;
+  intercept: number;
+  residuals: number[];
+  /** Squared deviations of y from its mean (total spread). */
+  ssTotal: number;
+  /** Squared residuals around the least-squares line (unexplained spread). */
+  ssResidual: number;
+  r2: number;
+  df: number;
+  /** Standard deviation of the residuals, √(SS residual / (n − 2)). */
+  residualSd: number;
+  /** Standard error of the slope, residual SD / √Σ(x − x̄)². */
+  seSlope: number;
+  t: number;
+  p: number;
+}
+
+/** Least-squares line of y on x with the standard error and t-test of the slope (t equals the correlation t). */
+export function linearFit(xs: number[], ys: number[]): LinearFit {
+  const mx = mean(xs);
+  const my = mean(ys);
+  let sxy = 0;
+  let sxx = 0;
+  for (let i = 0; i < xs.length; i++) {
+    sxy += (xs[i] - mx) * (ys[i] - my);
+    sxx += (xs[i] - mx) ** 2;
+  }
+  const slope = sxy / sxx;
+  const intercept = my - slope * mx;
+  const residuals = ys.map((y, i) => y - intercept - slope * xs[i]);
+  const ssTotal = sumOfSquares(ys);
+  const ssResidual = residuals.reduce((a, e) => a + e * e, 0);
+  const df = xs.length - 2;
+  const residualSd = Math.sqrt(ssResidual / df);
+  const seSlope = residualSd / Math.sqrt(sxx);
+  const t = slope / seSlope;
+  return { slope, intercept, residuals, ssTotal, ssResidual, r2: 1 - ssResidual / ssTotal, df, residualSd, seSlope, t, p: tTwoTailedP(t, df) };
+}

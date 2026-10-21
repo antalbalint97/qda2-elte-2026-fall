@@ -18,7 +18,7 @@ for (const route of ROUTES) {
   });
 }
 
-for (const route of ["/", "/crosstabs", "/p-values", "/anova", "/bonus/sopranos", "/privacy"]) {
+for (const route of ["/", "/crosstabs", "/p-values", "/anova", "/variance", "/bonus/sopranos", "/privacy"]) {
   test(`axe: ${route} (dark)`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(route, { waitUntil: "networkidle" });
@@ -55,4 +55,15 @@ test("reduced-motion preference disables animations", async ({ page }) => {
   await page.goto("/correlation");
   const duration = await page.locator(".animate-draw, .animate-fade-up").first().evaluate((el) => getComputedStyle(el).animationDuration).catch(() => "0.00001s");
   expect(parseFloat(duration)).toBeLessThan(0.01);
+});
+
+test("axe: variance lab with every chart state revealed", async ({ page }) => {
+  await page.goto("/variance", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Reveal the answers" }).click();
+  await page.getByRole("button", { name: "Show ±1 SD" }).click();
+  await page.getByRole("radio", { name: "Average square" }).click();
+  await page.getByRole("radio", { name: "Your line" }).click();
+  await page.getByRole("radio", { name: "Spread grows with X" }).click();
+  await page.waitForTimeout(300);
+  expect(await scan(page)).toEqual([]);
 });

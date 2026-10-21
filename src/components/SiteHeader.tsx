@@ -78,7 +78,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2 font-semibold text-ink" onClick={() => setOpen(false)}>
+        <Link href="/" className="flex shrink-0 items-center gap-2 whitespace-nowrap font-semibold text-ink" onClick={() => setOpen(false)}>
           <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
             <rect x="2" y="2" width="20" height="20" rx="5" className="fill-accent" />
             <path d="M6 16.5c2.2 0 2.6-9 6-9s3.8 9 6 9" fill="none" stroke="var(--accent-ink)" strokeWidth="1.7" strokeLinecap="round" />
@@ -93,7 +93,7 @@ export function SiteHeader() {
               key={m.slug}
               href={m.href}
               className={cn(
-                "rounded-md px-2.5 py-1.5 text-sm transition-colors",
+                "whitespace-nowrap rounded-md px-2 py-1.5 text-sm transition-colors xl:px-2.5",
                 path === m.href ? "bg-surface-2 text-ink" : "text-muted hover:text-ink",
               )}
             >
@@ -101,7 +101,7 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <div className="ml-auto flex items-center gap-1">
+        <div className="ml-auto flex shrink-0 items-center gap-1 whitespace-nowrap">
           <Link
             href="/go-further"
             className={cn(

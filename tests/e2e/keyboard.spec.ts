@@ -70,6 +70,40 @@ test("ANOVA explorer: keyboard sliders keep SS(total) = SS(between) + SS(within)
   await expect(page.getByRole("img", { name: /Dot plot of three groups/ })).toHaveAttribute("aria-label", /F \d/);
 });
 
+test("variance lab: every chart can be driven from the keyboard, with text readouts", async ({ page }) => {
+  await page.goto("/variance");
+  // squares chart: choose respondent with arrow keys, move them with the slider
+  const respondents = page.getByRole("radiogroup", { name: "Respondent to move" });
+  await respondents.getByRole("radio", { name: "F" }).focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(respondents.getByRole("radio", { name: "E" })).toHaveAttribute("aria-checked", "true");
+  const slider = page.getByRole("slider", { name: "Books read by respondent E" });
+  await slider.focus();
+  for (let i = 0; i < 3; i++) await page.keyboard.press("ArrowRight");
+  await expect(slider).toHaveValue("12");
+  // books 2, 4, 5, 7, 12, 15: mean 7.5, SS 125.5, variance 25.1
+  await expect(page.getByRole("status").filter({ hasText: /^Respondent E/ })).toHaveText(/sum of squares 125\.5, variance 25\.1/);
+  await expect(page.getByRole("img", { name: /Six respondents' book counts/ })).toHaveAttribute("aria-label", /E 12/);
+
+  // residual squares: switch to your own line and tilt it
+  await page.getByRole("radio", { name: "Mean of Y for everyone" }).focus();
+  await page.keyboard.press("ArrowRight");
+  const tilt = page.getByRole("slider", { name: /Tilt of your line/ });
+  await tilt.focus();
+  await page.keyboard.press("End");
+  await expect(page.getByText(/^Your line leaves/)).toBeVisible();
+
+  // error demo and spread patterns
+  const errorSd = page.getByRole("slider", { name: /Size of the error/ });
+  await errorSd.focus();
+  await page.keyboard.press("Home");
+  await expect(errorSd).toHaveAttribute("aria-valuetext", "error SD 2 points");
+  await page.getByRole("button", { name: "Draw new samples" }).press("Enter");
+  await page.getByRole("radio", { name: "Constant spread" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByText(/This is heteroscedasticity/)).toBeVisible();
+});
+
 test("quiz: answer with the keyboard, hear the feedback, retry", async ({ page }) => {
   await page.goto("/review");
   const first = page.getByRole("group", { name: "Answer options" }).first().getByRole("button").first();

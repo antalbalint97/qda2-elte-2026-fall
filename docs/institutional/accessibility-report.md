@@ -7,7 +7,7 @@ WCAG; screen-reader and cognitive-accessibility testing with real users has not 
 
 | Check | Tool / method | Scope |
 | --- | --- | --- |
-| Automated rules | axe-core 4.11 via `@axe-core/playwright`, tags `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa` | All 13 public routes in light mode; 6 routes in dark mode and in presentation mode; quiz after answering |
+| Automated rules | axe-core 4.11 via `@axe-core/playwright`, tags `wcag2a, wcag2aa, wcag21a, wcag21aa, wcag22aa` | All 14 public routes in light mode; 7 routes in dark mode and in presentation mode; quiz after answering; `/variance` with every chart state revealed |
 | Keyboard | Playwright tests using only `Tab`, arrow keys and `Enter` | Skip link, focus indicators, sliders, segmented controls, transpose, quiz answers and retry, ordering task, correlation guess, mobile menu, presentation toggle |
 | Headings | Script: no skipped levels, exactly one `h1` per page | All routes |
 | Reflow | No page-level horizontal scrolling at 320 CSS px; mobile (Pixel 7), 1024 × 768 projector, 1280 × 720 at 150 % | All routes |
@@ -57,6 +57,13 @@ labels use text and ✓/✗ symbols.
 Limitations: scatterplots convey the *shape* of a relationship visually; the text alternative gives r but not the
 shape. The U-shape and monotonic examples describe the shape in the surrounding text. Drag-and-drop in the ordering
 task has a keyboard alternative (arrow buttons), but drag itself is mouse/touch only.
+
+Module 08 (`/variance`, added 21 October 2026) follows the same pattern: every chart has an `aria-label` with the key numbers, a
+polite live summary, numeric tiles and (for the squares and trust charts) a full data table. The draggable dots in the
+squares chart have a keyboard alternative (a respondent selector plus a slider), covered by a keyboard test. Meaning is
+never carried by colour alone: mean and median are marked with a ▲ and a labelled dashed line, the residual squares
+change from dashed (prediction = mean) to solid (a line), and the X/Y/Z role colours are used only for their roles.
+The charts are static SVG with no animation, so reduced motion needs no special handling.
 
 ## 4. Classroom presentation mode
 
