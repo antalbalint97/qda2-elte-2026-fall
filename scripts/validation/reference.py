@@ -91,6 +91,50 @@ out["anova"] = dict(groups=groups, ssb=ssb, ssw=ssw, sst=sst, dfb=2, dfw=8, f=fo
 # Overlap of two unit normals separated by d (Effect size module) -----------------------------
 out["overlap"] = [[dd, 2 * stats.norm.cdf(-dd / 2)] for dd in [0, 0.2, 0.5, 0.8, 1.5]]
 
+# 09 Building an Index: synthetic 1-5 answers of 120 respondents (scripts/indices/generate.py) -------
+import re  # noqa: E402
+
+src = (Path(__file__).resolve().parents[2] / "src/components/modules/indices/responses.ts").read_text()
+resp = np.array(json.loads(re.search(r"= (\[.*\]);", src).group(1)), dtype=float)
+
+
+def cronbach(m):
+    # covariance form, independent of the app's variance form: k/(k-1) * (1 - trace(C) / sum(C))
+    c = np.cov(m, rowvar=False, ddof=1)
+    k = m.shape[1]
+    return k / (k - 1) * (1 - np.trace(c) / c.sum())
+
+
+def reliability(m):
+    tot = m.sum(1)
+    rows = []
+    for j in range(m.shape[1]):
+        rest = tot - m[:, j]
+        rows.append(dict(
+            scaleMean=rest.mean(), scaleVar=rest.var(ddof=1),
+            itemTotal=stats.pearsonr(m[:, j], rest).statistic,
+            alphaIfDeleted=cronbach(np.delete(m, j, 1)) if m.shape[1] > 2 else None,
+        ))
+    return dict(alpha=cronbach(m), items=rows)
+
+
+rev = resp.copy()
+rev[:, [2, 4]] = 6 - rev[:, [2, 4]]
+forgot = resp.copy()
+forgot[:, 2] = 6 - forgot[:, 2]
+subsets = []
+for mask in range(1, 64):
+    cols = [j for j in range(6) if mask >> j & 1]
+    if len(cols) >= 2:
+        subsets.append([[bool(mask >> j & 1) for j in range(6)], cronbach(rev[:, cols])])
+idx = np.round(rev[:, :5].mean(1), 2)
+out["index"] = dict(
+    responses=resp.astype(int).tolist(),
+    raw=reliability(resp), six=reliability(rev), five=reliability(rev[:, :5]), forgotT5=reliability(forgot),
+    subsets=subsets,
+    indexScores=idx.tolist(), indexMean=idx.mean(),
+)
+
 # Spread, variance & error (module 08) ----------------------------------------------------------
 trust = {
     "consensus": [3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 7],

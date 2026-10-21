@@ -77,7 +77,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl 2xl:max-w-7xl items-center gap-4 px-4 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2 whitespace-nowrap font-semibold text-ink" onClick={() => setOpen(false)}>
           <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
             <rect x="2" y="2" width="20" height="20" rx="5" className="fill-accent" />
@@ -105,7 +105,7 @@ export function SiteHeader() {
           <Link
             href="/go-further"
             className={cn(
-              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium xl:block",
+              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium 2xl:block",
               path === "/go-further" ? "bg-warn-soft text-warn" : "text-muted hover:bg-surface-2 hover:text-ink",
             )}
           >
@@ -114,7 +114,7 @@ export function SiteHeader() {
           <Link
             href="/bonus/sopranos"
             className={cn(
-              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium xl:block",
+              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium 2xl:block",
               path === "/bonus/sopranos" ? "bg-surface-2 text-ink" : "text-muted hover:bg-surface-2 hover:text-ink",
             )}
           >

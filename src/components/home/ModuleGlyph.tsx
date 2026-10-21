@@ -62,6 +62,16 @@ export function ModuleGlyph({ slug }: { slug: string }) {
           <rect x="40" y="4" width="18" height="18" className="fill-ry/30 stroke-ry" />
         </svg>
       );
+    case "indices":
+      return (
+        <svg {...common}>
+          {[8, 15, 22, 29].map((y, i) => (
+            <line key={y} x1="6" x2={18 + [10, 14, 8, 12][i]} y1={y} y2={y} className="stroke-muted" strokeWidth="3" strokeLinecap="round" />
+          ))}
+          <path d="M34 18.5h8m-3-3 3 3-3 3" className="stroke-muted" fill="none" />
+          <circle cx="53" cy="18.5" r="6" className="fill-accent" />
+        </svg>
+      );
     default:
       return (
         <svg {...common}>

@@ -1116,3 +1116,218 @@ export const QUICK_REVIEW: Question[] = [
   qAnovaEta,
   qAnovaTwoWay,
 ];
+
+/* ---------------- 09 Building an index ---------------- */
+
+export const qIdxAlphaValidity: ChoiceQuestion = {
+  kind: "choice",
+  id: "i-alpha-validity",
+  concept: "index",
+  format: "Interpret alpha",
+  prompt:
+    "Five items reach Cronbach's alpha = .84. A classmate concludes: “So the index is a valid measure of political trust.” What does the .84 actually show?",
+  options: [
+    {
+      id: "valid",
+      label: "That the index measures political trust",
+      why: "Alpha cannot see what the items are about. Five items on, say, general optimism can move together just as well. Whether they measure political trust is decided by reading the items (validity), not by alpha.",
+    },
+    { id: "consistent", label: "That the items move together: respondents who score high on one tend to score high on the others" },
+    {
+      id: "share",
+      label: "That 84% of respondents answered consistently",
+      why: "Alpha is not a share of respondents. It compares the variance of the summed score with the variances of the items across the whole sample.",
+    },
+    {
+      id: "sig",
+      label: "That the index is statistically significant",
+      why: "Alpha is not a test and has no p-value. It describes internal consistency in this sample.",
+    },
+  ],
+  correct: "consistent",
+  explanation:
+    "Alpha measures internal consistency: how strongly the items go together. It is a necessary condition for averaging them, not proof that they measure the intended concept.",
+};
+
+export const qIdxForgotReverse: ChoiceQuestion = {
+  kind: "choice",
+  id: "i-forgot-reverse",
+  concept: "index",
+  format: "Read output",
+  prompt:
+    "In the Item-Total Statistics table one item has a Corrected Item-Total Correlation of −.41, while all others are between .45 and .60. What is the most likely reason?",
+  options: [
+    { id: "reverse", label: "The item is worded in the opposite direction and was not reverse-scored" },
+    {
+      id: "drop",
+      label: "The item measures something unrelated and should simply be deleted",
+      why: "An unrelated item gives a correlation near zero. A clearly negative one usually means it measures the same concept in the opposite direction: reverse it and it will fit.",
+    },
+    {
+      id: "missing",
+      label: "The item has many missing values",
+      why: "Missing values reduce the number of cases in the analysis, but they do not flip the sign of a correlation.",
+    },
+    {
+      id: "fine",
+      label: "Nothing: a strong correlation is good, whatever its sign",
+      why: "For an index, every item has to point the same way. A negative item cancels the others out in the sum and pulls alpha down.",
+    },
+  ],
+  correct: "reverse",
+  explanation:
+    "Negative item-total correlations are the signature of an item that runs the other way (agreeing means less of the concept). Recode it 1↔5, 2↔4 into a new variable and rerun the reliability analysis.",
+};
+
+export const qIdxWhichDrop: ChoiceQuestion = {
+  kind: "choice",
+  id: "i-which-drop",
+  concept: "index",
+  format: "Choose next step",
+  prompt: "Alpha with all six items is .66. Which item should you look at first?",
+  context: (
+    <MiniTable
+      head={["Item", "Corrected Item-Total r", "Alpha if Item Deleted"]}
+      rows={[
+        ["A", ".58", ".59"],
+        ["B", ".52", ".61"],
+        ["C", ".21", ".71"],
+        ["D", ".24", ".68"],
+        ["E", ".49", ".62"],
+        ["F", ".55", ".60"],
+      ]}
+    />
+  ),
+  options: [
+    {
+      id: "CD",
+      label: "Delete C and D together: both are below .25",
+      why: "Delete one item at a time. After C is gone every number in the table changes, and D may fit well enough among the remaining items.",
+    },
+    { id: "C", label: "C: deleting it gives the highest alpha, and its item-total r is below .25" },
+    {
+      id: "A",
+      label: "A: it has the highest item-total correlation",
+      why: "A high item-total correlation means the item fits well. Deleting A would lower alpha to .59.",
+    },
+    {
+      id: "none",
+      label: "None: .66 is acceptable",
+      why: "By the usual rule of thumb .66 is only questionable; .70 is the lower limit of acceptable.",
+    },
+  ],
+  correct: "C",
+  explanation:
+    "Pick the single item whose deletion raises alpha the most, check that its item-total correlation is also weak, delete it, and rerun. Repeat while a deletion still helps and at least three items remain.",
+};
+
+export const qIdxHighAlpha: ChoiceQuestion = {
+  kind: "choice",
+  id: "i-high-alpha",
+  concept: "index",
+  format: "Interpret alpha",
+  prompt: "A ten-item index reaches alpha = .96. What is the sensible reaction?",
+  options: [
+    {
+      id: "great",
+      label: "Perfect, the higher the better",
+      why: "Very high alpha often means some items ask nearly the same question in different words. They add length, not information.",
+    },
+    { id: "check", label: "Check the items for redundancy: some may be near-duplicates" },
+    {
+      id: "error",
+      label: "It must be a calculation error, alpha cannot be that high",
+      why: "Alpha can be anywhere up to 1 (and even below 0). .96 is possible; it is just a reason to look at the items.",
+    },
+  ],
+  correct: "check",
+  explanation:
+    "Above about .90, ask whether the items cover different aspects of the concept or merely repeat one. A good index spans the concept, it does not repeat one question ten times.",
+};
+
+export const qIdxSameScore: ChoiceQuestion = {
+  kind: "choice",
+  id: "i-same-score",
+  concept: "index",
+  format: "Interpret index",
+  prompt: "Respondent A answers 3, 3, 3, 3 on four items; respondent B answers 1, 5, 1, 5. Both get the index score 3.00. What follows?",
+  options: [
+    {
+      id: "same",
+      label: "Their attitudes are identical",
+      why: "Only their average is identical. A is consistently in the middle; B agrees strongly with half the items and rejects the others.",
+    },
+    { id: "lost", label: "The index has lost information: different answer patterns are summarised by the same number" },
+    {
+      id: "wrong",
+      label: "B's index score must be wrong",
+      why: "The calculation is correct. Losing this detail is not a mistake but the built-in cost of data reduction.",
+    },
+  ],
+  correct: "lost",
+  explanation:
+    "Every data reduction trades detail for a single, more valid and reliable number. A pattern like B's is also a hint to check whether the items really measure one concept.",
+};
+
+export const qIdxRelative: ChoiceQuestion = {
+  kind: "choice",
+  id: "i-relative",
+  concept: "index",
+  format: "Categorise",
+  prompt:
+    "A 1–5 trust index has a sample mean of 3.9. Respondent K scores 3.3. Absolute limits are 1–2.49 / 2.50–3.50 / 3.51–5; relative limits are mean ± 0.5. Where does K go?",
+  options: [
+    {
+      id: "both-mid",
+      label: "Middle category in both versions",
+      why: "Relative limits centre on the sample mean: 3.9 ± 0.5 runs from 3.4 to 4.4. K's 3.3 is below that, so K is in the lowest relative category.",
+    },
+    { id: "mixed-below", label: "Absolute: middle (around neutral). Relative: below the sample average" },
+    {
+      id: "both-low",
+      label: "Lowest category in both versions",
+      why: "On the absolute scale 3.3 lies in 2.50–3.50, the band around the neutral answer 3: that is the middle category.",
+    },
+  ],
+  correct: "mixed-below",
+  explanation:
+    "Absolute categories read the scale's own meaning (3 = neutral). Relative categories compare respondents with each other. In a trusting sample, someone neutral is ‘below average’, so name categories accordingly.",
+};
+
+export const INDEX_PIPELINE: OrderQuestion = {
+  kind: "order",
+  id: "i-pipeline",
+  concept: "index",
+  format: "Order steps",
+  prompt: "Put the steps of building an index in SPSS in the correct order.",
+  items: [
+    {
+      id: "freq",
+      label: "Run Frequencies on the items and set codes such as ‘don't know’ as missing.",
+      why: "Codes like 8 or 9 are not answers on a 1–5 scale. Left in, they would distort every variance and correlation that follows.",
+    },
+    {
+      id: "rev",
+      label: "Reverse-score the items worded in the opposite direction (Recode into Different Variables).",
+      why: "Alpha only makes sense once all items point the same way; otherwise opposite items cancel each other out.",
+    },
+    {
+      id: "alpha",
+      label: "Run Reliability Analysis and delete weak items one at a time while alpha still rises (keep at least three).",
+      why: "Item selection is done on the reversed items, before any index exists.",
+    },
+    {
+      id: "mean",
+      label: "Compute the index as the mean of the remaining items and label what high values mean.",
+      why: "Only now is the final item set known, so only now can the index be computed.",
+    },
+    {
+      id: "cat",
+      label: "If needed, recode the index into categories (absolute, relative or percentile limits) and compare missing counts.",
+      why: "Categories are cut from the finished index, and the missing count must match so no case falls between limits.",
+    },
+  ],
+  initial: ["mean", "alpha", "cat", "freq", "rev"],
+  explanation:
+    "Clean, align, select, compute, categorise. Each step needs the output of the previous one.",
+};

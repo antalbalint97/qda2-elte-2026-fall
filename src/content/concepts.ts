@@ -14,7 +14,8 @@ export type ConceptId =
   | "t-test-output"
   | "effect-size"
   | "anova"
-  | "variance";
+  | "variance"
+  | "index";
 
 export interface ConceptMeta {
   label: string;
@@ -118,5 +119,11 @@ export const CONCEPTS: Record<ConceptId, ConceptMeta> = {
     href: "/variance#understand",
     definition:
       "Means and medians describe the centre, not how much cases differ. Variance is the average squared deviation from the mean (sum of squares ÷ (n − 1)); its square root, the SD, is in the original unit. Residuals are deviations from a prediction (a group mean or a line); their spread is the error, it drives the standard error, and when it changes with X the data are heteroscedastic.",
+  },
+  index: {
+    label: "Building an index",
+    href: "/indices#try",
+    definition:
+      "An index averages several items that measure the same latent concept. Items worded the other way are reverse-scored first; Cronbach's alpha (internal consistency, not validity) guides which items to keep, one deletion at a time, with at least three items; the mean of the kept items is the index, and it can be cut into categories with absolute, relative (mean ± h) or percentile limits.",
   },
 };

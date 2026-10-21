@@ -84,6 +84,10 @@ The `/anova` module reproduces the 11-observation variance decomposition from th
 
 The `/variance` module (08) builds intuition for why averages are not enough: four synthetic groups with the same mean and median but different distributions, a mean-versus-median slider, variance drawn as squares (variance = area of the average square, SD = its side), residual squares around the mean, a user-tilted line and the least-squares line (r² as the share accounted for), a simulation of the error term and the standard error, and a visual first look at heteroscedasticity. Its data and helpers live in `src/components/modules/variance/data.ts` and `src/lib/stats.ts` and are checked against SciPy in `tests/unit`.
 
+## Building an index
+
+The `/indices` module (09) turns the QDA1 data-reduction material into a lab: why several items beat one question (and what averaging throws away), reverse-scoring, Cronbach's alpha with item-total statistics, deleting items one at a time, and cutting the index into absolute, relative or percentile categories. Its 120 respondents are synthetic (`scripts/indices/generate.py`, seeded); `scripts/validation/reference.py` recomputes every alpha independently (covariance form) for the unit tests in `tests/unit/indices.test.ts`.
+
 ## Adding questions
 
 Add a `ChoiceQuestion` or `OrderQuestion` to `src/content/questions.tsx`. Every wrong option should carry a `why` that names the exact conceptual mistake; `explanation` says why the right answer is right. Add it to `QUICK_REVIEW` to include it in the mixed quiz.
