@@ -101,6 +101,11 @@ export default function VariancePage() {
         <div className="space-y-6">
           <ResidualSquares />
           <TexBlock>{String.raw`\underbrace{\sum (y_i-\bar{y})^2}_{\text{total}} \;=\; \underbrace{\sum (\hat{y}_i-\bar{y})^2}_{\text{accounted for}} \;+\; \underbrace{\sum (y_i-\hat{y}_i)^2}_{\text{residual}}`}</TexBlock>
+          <p className="text-sm text-muted">
+            This split holds when the predictions ŷ come from the least-squares line (or, in ANOVA, from the group
+            means). For any other tilt of &ldquo;your line&rdquo; the two parts no longer add up to the total, which is one
+            more reason the best line is the one we use.
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
             <Callout title="You have seen this split before: ANOVA">
               In <Link href="/anova#try" className="text-accent underline">one-way ANOVA</Link> the prediction for each
