@@ -80,6 +80,10 @@ X, Y and Z have fixed colours across the whole site (blue, orange, purple).
 
 The `/anova` module reproduces the 11-observation variance decomposition from the teaching video, derives SST, SSW, SSB, MS, F and eta squared, and provides an interactive slider-driven dot plot. It also revisits row percentages, chi-square / Cramér's V and Pearson / Spearman before the ANOVA, and clarifies the distinction between one-way, two-way and stratified analysis. Its simulation is illustrative and does not make new empirical claims. SPSS syntax and output remain the reference for inference.
 
+## Building an index
+
+The `/indices` module (09) turns the QDA1 data-reduction material into a lab: why several items beat one question (and what averaging throws away), reverse-scoring, Cronbach's alpha with item-total statistics, deleting items one at a time, and cutting the index into absolute, relative or percentile categories. Its 120 respondents are synthetic (`scripts/indices/generate.py`, seeded); `scripts/validation/reference.py` recomputes every alpha independently (covariance form) for the unit tests in `tests/unit/indices.test.ts`.
+
 ## Adding questions
 
 Add a `ChoiceQuestion` or `OrderQuestion` to `src/content/questions.tsx`. Every wrong option should carry a `why` that names the exact conceptual mistake; `explanation` says why the right answer is right. Add it to `QUICK_REVIEW` to include it in the mixed quiz.

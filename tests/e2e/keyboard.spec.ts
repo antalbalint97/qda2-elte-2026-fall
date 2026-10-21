@@ -70,6 +70,35 @@ test("ANOVA explorer: keyboard sliders keep SS(total) = SS(between) + SS(within)
   await expect(page.getByRole("img", { name: /Dot plot of three groups/ })).toHaveAttribute("aria-label", /F \d/);
 });
 
+test("index lab: build the index and cut it into categories from the keyboard", async ({ page }) => {
+  await page.goto("/indices");
+  const status = page.getByRole("status").filter({ hasText: /alpha|correlates/ });
+  await expect(status).toHaveText(/T3 correlates negatively/);
+  for (const id of ["T3", "T5"]) {
+    const b = page.getByRole("button", { name: `Reverse-score ${id}` });
+    await b.focus();
+    await page.keyboard.press("Enter");
+    await expect(b).toHaveAttribute("aria-pressed", "true");
+  }
+  // all six aligned: alpha .690, and T6 is the item to look at
+  await expect(page.getByRole("img", { name: /Cronbach's alpha 0\.690: questionable/ })).toBeVisible();
+  await expect(status).toHaveText(/Deleting T6 would raise alpha to 0\.782/);
+  await page.getByRole("button", { name: "Delete T6" }).press("Enter");
+  await expect(status).toHaveText(/^Done: alpha is acceptable/);
+  // the three-item minimum
+  await page.getByRole("button", { name: "Delete T1" }).press("Enter");
+  await page.getByRole("button", { name: "Delete T2" }).press("Enter");
+  await expect(page.getByRole("button", { name: "Delete T4" })).toBeDisabled();
+
+  await page.getByRole("radio", { name: "Absolute" }).focus();
+  await page.keyboard.press("ArrowRight");
+  const h = page.getByRole("slider", { name: "Half-width h" });
+  await h.focus();
+  await page.keyboard.press("End");
+  await expect(h).toHaveAttribute("aria-valuetext", "plus or minus 1.0");
+  await expect(page.getByRole("img", { name: /Histogram of the index with relative categories/ })).toBeVisible();
+});
+
 test("quiz: answer with the keyboard, hear the feedback, retry", async ({ page }) => {
   await page.goto("/review");
   const first = page.getByRole("group", { name: "Answer options" }).first().getByRole("button").first();

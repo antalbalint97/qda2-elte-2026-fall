@@ -85,6 +85,15 @@ export const MODULES: ModuleMeta[] = [
     blurb: "Derive sums of squares, F and eta squared by hand, then change the data interactively.",
     chain: [1, 3, 4, 5, 6, 7, 8],
   },
+  {
+    slug: "indices",
+    href: "/indices",
+    number: "09",
+    title: "Building an Index",
+    short: "Index",
+    blurb: "From several survey items to one number: reverse-scoring, Cronbach's alpha, item selection and categories.",
+    chain: [1, 3, 6, 7],
+  },
 ];
 
 export const REVIEW_TOPICS = [
@@ -97,4 +106,5 @@ export const REVIEW_TOPICS = [
   { id: "pearson", label: "Pearson vs Spearman", href: "/correlation#choose" },
   { id: "ttest", label: "t-test selection", href: "/t-tests#understand" },
   { id: "anova", label: "ANOVA by hand", href: "/anova#try" },
+  { id: "index", label: "Index and Cronbach's alpha", href: "/indices#try" },
 ] as const;
