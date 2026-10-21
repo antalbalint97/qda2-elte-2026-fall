@@ -9,18 +9,40 @@ import { linearSample, monotonicSample, rhoSample, uShapeSample } from "../../sr
 import { COUNTS } from "../../src/components/modules/crosstab/data";
 import { EXPLORER, SCENARIOS, type Pattern } from "../../src/components/modules/lazarsfeld/data";
 import {
+  BOOK_RANGE,
+  BOOKS,
+  errorDanceSamples,
+  errorSd,
+  INCOMES,
+  NEWS,
+  NINTH_INCOME,
+  POP,
+  REPEATS,
+  simulateSample,
+  SPREAD_N,
+  SPREAD_SEED,
+  spreadByThird,
+  TRUST_GROUPS,
+} from "../../src/components/modules/variance/data";
+import {
   chiSquareTest,
   fP,
   formatP,
+  linearFit,
+  median,
   normalCdf,
   normalPdf,
   pBoundaryNote,
   pearson,
+  sd,
   simulateNullT,
   spearman,
+  ssAroundLine,
+  sumOfSquares,
   tCdf,
   tCritical,
   tTwoTailedP,
+  variance,
 } from "../../src/lib/stats";
 
 const REF = JSON.parse(readFileSync(new URL("./fixtures/reference.json", import.meta.url), "utf8"));
@@ -269,5 +291,101 @@ describe("07 ANOVA", () => {
       close(r.within, base.within * spread ** 2, 1e-10);
       close(r.between, base.between, 1e-10);
     }
+  });
+});
+
+describe("08 Spread, variance & error", () => {
+  test("teaching data are the ones checked against SciPy", () => {
+    for (const g of TRUST_GROUPS) assert.deepEqual(g.values, REF.variance.trust[g.id].values, g.id);
+    assert.deepEqual(BOOKS, REF.variance.books.values);
+    assert.deepEqual(NEWS, { x: REF.variance.news.x, y: REF.variance.news.y });
+  });
+  test("four groups: same n, mean and median, different SD (the page's claim)", () => {
+    const sds = TRUST_GROUPS.map((g) => {
+      assert.equal(g.values.length, 20);
+      assert.equal(mean(g.values), 5, `${g.id} mean`);
+      assert.equal(median(g.values), 5, `${g.id} median`);
+      assert.ok(g.values.every((v) => Number.isInteger(v) && v >= 0 && v <= 10));
+      return sd(g.values);
+    });
+    assert.ok(sds[0] < 1 && sds[2] > 4, "consensus SD under 1, polarised SD about 4");
+    assert.equal(new Set(sds.map((v) => v.toFixed(2))).size, 4, "all SDs differ");
+  });
+  test("income slider: the median never moves, the mean rises with the ninth income", () => {
+    let prev = -Infinity;
+    for (const v of range(NINTH_INCOME.min, NINTH_INCOME.max, NINTH_INCOME.step)) {
+      const xs = [...INCOMES, v];
+      assert.equal(median(xs), 390);
+      assert.ok(mean(xs) > prev);
+      prev = mean(xs);
+    }
+    assert.ok(mean([...INCOMES, NINTH_INCOME.max]) > Math.max(...INCOMES), "at the top, 8 of 9 people earn less than the mean");
+  });
+  test("squares chart: deviations sum to zero and variance = SS / (n − 1) for every slider position", () => {
+    for (let i = 0; i < BOOKS.length; i++) {
+      for (let v = BOOK_RANGE.min; v <= BOOK_RANGE.max; v++) {
+        const xs = BOOKS.map((b, k) => (k === i ? v : b));
+        const m = mean(xs);
+        close(xs.reduce((a, x) => a + (x - m), 0), 0, 1e-12, `deviations ${i}=${v}`);
+        close(variance(xs), sumOfSquares(xs) / 5, 1e-12);
+        close(sd(xs) ** 2, variance(xs), 1e-12);
+        // the average square must fit inside the chart's reserved area (SD ≤ 11 books)
+        assert.ok(sd(xs) <= 11, `SD ${sd(xs)} at ${i}=${v}`);
+      }
+    }
+  });
+  test("residual squares: the best line leaves the least area of any tilt; slope 0 leaves the total", () => {
+    const f = linearFit(NEWS.x, NEWS.y);
+    const mx = mean(NEWS.x);
+    const my = mean(NEWS.y);
+    const sxx = sumOfSquares(NEWS.x);
+    for (const b of range(-2, 8, 0.1)) {
+      const ss = ssAroundLine(NEWS.x, NEWS.y, b, my - b * mx);
+      assert.ok(ss >= f.ssResidual - 1e-9, `slope ${b}`);
+      // SS(b) = SS residual + (b − b̂)² Σ(x − x̄)²
+      close(ss, f.ssResidual + (b - f.slope) ** 2 * sxx, 1e-10, `decomposition at ${b}`);
+    }
+    close(ssAroundLine(NEWS.x, NEWS.y, 0, my), f.ssTotal, 1e-12);
+    assert.ok(f.r2 > 0.8 && f.r2 < 0.85, "page describes about 82% accounted for");
+  });
+  test("error demo: the standard error predicts the sample-to-sample wobble of the slope", () => {
+    // 2,000 samples with n = 30, error SD 10: the SD of the fitted slopes ≈ average SE
+    const slopes: number[] = [];
+    const ses: number[] = [];
+    for (let seed = 1; seed <= 2000; seed++) {
+      const s = simulateSample(30, 10, seed);
+      const f = linearFit(s.x, s.y);
+      slopes.push(f.slope);
+      ses.push(f.seSlope);
+    }
+    close(mean(slopes), POP.slope, 0.01, "slopes centre on the population slope");
+    const ratio = sd(slopes) / mean(ses);
+    assert.ok(ratio > 0.93 && ratio < 1.07, `SD of slopes / mean SE = ${ratio}`);
+  });
+  test("error demo: residual SD tracks the error SD; every slider position prints an unambiguous p", () => {
+    for (const sigma of range(2, 30, 1)) {
+      for (const n of range(10, 200, 10)) {
+        const samples = errorDanceSamples(n, sigma, 1);
+        assert.equal(samples.length, REPEATS);
+        const f = samples[0].fit;
+        assert.ok(Number.isFinite(f.t) && Number.isFinite(f.seSlope));
+        assertUnambiguous(f.p, `sigma=${sigma} n=${n}`);
+        if (n >= 100) close(f.residualSd, sigma, 0.2, `residual SD at sigma=${sigma} n=${n}`);
+      }
+    }
+  });
+  test("spread patterns: same average error, constant vs funnel-shaped residuals", () => {
+    const xs = range(0, POP.xMax, 0.01);
+    for (const p of ["constant", "grows", "shrinks"] as const) close(mean(xs.map((x) => errorSd(p, x))), 10, 1e-3, p);
+    const thirds = Object.fromEntries(
+      (["constant", "grows", "shrinks"] as const).map((p) => {
+        const s = simulateSample(SPREAD_N, 10, SPREAD_SEED, p);
+        return [p, spreadByThird(s.x, linearFit(s.x, s.y).residuals)];
+      }),
+    );
+    const ratio = (t: number[]) => t[2] / t[0];
+    assert.ok(ratio(thirds.constant) > 0.75 && ratio(thirds.constant) < 1.33, `constant ${ratio(thirds.constant)}`);
+    assert.ok(ratio(thirds.grows) > 2, `grows ${ratio(thirds.grows)}`);
+    assert.ok(ratio(thirds.shrinks) < 0.5, `shrinks ${ratio(thirds.shrinks)}`);
   });
 });

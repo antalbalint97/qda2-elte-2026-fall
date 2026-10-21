@@ -1,6 +1,6 @@
 # QDA2 Interactive Lab
 
-An interactive study companion for **Quantitative Data Analysis 2**: measurement levels, crosstabs, the Lazarsfeld paradigm, p-values, correlation, t-tests and a worked ANOVA mathematics lab.
+An interactive study companion for **Quantitative Data Analysis 2**: measurement levels, crosstabs, the Lazarsfeld paradigm, p-values, correlation, t-tests, a worked ANOVA mathematics lab and a visual lab on spread, variance and error terms.
 
 > Understand the logic. Practice the decisions. Read the output.
 
@@ -79,6 +79,10 @@ X, Y and Z have fixed colours across the whole site (blue, orange, purple).
 ## ANOVA mathematics lab
 
 The `/anova` module reproduces the 11-observation variance decomposition from the teaching video, derives SST, SSW, SSB, MS, F and eta squared, and provides an interactive slider-driven dot plot. It also revisits row percentages, chi-square / Cramér's V and Pearson / Spearman before the ANOVA, and clarifies the distinction between one-way, two-way and stratified analysis. Its simulation is illustrative and does not make new empirical claims. SPSS syntax and output remain the reference for inference.
+
+## Spread, variance & error lab
+
+The `/variance` module (08) builds intuition for why averages are not enough: four synthetic groups with the same mean and median but different distributions, a mean-versus-median slider, variance drawn as squares (variance = area of the average square, SD = its side), residual squares around the mean, a user-tilted line and the least-squares line (r² as the share accounted for), a simulation of the error term and the standard error, and a visual first look at heteroscedasticity. Its data and helpers live in `src/components/modules/variance/data.ts` and `src/lib/stats.ts` and are checked against SciPy in `tests/unit`.
 
 ## Building an index
 

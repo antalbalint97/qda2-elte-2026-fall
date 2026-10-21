@@ -14,6 +14,7 @@ export type ConceptId =
   | "t-test-output"
   | "effect-size"
   | "anova"
+  | "variance"
   | "index";
 
 export interface ConceptMeta {
@@ -112,6 +113,12 @@ export const CONCEPTS: Record<ConceptId, ConceptMeta> = {
     href: "/anova#try",
     definition:
       "One-way ANOVA splits the total sum of squares into a between-group part (group means around the grand mean) and a within-group part (observations around their own group mean). F = MS between / MS within; η² = SS between / SS total describes the share of variation associated with group membership, not a causal effect.",
+  },
+  variance: {
+    label: "Spread, variance and error",
+    href: "/variance#understand",
+    definition:
+      "Means and medians describe the centre, not how much cases differ. Variance is the average squared deviation from the mean (sum of squares ÷ (n − 1)); its square root, the SD, is in the original unit. Residuals are deviations from a prediction (a group mean or a line); their spread is the error, it drives the standard error, and when it changes with X the data are heteroscedastic.",
   },
   index: {
     label: "Building an index",

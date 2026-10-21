@@ -15,7 +15,7 @@ environment, **O** needs the owner's dashboard/credentials or institutional acce
 | Charts | Hand-written SVG components (`src/components/viz`, module folders); no charting library | V |
 | Maths | KaTeX, rendered to HTML + MathML at build time (`src/components/learning/Tex.tsx`) | V |
 | Package manager / build | npm with `package-lock.json` (lockfile v3); `next build` | V |
-| Rendering | All 17 routes are prerendered static pages (`○ (Static)` in the build output) | V |
+| Rendering | All 18 routes are prerendered static pages (`○ (Static)` in the build output) | V |
 | Server-side code | None at runtime: no API routes, no middleware, no server actions, no database | V |
 | Client-side code | Interactive components (sliders, quizzes, simulations) run in the browser; statistics in `src/lib/stats.ts` | V |
 | Environment variables | Only `NODE_ENV` and the optional build-time `EMBED_ALLOWED_ORIGINS` (new). No secrets are needed | V |

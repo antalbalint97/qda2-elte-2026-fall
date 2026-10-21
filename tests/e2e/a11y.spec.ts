@@ -18,7 +18,7 @@ for (const route of ROUTES) {
   });
 }
 
-for (const route of ["/", "/crosstabs", "/p-values", "/anova", "/indices", "/bonus/sopranos", "/privacy"]) {
+for (const route of ["/", "/crosstabs", "/p-values", "/anova", "/variance", "/indices", "/bonus/sopranos", "/privacy"]) {
   test(`axe: ${route} (dark)`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(route, { waitUntil: "networkidle" });
@@ -64,6 +64,17 @@ test("axe: index lab with every chart state revealed", async ({ page }) => {
   await page.getByRole("button", { name: "Delete T6" }).click();
   await page.getByRole("button", { name: "Reveal how the items were designed" }).click();
   await page.getByRole("radio", { name: "Percentiles" }).click();
+  await page.waitForTimeout(300);
+  expect(await scan(page)).toEqual([]);
+});
+
+test("axe: variance lab with every chart state revealed", async ({ page }) => {
+  await page.goto("/variance", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Reveal the answers" }).click();
+  await page.getByRole("button", { name: "Show ±1 SD" }).click();
+  await page.getByRole("radio", { name: "Average square" }).click();
+  await page.getByRole("radio", { name: "Your line" }).click();
+  await page.getByRole("radio", { name: "Spread grows with X" }).click();
   await page.waitForTimeout(300);
   expect(await scan(page)).toEqual([]);
 });

@@ -13,6 +13,8 @@ import {
   hedgesG,
   independentT,
   leveneTest,
+  linearFit,
+  mean,
   median,
   normalCdf,
   oneSampleT,
@@ -22,9 +24,12 @@ import {
   sd,
   skewness,
   spearman,
+  ssAroundLine,
+  sumOfSquares,
   tCdf,
   tCritical,
   tTwoTailedP,
+  variance,
 } from "../../src/lib/stats";
 
 const REF = JSON.parse(readFileSync(new URL("./fixtures/reference.json", import.meta.url), "utf8"));
@@ -193,5 +198,49 @@ describe("SPSS-style p formatting", () => {
     const p = tTwoTailedP(2.06, 24);
     assert.equal(formatP(p), "= .050");
     assert.ok(p > 0.05, "the decision uses the unrounded p");
+  });
+});
+
+describe("spread, variance and least-squares line match SciPy", () => {
+  const V = REF.variance;
+  test("variance (n − 1), SD, median and skewness of the four trust groups", () => {
+    for (const [name, g] of Object.entries<{ values: number[]; mean: number; median: number; var: number; sd: number; skew: number }>(V.trust)) {
+      close(mean(g.values), g.mean, 1e-12, `${name} mean`);
+      assert.equal(median(g.values), g.median, `${name} median`);
+      close(variance(g.values), g.var, 1e-12, `${name} variance`);
+      close(sd(g.values), g.sd, 1e-12, `${name} sd`);
+      close(skewness(g.values), g.skew, 1e-10, `${name} skewness`);
+    }
+  });
+  test("sum of squares and variance of the books example", () => {
+    close(sumOfSquares(V.books.values), V.books.ss, 1e-12, "SS");
+    close(variance(V.books.values), V.books.var, 1e-12, "variance");
+    close(Math.sqrt(variance(V.books.values)), V.books.sd, 1e-12, "sd");
+  });
+  test("linearFit equals scipy.stats.linregress (slope, intercept, r, SE, p)", () => {
+    const N = V.news;
+    const f = linearFit(N.x, N.y);
+    close(f.slope, N.slope, 1e-12, "slope");
+    close(f.intercept, N.intercept, 1e-12, "intercept");
+    close(Math.sqrt(f.r2), N.r, 1e-12, "r");
+    close(f.seSlope, N.seSlope, 1e-12, "SE of slope");
+    close(f.p, N.p, 1e-8, "p");
+    close(f.ssTotal, N.ssTotal, 1e-12, "SS total");
+    close(f.ssResidual, N.ssResidual, 1e-12, "SS residual");
+    close(f.residualSd, N.residualSd, 1e-12, "residual SD");
+    assert.equal(f.df, N.x.length - 2);
+  });
+  test("analytical identities: residuals sum to zero, slope t equals correlation t, SS around a line", () => {
+    const N = V.news;
+    const f = linearFit(N.x, N.y);
+    close(f.residuals.reduce((a, e) => a + e, 0), 0, 1e-10, "sum of residuals");
+    close(f.r2, pearson(N.x, N.y) ** 2, 1e-12, "r² = Pearson r²");
+    close(f.p, correlationP(pearson(N.x, N.y), N.x.length), 1e-10, "slope test = correlation test");
+    close(ssAroundLine(N.x, N.y, f.slope, f.intercept), f.ssResidual, 1e-12, "SS around the fitted line");
+    close(ssAroundLine(N.x, N.y, 0, mean(N.y)), f.ssTotal, 1e-12, "SS around the mean");
+  });
+  test("a constant variable gives zero variance", () => {
+    assert.equal(variance([4, 4, 4]), 0);
+    assert.equal(sumOfSquares([4, 4, 4]), 0);
   });
 });
