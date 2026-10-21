@@ -18,7 +18,7 @@ for (const route of ROUTES) {
   });
 }
 
-for (const route of ["/", "/crosstabs", "/p-values", "/anova", "/bonus/sopranos", "/privacy"]) {
+for (const route of ["/", "/crosstabs", "/p-values", "/anova", "/indices", "/bonus/sopranos", "/privacy"]) {
   test(`axe: ${route} (dark)`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(route, { waitUntil: "networkidle" });
@@ -55,4 +55,15 @@ test("reduced-motion preference disables animations", async ({ page }) => {
   await page.goto("/correlation");
   const duration = await page.locator(".animate-draw, .animate-fade-up").first().evaluate((el) => getComputedStyle(el).animationDuration).catch(() => "0.00001s");
   expect(parseFloat(duration)).toBeLessThan(0.01);
+});
+
+test("axe: index lab with every chart state revealed", async ({ page }) => {
+  await page.goto("/indices", { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Reverse-score T3" }).click();
+  await page.getByRole("button", { name: "Reverse-score T5" }).click();
+  await page.getByRole("button", { name: "Delete T6" }).click();
+  await page.getByRole("button", { name: "Reveal how the items were designed" }).click();
+  await page.getByRole("radio", { name: "Percentiles" }).click();
+  await page.waitForTimeout(300);
+  expect(await scan(page)).toEqual([]);
 });

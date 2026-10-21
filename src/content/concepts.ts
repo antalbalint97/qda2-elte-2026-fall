@@ -13,7 +13,8 @@ export type ConceptId =
   | "t-test-choice"
   | "t-test-output"
   | "effect-size"
-  | "anova";
+  | "anova"
+  | "index";
 
 export interface ConceptMeta {
   label: string;
@@ -111,5 +112,11 @@ export const CONCEPTS: Record<ConceptId, ConceptMeta> = {
     href: "/anova#try",
     definition:
       "One-way ANOVA splits the total sum of squares into a between-group part (group means around the grand mean) and a within-group part (observations around their own group mean). F = MS between / MS within; η² = SS between / SS total describes the share of variation associated with group membership, not a causal effect.",
+  },
+  index: {
+    label: "Building an index",
+    href: "/indices#try",
+    definition:
+      "An index averages several items that measure the same latent concept. Items worded the other way are reverse-scored first; Cronbach's alpha (internal consistency, not validity) guides which items to keep, one deletion at a time, with at least three items; the mean of the kept items is the index, and it can be cut into categories with absolute, relative (mean ± h) or percentile limits.",
   },
 };
