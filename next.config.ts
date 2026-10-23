@@ -11,6 +11,15 @@ if (embed.rejected.length) {
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Short lab addresses used in the V2 prototypes and early handouts.
+  async redirects() {
+    return [
+      { source: "/lab/sampling", destination: "/lab/sampling-universe", permanent: true },
+      { source: "/lab/ttest", destination: "/lab/ttest-lab", permanent: true },
+      { source: "/lab/ci", destination: "/lab/ci-explorer", permanent: true },
+      { source: "/lab/survey-weighting", destination: "/lab/survey-weighting-studio", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

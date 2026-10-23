@@ -1,6 +1,7 @@
 // Maturity of each laboratory, recorded as separate dimensions. None of them implies another, and only
 // a lab with every dimension checked may be called pilot-ready (brief §13: "Do not mark untested
 // laboratories as pilot-ready"). Update a flag only together with the evidence it names.
+import { isImplemented } from "./implemented-labs";
 import { LABS } from "./labs";
 
 export interface LabMaturity {
@@ -20,10 +21,21 @@ export interface LabMaturity {
 
 const NONE: LabMaturity = { integrated: false, numericallyValidated: false, accessibilityChecked: false, teachingReviewed: false, pilotReady: false, public: false };
 
-const STATUS: Record<string, Partial<LabMaturity>> = {};
+/**
+ * Evidence-backed flags per lab. `integrated` is derived from IMPLEMENTED_LABS; the others are set only
+ * when the named test exists and passes:
+ *   numericallyValidated → tests/unit (engine.test.ts / survey.test.ts) covers every statistic the lab shows
+ *   accessibilityChecked → tests/e2e/labs.spec.ts runs axe (WCAG 2.2 AA tags) and a keyboard pass on the lab
+ */
+const STATUS: Record<string, Partial<LabMaturity>> = {
+  // describe/fit/anova on the VRA scenarios: engine.test.ts "VRA base scenario", reference.json (SciPy)
+  "vra-lab": { numericallyValidated: true },
+  // independentT/pairedT/oneSampleT/Levene/g: engine.test.ts "t-test lab numbers vs the SciPy fixture"
+  "ttest-lab": { numericallyValidated: true },
+};
 
 export function labMaturity(id: string): LabMaturity {
-  return { ...NONE, ...(STATUS[id] ?? {}) };
+  return { ...NONE, ...(STATUS[id] ?? {}), integrated: isImplemented(id) };
 }
 
 export const LAB_STATUS: Record<string, LabMaturity> = Object.fromEntries(LABS.map((l) => [l.id, labMaturity(l.id)]));

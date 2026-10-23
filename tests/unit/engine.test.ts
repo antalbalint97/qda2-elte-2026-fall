@@ -15,6 +15,8 @@ import * as C from "../../src/lib/engine/calculus";
 import { fmt, fmtP } from "../../src/lib/engine/format";
 
 const REF = JSON.parse(readFileSync(new URL("./fixtures/reference-v3.json", import.meta.url), "utf8"));
+// The original SciPy fixture (scripts/validation/reference.py) used by tests/unit/stats.test.ts.
+const REF1 = JSON.parse(readFileSync(new URL("./fixtures/reference.json", import.meta.url), "utf8"));
 
 function close(actual: number | null | undefined, expected: number, tol: number, label = "") {
   assert.ok(actual !== null && actual !== undefined && Number.isFinite(actual), `${label}: got ${actual}, expected ${expected}`);
@@ -135,6 +137,25 @@ describe("categorical and correlation vs SciPy", () => {
     close(r.equal?.ci?.[1], t.eqCI[1], 1e-7, "Student CI");
     assert.equal(I.oneSampleT([4, 4, 4], 3).t, null);
     assert.equal(I.independentT([1], [2, 3]).welch, null);
+  });
+  test("t-test lab numbers vs the SciPy fixture: both rows, Levene, one-sample, paired, Hedges' g", () => {
+    const T = REF1.ttests;
+    const r = I.independentT(T.a, T.b);
+    close(r.equal?.t, T.equal.t, 1e-10, "Student t");
+    assert.equal(r.equal?.df, T.equal.df);
+    close(r.equal?.p, T.equal.p, 1e-8, "Student p");
+    close(r.welch?.df, T.welch.df, 1e-10, "Welch df");
+    close(r.welch?.p, T.welch.p, 1e-8, "Welch p");
+    close(r.levene.F, T.levene.f, 1e-10, "Levene F");
+    close(r.levene.p, T.levene.p, 1e-8, "Levene p");
+    close(r.g, T.hedgesG, 1e-12, "Hedges g");
+    const o = I.oneSampleT(T.a, T.mu0);
+    close(o.t, T.oneSample.t, 1e-10, "one-sample t");
+    close(o.p, T.oneSample.p, 1e-8, "one-sample p");
+    const pr = I.pairedT(T.pre, T.post);
+    close(pr.t, T.paired.t, 1e-10, "paired t");
+    assert.equal(pr.df, T.paired.df);
+    close(pr.p, T.paired.p, 1e-8, "paired p");
   });
 });
 
