@@ -301,3 +301,27 @@ test("keyboard: PCA Studio rotates the probe to PC1, flags a Heywood case, edits
   await page.keyboard.press("Enter");
   await expect(page.getByTestId("kmeans-step")).toContainText("Lloyd step 2/");
 });
+
+test("keyboard: Math Studio moves x₀ on the tangent, flags the kink, steps down the SSE bowl and finds the likelihood maximum", async ({ page }) => {
+  await page.goto("/lab/math-studio" + hash({ topic: "derivative", fn: "abs", x0: 0.1 }), { waitUntil: "networkidle" });
+  const x0 = page.locator("svg").getByRole("slider", { name: "Point x₀" });
+  await expect(x0).toHaveAttribute("aria-valuenow", "0.1");
+  await x0.focus();
+  await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowLeft");
+  await expect(x0).toHaveAttribute("aria-valuenow", "0");
+  await expect(page.getByRole("status").filter({ hasText: "kink" })).toBeVisible();
+  await page.goto("/lab/math-studio" + hash({ topic: "integral", fn: "normal", lo: -1.96, hi: 1.96, nRect: 200, rule: "mid" }), { waitUntil: "networkidle" });
+  await expect(page.getByText("0.950004").first()).toBeVisible();
+  await page.goto("/lab/math-studio" + hash({ topic: "bowl", ba: 10, bb: 2 }), { waitUntil: "networkidle" });
+  await expect(page.getByText("18,445.00", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Gradient step (exact line search)" }).click();
+  await expect(page.getByText("18,445.00", { exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Jump to the minimum (normal equations)" }).click();
+  await expect(page.getByText("516.81").first()).toBeVisible();
+  await page.goto("/lab/math-studio" + hash({ topic: "likelihood", k: 7, n: 10, p: 0.5 }), { waitUntil: "networkidle" });
+  const p = page.locator("svg").getByRole("slider", { name: "Candidate p" });
+  await p.focus();
+  for (let i = 0; i < 4; i++) await page.keyboard.press("Shift+ArrowRight");
+  await expect(p).toHaveAttribute("aria-valuenow", "0.7");
+});
