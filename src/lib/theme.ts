@@ -7,6 +7,9 @@ export const STORAGE_KEYS = {
   theme: THEME_KEY,
   presentation: PRESENT_KEY,
   sopranosNotes: "qda2-sopranos-notes-v1",
+  lessonAnswers: "qda2-student-progress-v1",
+  courseDrafts: "qda2-course-drafts-v1",
+  atlasPending: "qda2-atlas-pending",
 } as const;
 
 /**

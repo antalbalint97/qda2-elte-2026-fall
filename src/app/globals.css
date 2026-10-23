@@ -34,6 +34,18 @@
   --y-ink: #9a4d10;
   --z-ink: #6b3fae;
   --grid: #ebe8e1;
+  /* Lab semantic roles (V3): model/fit, observed data, residual/error, explained variation, attention.
+     The *-ink shades are for text (AA on surface); the base colours are for marks. --x/--y/--z stay as is. */
+  --model: #20bfa9;
+  --model-ink: #0b7a6b;
+  --data: #548fd0;
+  --data-ink: #2f66a6;
+  --residual: #ed896f;
+  --residual-ink: #b14f35;
+  --explained: #9688e8;
+  --explained-ink: #5e4fc0;
+  --attention: #d9a441;
+  --attention-ink: #7d5a10;
 }
 
 .dark {
@@ -65,6 +77,16 @@
   --y-ink: var(--y);
   --z-ink: var(--z);
   --grid: #222731;
+  --model: #3fd4be;
+  --model-ink: #5fe0cc;
+  --data: #7aa9e3;
+  --data-ink: #93bbee;
+  --residual: #f39b84;
+  --residual-ink: #f6ae9a;
+  --explained: #ab9ff0;
+  --explained-ink: #bdb3f4;
+  --attention: #e5b35a;
+  --attention-ink: #ecc47c;
 }
 
 @theme inline {
@@ -96,6 +118,16 @@
   --color-ry-ink: var(--y-ink);
   --color-rz-ink: var(--z-ink);
   --color-grid: var(--grid);
+  --color-model: var(--model);
+  --color-model-ink: var(--model-ink);
+  --color-data: var(--data);
+  --color-data-ink: var(--data-ink);
+  --color-residual: var(--residual);
+  --color-residual-ink: var(--residual-ink);
+  --color-explained: var(--explained);
+  --color-explained-ink: var(--explained-ink);
+  --color-attention: var(--attention);
+  --color-attention-ink: var(--attention-ink);
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif4), ui-serif, Georgia, serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
@@ -270,4 +302,32 @@ input[type="range"].range::-moz-range-thumb {
 }
 .sopranos .paper-grain {
   background-image: repeating-linear-gradient(0deg, transparent 0 27px, rgb(126 38 32 / 0.06) 27px 28px);
+}
+
+/* Lab geometry motion (V3 HANDOFF §6): SVG geometry animates via CSS; dragging switches to a short linear
+   transition; reduced motion and presentation mode disable it (see the rules above). */
+.lab-tr {
+  transition:
+    transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+    x 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+    y 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+    width 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+    height 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.3s;
+}
+.lab-fast {
+  transition:
+    transform 0.06s linear,
+    x 0.06s linear,
+    y 0.06s linear,
+    width 0.06s linear,
+    height 0.06s linear,
+    opacity 0.3s;
+}
+.lab-handle:focus-visible {
+  outline: none;
+}
+.lab-handle:focus-visible > :first-child {
+  stroke: var(--ink);
+  stroke-width: 3;
 }

@@ -10,6 +10,9 @@ const LABELS: Record<keyof typeof STORAGE_KEYS, string> = {
   theme: "Light / dark theme choice",
   presentation: "Presentation mode setting",
   sopranosNotes: "Notes typed in the Sopranos bonus lab",
+  lessonAnswers: "Predictions, reflections and quiz answers typed in course lessons",
+  courseDrafts: "Course drafts made in the Course Builder (authoring deployments only)",
+  atlasPending: "A block picked in the Concept Atlas to add in the Course Builder",
 };
 
 // Snapshots are re-read on every render, which each action below triggers.
@@ -114,7 +117,7 @@ export function LocalDataControls() {
             <p className="text-sm text-ink">
               {confirming === "progress"
                 ? "Clear all quiz answers, streaks and self-ratings in this browser? This cannot be undone."
-                : "Delete progress, notes and display settings stored by this site in this browser? The page will reload. This cannot be undone."}
+                : "Delete progress, notes, lesson answers, course drafts and display settings stored by this site in this browser? The page will reload. This cannot be undone."}
             </p>
             <div className="mt-3 flex flex-wrap gap-3">
               <Button variant="primary" onClick={confirming === "progress" ? clearProgress : clearAll}>

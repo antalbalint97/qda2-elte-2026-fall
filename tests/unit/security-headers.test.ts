@@ -53,3 +53,18 @@ describe("EMBED_ALLOWED_ORIGINS parsing", () => {
     assert.deepEqual(parseEmbedOrigins("  ").origins, []);
   });
 });
+
+test("webR pages add only WebAssembly compilation, blob workers and the webR package repository", () => {
+  const plain = contentSecurityPolicy();
+  const r = contentSecurityPolicy({ webr: true });
+  assert.doesNotMatch(plain, /wasm-unsafe-eval|repo\.r-wasm\.org/);
+  assert.match(r, /script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'/);
+  assert.doesNotMatch(r, /'unsafe-eval'/);
+  assert.match(r, /connect-src 'self' https:\/\/repo\.r-wasm\.org/);
+  assert.match(r, /worker-src 'self' blob:/);
+  assert.match(r, /frame-ancestors 'none'/);
+  // only the R worker's own script response gets 'unsafe-eval' (Emscripten's loader for R's shared libraries)
+  const w = contentSecurityPolicy({ webr: "worker" });
+  assert.match(w, /script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'/);
+  assert.match(w, /connect-src 'self' https:\/\/repo\.r-wasm\.org/);
+});

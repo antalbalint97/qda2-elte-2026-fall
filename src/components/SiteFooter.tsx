@@ -1,6 +1,9 @@
 import Link from "next/link";
 
 const LINKS = [
+  { href: "/labs", label: "Labs" },
+  { href: "/atlas", label: "Concept Atlas" },
+  { href: "/r", label: "R in the browser" },
   { href: "/about", label: "About" },
   { href: "/privacy", label: "Privacy & local data" },
   { href: "/review", label: "Quick review" },

@@ -18,6 +18,8 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      // the webR runtime copied from node_modules by scripts/copy-webr.mjs
+      "public/webr/**",
     ],
   },
 ];

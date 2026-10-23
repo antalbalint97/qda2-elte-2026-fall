@@ -6,7 +6,22 @@ export interface HeaderOptions {
   embedOrigins?: string[];
   /** Development needs 'unsafe-eval' for React Refresh; production never gets it. */
   dev?: boolean;
+  /**
+   * true for pages that run browser R (webR): WebAssembly compilation ('wasm-unsafe-eval', not 'unsafe-eval'),
+   * the self-hosted worker, and package downloads from the webR package repository only. "worker" for the webR
+   * runtime files: the same plus 'unsafe-eval', which Emscripten's dynamic linker needs to load R's shared
+   * libraries. A same-origin dedicated worker is governed by the CSP of its own script response, so this
+   * reaches only the R worker (no DOM, no cookies); the pages keep a CSP without 'unsafe-eval'.
+   */
+  webr?: boolean | "worker";
 }
+
+/** The only package source browser R may contact (binary R packages built for WebAssembly). */
+export const WEBR_REPO = "https://repo.r-wasm.org";
+/** Routes whose pages contain browser R blocks; only these get the webR CSP additions. */
+export const WEBR_ROUTES = ["/r", "/course/:path*"];
+/** The self-hosted webR runtime (worker script, WebAssembly, R's virtual file system). */
+export const WEBR_RUNTIME_ROUTE = "/webr/:path*";
 
 /**
  * Parses EMBED_ALLOWED_ORIGINS (comma- or space-separated). Only exact https origins are accepted
@@ -33,24 +48,24 @@ export function parseEmbedOrigins(raw: string | undefined): { origins: string[];
   return { origins, rejected };
 }
 
-export function contentSecurityPolicy({ embedOrigins = [], dev = false }: HeaderOptions = {}): string {
+export function contentSecurityPolicy({ embedOrigins = [], dev = false, webr = false }: HeaderOptions = {}): string {
   const directives: Record<string, string[]> = {
     "default-src": ["'self'"],
     // Next.js streams page data through inline <script> tags and the theme script runs before paint.
     // Nonces would force every page to render dynamically, so inline scripts stay allowed but no
     // third-party script origin is.
-    "script-src": ["'self'", "'unsafe-inline'", ...(dev ? ["'unsafe-eval'"] : [])],
+    "script-src": ["'self'", "'unsafe-inline'", ...(dev || webr === "worker" ? ["'unsafe-eval'"] : []), ...(webr ? ["'wasm-unsafe-eval'"] : [])],
     // Inline style attributes are used by charts and KaTeX.
     "style-src": ["'self'", "'unsafe-inline'"],
     "img-src": ["'self'", "data:", "blob:"],
     "font-src": ["'self'", "data:"],
-    "connect-src": ["'self'", ...(dev ? ["ws:"] : [])],
+    "connect-src": ["'self'", ...(dev ? ["ws:"] : []), ...(webr ? [WEBR_REPO] : [])],
     "media-src": ["'self'"],
     "object-src": ["'none'"],
     "base-uri": ["'self'"],
     "form-action": ["'self'"],
     "frame-src": ["'none'"],
-    "worker-src": ["'self'"],
+    "worker-src": ["'self'", ...(webr ? ["blob:"] : [])],
     "manifest-src": ["'self'"],
     "frame-ancestors": embedOrigins.length ? ["'self'", ...embedOrigins] : ["'none'"],
   };
