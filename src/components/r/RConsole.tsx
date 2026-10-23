@@ -86,7 +86,7 @@ export function RConsole() {
               type="button"
               aria-pressed={lang === l}
               onClick={() => setLang(l)}
-              className={cn("rounded-md border px-2.5 py-1 font-mono text-xs uppercase", lang === l ? "border-accent bg-accent text-white" : "border-line text-muted hover:text-ink")}
+              className={cn("rounded-md border px-2.5 py-1 font-mono text-xs uppercase", lang === l ? "border-accent bg-accent text-accent-ink" : "border-line text-muted hover:text-ink")}
             >
               {l}
             </button>

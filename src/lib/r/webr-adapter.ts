@@ -73,6 +73,11 @@ export function refuseCode(code: string): string | null {
   if (code.length > LIMITS.codeChars) return `code is longer than ${LIMITS.codeChars} characters`;
   return null;
 }
+/** True when the code loads or calls the package (library/require/requireNamespace or pkg::), so a block only downloads what its current code uses. */
+export function usesPackage(code: string, pkg: string): boolean {
+  const p = pkg.replace(/[.]/g, "\\.");
+  return new RegExp(`(library|require|requireNamespace)\\s*\\(\\s*["']?${p}["']?\\s*[,)]|\\b${p}:::?`).test(code.replace(/#.*$/gm, ""));
+}
 export const isAllowedPackage = (p: string): p is AllowedPackage => (ALLOWED_PACKAGES as readonly string[]).includes(p);
 
 type Listener = (s: RStatus, detail?: string) => void;
@@ -198,8 +203,9 @@ class RRuntime {
     } catch (e) {
       return emptyResult({ refused: `R could not be started: ${e instanceof Error ? e.message : String(e)}` });
     }
-    if (opts.packages?.length) {
-      const err = await this.installPackages(opts.packages);
+    const packages = (opts.packages ?? []).filter((p) => usesPackage(code, p));
+    if (packages.length) {
+      const err = await this.installPackages(packages);
       if (err) return emptyResult({ refused: err });
     }
     for (const ds of opts.datasets ?? []) {

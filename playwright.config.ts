@@ -19,6 +19,8 @@ export default defineConfig({
     command: `npx next start -p ${PORT}`,
     url: `http://localhost:${PORT}/`,
     reuseExistingServer: !process.env.CI,
+    // the Course Builder is served only where authoring is enabled (src/lib/authoring.ts)
+    env: { QDA2_AUTHORING: "local" },
     timeout: 60_000,
   },
   projects: [

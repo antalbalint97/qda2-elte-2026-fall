@@ -29,8 +29,8 @@ Local e2e needs `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium` (an optional overri
 | M2 Lab framework + first five labs | done |
 | M3–M5 Remaining fifteen labs | done (15 of 15; all 20 labs implemented) |
 | M6 Browser R (webR) | done (survey package install BLOCKED in the sandbox: repo.r-wasm.org denied) |
-| M7 Atlas, Course Builder, snapshots | not started |
-| M8 Lesson renderer + Survey acceptance scenario | not started |
+| M7 Atlas, Course Builder, snapshots | done |
+| M8 Lesson renderer + Survey acceptance scenario | done (survey-package step BLOCKED in the sandbox, covered in CI) |
 | M9 Hardening, docs, PR | not started |
 
 ## M1 — Foundation
@@ -189,6 +189,69 @@ installed" (PASS). `tests/unit/webr-adapter.test.ts` covers limits, allow-list a
 webR's CommonJS build in the server bundle, harmless) · check-build PASS · e2e Chromium 221 passed, 1 skipped
 (survey, BLOCKED), 1 failed (the known sandbox-only framing test).
 
+## M7 — Concept Atlas, Course Builder, snapshots
+
+- **Course model** (`src/lib/course/model.ts`): a course is units → lessons → block instances. Each instance is
+  a library reference plus an optional variant (config, locked controls, instructions, notes, body/prompt, R
+  config, question picks); `effective()` merges the two and sanitises lab configs through the lab's
+  `LabDefinition` (rejected keys are recorded, not silently dropped). `buildSnapshot()` makes `qda2-snapshot/2`:
+  every block the course uses is embedded with its library version, concept cards, question items and datasets
+  (≤ 5000 rows), and the whole snapshot is deep-frozen. Versions are 1.0.0, then minor bumps.
+- **Validation** (`validate.ts`): imports are size-limited (2 MB), schema-checked (`qda2-course/2`), and refused
+  with reasons for unknown blocks, duplicate ids, bad slugs, markup or `javascript:` in text, packages outside
+  the allow-list, prototype keys and malformed variants.
+- **Published registry** (`src/content/published/`): `course.survey/1.0.0.json` was generated from the
+  template by `scripts/course/publish-template.ts` (refuses to overwrite). `LOCK.json` holds its SHA-256 and
+  `published.test.ts` fails if a published file changes. Its review state is **not-reviewed**, so every page
+  of it shows a notice; the Builder's "Published" status only lights up for an `approved-for-pilot` version.
+- **Concept Atlas** (`/atlas`): domain columns, search, conceptual/pedagogical views, level filter,
+  prerequisite edges, detail panel with focus management and hash links. With authoring on, "Add to Course
+  Builder" hands the concept to the Builder.
+- **Course Builder** (`/builder`): local-first drafts in `localStorage` (`qda2-course-drafts-v1`), statuses
+  "Draft — saved in this browser" / "Exported — course JSON generated" / "Published — reviewed version
+  available through the deployed application", outline editing (keyboard: buttons and Alt+arrows), library
+  search, inspector (lab parameters from the lab definition, locked controls, R code in CodeMirror, expected
+  output, question picks), course-local blocks, JSON import/export, snapshot versions, student and
+  presentation preview. **Access**: `/builder` returns 404 unless `NODE_ENV=development` or the server sets
+  `QDA2_AUTHORING=local` (a deployment switch, not authentication). It never writes server-side content;
+  publishing a version is a reviewed pull request that adds a JSON file and its hash.
+
+## M8 — Lesson renderer and the Survey acceptance scenario
+
+- `/course/[courseId]` and `/course/[courseId]/[unitId]/[lessonId]` render published snapshots only (`?v=`
+  selects a version; unknown course, lesson or version is a 404). Blocks: concept, math (`$$…$$` via KaTeX, lazily
+  loaded), dataset (provenance, preview, CSV), prediction/reflection (saved in this browser only,
+  `qda2-student-progress-v1`, with export and delete), lab (configured, locked controls, "Reset to the lesson's
+  preset", open full lab), R (webR, loaded only when the student presses Run; R state is cleared between
+  lessons), assessment (multiple choice and ordering, graded deterministically by `grading.ts`; free text is
+  never graded).
+- Lesson `s14l0` "Sampling, Weights and Statistical Inference" was reworked for the scenario: the weighting
+  block is now the Survey Weighting Studio preset to a stratified, disproportionate sample of 120 with design
+  and allocation locked; the R block computes the Hájek mean, SE and DEff on `trust_survey`, with the expected
+  output from R 4.3.3 + survey 4.2.1 (mean 5.4308, SE 0.1822, DEff 2.387; unweighted 5.478).
+- `tests/e2e/acceptance-survey.spec.ts`: instructor (add a lesson to the Survey Statistics draft → concept with
+  own text, prediction, Survey Weighting Studio configured and locked, math, own R block, knowledge check →
+  reorder → student preview → snapshot version → export JSON, checked block by block → the status returns to
+  Draft after an edit while the snapshot keeps the old title) and student (published lesson, no account →
+  prediction kept across a reload → locked lab → R run and Reset code → wrong and right answers with feedback →
+  reset the lab preset → export the answers as a file → delete them, gone after a reload → next lesson). JSON
+  re-import is covered by `course-model.test.ts` (round trip and refusals with reasons).
+
+**Checks** (production build, Chromium, `E2E_NO_WEBR_REPO=1`):
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| Acceptance, instructor workflow | PASS | |
+| Acceptance, student workflow | PASS | R step uses base R `weighted.mean` (5.430833) |
+| Acceptance, student R with `survey` | BLOCKED | repo.r-wasm.org denied in the sandbox; runs in CI (asserts `trust 5.43083 0.18221 2.3872`) |
+| axe WCAG 2.2 AA, light and dark: atlas (2 views), `/r`, course overview, lesson, builder (lesson + inspector, library) | PASS | dark mode needed `text-accent-ink` on accent buttons |
+| Atlas keyboard path, atlas → builder hand-off, 404/version routing, builder 404 without `QDA2_AUTHORING` (unit) | PASS | |
+| Lesson pages without an R block load nothing from `/webr/` | PASS | |
+| `npm run lint` / `typecheck` / `check-build` | PASS | |
+| `npm run test:unit` | PASS | 338/338 |
+| Full e2e (Chromium) | FAIL 241/243 | 1 skipped (survey, BLOCKED), 1 failed: the known sandbox-only framing test (see baseline) |
+| Firefox / WebKit | BLOCKED | not installed |
+
 ## Deviations from the V3 package
 
 | Item | Prototype | Production | Why |
@@ -219,3 +282,7 @@ webR's CommonJS build in the server bundle, harmless) · check-build PASS · e2e
 | Categorical lab | tile boundaries not draggable; `keep` param unused | boundaries draggable with keep-N or keep-margins; preset tables size the table unless `rows`/`cols` are set | lab spec interaction |
 | Expected Value lab | histogram counted draws by value (two outcomes with the same x collided); E marker drawn over the x labels | counts by outcome index (`sampleDiscrete().index`); marker below the labels; `hideE` + prediction | correctness and legibility |
 | Correlation & Regression, binary view | y axis relabelled 0–1 while the points stayed on the 0–100 scale | left axis y, right axis P̂(y = 1); separation is reported with what to change | the relabelled axis misread the data |
+| Lesson `s14l0` weighting block | `l.sds-stages` (Survey Design Studio, stages view) | `l.sws-weights` (Survey Weighting Studio, stratified disproportionate n = 120, design and allocation locked) | the acceptance scenario is about weights; the design studio block did not show them |
+| Concept prerequisites in lessons | advisory "you may need X first" | not built; the Atlas shows prerequisite edges | time; no grading depends on it |
+| Course Builder access | always available in the prototype | 404 unless development or `QDA2_AUTHORING=local` on the server | no institutional sign-in yet; the brief forbids a public authoring tool and client-side passwords |
+| Course content language | EN/HU | UI EN/HU; lesson content English with a note in HU mode | the template content is English only |

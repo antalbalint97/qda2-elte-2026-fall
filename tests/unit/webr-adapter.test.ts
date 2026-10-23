@@ -31,3 +31,9 @@ test("withTimeout resolves with the result, or with the fallback once time is up
   assert.equal(await withTimeout(slow, 20, () => (fired++, -1)), -1);
   assert.equal(fired, 1);
 });
+
+test("a block downloads a package only when its current code uses it", async () => {
+  const { usesPackage } = await import("../../src/lib/r/webr-adapter");
+  for (const code of ["library(survey)", "library( 'survey' )", 'require("survey")', "des <- survey::svydesign(~1, data = d)", "requireNamespace('survey', quietly = TRUE)"]) assert.equal(usesPackage(code, "survey"), true, code);
+  for (const code of ["mean(x)", "# library(survey)", "surveyed <- 1", "library(surveyx)", "my_survey::f()"]) assert.equal(usesPackage(code, "survey"), false, code);
+});

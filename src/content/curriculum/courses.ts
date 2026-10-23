@@ -1001,34 +1001,46 @@ export const COURSE_TEMPLATES: CourseTemplate[] = [
       },
       "blocks": [
        {
-        "ref": "c.inclusion-weights"
+        "ref": "c.inclusion-weights",
+        "variant": {
+         "body": "In a probability sample every unit k of the population has a known, nonzero chance of being selected: its inclusion probability πₖ. The design fixes πₖ before any data are collected; it is not estimated from the sample.\n\nThe design (base) weight is dₖ = 1/πₖ. A respondent with πₖ = 1/50 stands for 50 population units. Under simple random sampling every πₖ = n/N, so all weights are equal and weighting changes nothing. Under a disproportionate stratified design, units in oversampled strata have larger πₖ and therefore smaller weights.\n\nWeights correct for the unequal selection probabilities that the design itself created. On their own they cannot repair coverage error or nonresponse."
+        }
        },
        {
         "ref": "p.representative",
         "variant": {
-         "prompt": "Before you touch the design: if you switch from SRS to a cluster design with the same n, will the standard error of the mean go up, down or stay? Write your prediction and one reason."
+         "prompt": "Before you open the lab: the sample below takes the same number of people from each education group, although the tertiary group is only a fifth of the population and scores highest. Will the unweighted sample mean be above, below or close to the true population mean? Write your prediction and one reason."
         }
        },
        {
-        "ref": "l.sds-stages",
+        "ref": "l.sws-weights",
         "variant": {
          "config": {
-          "design": "twostage",
+          "stage": 4,
+          "design": "stratified",
           "n": 120,
-          "a": 6,
-          "m": 10
+          "allocation": "disproportionate"
          },
          "locked": [
-          "stages"
+          "design",
+          "allocation"
          ],
-         "instructions": "Switch between SRS, stratified and two-stage with n fixed. Record the design SE and deff for each; click a PSU to trace one unit's π."
+         "instructions": "The design is fixed: a stratified sample of 120 with equal allocation, so the small tertiary group is oversampled. Select three sampled units from different groups and write down πₖ and dₖ = 1/πₖ for each. Then go to the Estimates stage and compare the unweighted, HT and Hájek means with Ȳ."
         }
        },
        {
-        "ref": "m.ht-hajek"
+        "ref": "m.ht-hajek",
+        "variant": {
+         "body": "The Horvitz–Thompson estimator of the population total weights each sampled value by its design weight:\n\n$$\\hat{Y}_{HT} = \\sum_{k \\in s} \\frac{y_k}{\\pi_k} = \\sum_{k \\in s} d_k\\, y_k$$\n\nDividing by the known population size N gives the HT mean. The Hájek estimator divides by the estimated population size, the sum of the weights, instead:\n\n$$\\bar{y}_{H} = \\frac{\\sum_{k \\in s} d_k\\, y_k}{\\sum_{k \\in s} d_k}$$\n\nHT is exactly unbiased over repeated samples. Hájek is a ratio: approximately unbiased in large samples and usually more stable when the number of respondents is random (cluster designs, nonresponse). With equal weights both reduce to the ordinary sample mean."
+        }
        },
        {
-        "ref": "rc.weighted-mean"
+        "ref": "rc.weighted-mean",
+        "variant": {
+         "config": {
+          "expected": "mean ≈ 5.43 with SE ≈ 0.18 and DEff ≈ 2.4; the unweighted mean is ≈ 5.48. Values from R 4.3.3 with the survey package on the same synthetic rows."
+         }
+        }
        },
        {
         "ref": "a.survey-variance"
@@ -1036,7 +1048,7 @@ export const COURSE_TEMPLATES: CourseTemplate[] = [
        {
         "ref": "r.weighting-limits",
         "variant": {
-         "prompt": "Your R output and the lab agreed on the SE. Explain in three sentences what the design-based SE assumes that the naive s/√n does not, and when the two would coincide."
+         "prompt": "Your R output reports a design-based SE and a design effect above 2. Explain in three sentences what the design-based SE takes into account that the naive s/√n does not, and when the two would coincide."
         }
        }
       ]
