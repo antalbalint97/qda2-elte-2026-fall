@@ -176,3 +176,8 @@ def clean(o):
 path = Path(__file__).resolve().parents[2] / "tests/unit/fixtures/reference.json"
 path.write_text(json.dumps(clean(out), indent=1) + "\n")
 print(f"wrote {path}")
+
+# V3 engine references (studentised range, noncentral t, OLS diagnostics, logit, PCA, …) live in their own file.
+import runpy  # noqa: E402
+
+runpy.run_path(str(Path(__file__).resolve().parent / "reference_v3.py"), run_name="__main__")

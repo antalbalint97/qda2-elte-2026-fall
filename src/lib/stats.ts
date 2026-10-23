@@ -41,7 +41,7 @@ export function normalCdf(x: number, mu = 0, sigma = 1): number {
   return 0.5 * (1 + erf((x - mu) / (sigma * Math.SQRT2)));
 }
 
-function logGamma(x: number): number {
+export function logGamma(x: number): number {
   const c = [
     76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155,
     0.1208650973866179e-2, -0.5395239384953e-5,
@@ -127,7 +127,7 @@ export function tCritical(df: number, alpha = 0.05): number {
 }
 
 /** Lower regularized gamma P(a, x). */
-function gammaP(a: number, x: number): number {
+export function gammaP(a: number, x: number): number {
   if (x <= 0) return 0;
   const gln = logGamma(a);
   if (x < a + 1) {
