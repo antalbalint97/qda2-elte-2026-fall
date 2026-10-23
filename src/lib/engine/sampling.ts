@@ -218,8 +218,9 @@ export function ciInterval(P: ClusteredPopulation, o: CiOptions, rand: Rand, cri
   }
   if (nn < 2) return null;
   const s = Math.sqrt(ssAround(ys, m) / (nn - 1));
+  // a sample with no spread (e.g. all 0 or all 1 from a binary population) gives a zero-width interval; it is
+  // kept, not dropped, so coverage is not conditioned on positive sample variance
   const seSrs = s / Math.sqrt(nn);
-  if (!(seSrs > 0)) return null;
   if (o.design === "cluster") {
     const byC = new Map<number, number[]>();
     ys.forEach((y, i) => {

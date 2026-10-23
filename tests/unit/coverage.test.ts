@@ -69,6 +69,12 @@ describe("coverage simulations (finite population N = 2000, 50 clusters)", () =>
     assert.ok(wil.cover / wil.count >= wal.cover / wal.count - 0.005, `wilson ${wil.cover / wil.count} wald ${wal.cover / wal.count}`);
     assert.ok(Math.abs(wil.cover / wil.count - 0.95) < 0.025);
   });
+  test("samples without spread are kept as zero-width intervals (binary population, t method, n = 5)", () => {
+    const P = makeClusteredPopulation("binary", 2000, 20261023);
+    const r = coverageSimulation(P, { n: 5, level: 0.95, method: "t", design: "srs" }, 2000, rng(42));
+    assert.equal(r.count, 2000);
+    assert.ok(r.cover < r.count, `coverage ${r.cover}/${r.count}`);
+  });
   test("deterministic for a seed", () => {
     const P = makeClusteredPopulation("bimodal", 2000, 5);
     const a = ciInterval(P, { n: 30, level: 0.9, method: "t", design: "cluster" }, rng(3));
