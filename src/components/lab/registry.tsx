@@ -28,6 +28,7 @@ export const LAB_COMPONENTS: Record<ImplementedLabId, ComponentType<LabProps>> =
   "survey-design-studio": dynamic(() => import("./labs/survey-design-studio/SurveyDesignStudio"), { loading: Loading, ssr: false }),
   "weighting-calibration-lab": dynamic(() => import("./labs/weighting-calibration-lab/WeightingCalibrationLab"), { loading: Loading, ssr: false }),
   "complex-survey-lab": dynamic(() => import("./labs/complex-survey-lab/ComplexSurveyLab"), { loading: Loading, ssr: false }),
+  "measurement-index-lab": dynamic(() => import("./labs/measurement-index-lab/MeasurementIndexLab"), { loading: Loading, ssr: false }),
 };
 
 /** Renders a lab by id (used by /lab/[labId], lessons and the Course Builder preview). */

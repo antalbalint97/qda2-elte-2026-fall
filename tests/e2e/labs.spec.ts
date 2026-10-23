@@ -250,3 +250,24 @@ test("keyboard: Complex Survey Lab switches views, gates BRR and exports R code"
   await page.goto("/lab/complex-survey-lab" + hash({ view: "test" }), { waitUntil: "networkidle" });
   await expect(page.getByTestId("rao-scott")).toContainText("F =");
 });
+
+test("keyboard: Measurement & Index Lab toggles items, moves thresholds and hides alpha until predicted", async ({ page }) => {
+  await page.goto("/lab/measurement-index-lab", { waitUntil: "networkidle" });
+  const items = page.getByTestId("item-table");
+  await expect(items).toContainText("T3 (R)");
+  await page.getByRole("checkbox", { name: "include T6" }).focus();
+  await page.keyboard.press("Space");
+  await expect(items).not.toContainText("T6");
+  await expect(page.getByText("0.782").first()).toBeVisible();
+  await page.goto("/lab/measurement-index-lab" + hash({ view: "index" }), { waitUntil: "networkidle" });
+  const t1 = page.getByRole("slider", { name: "Threshold 1" });
+  await expect(t1).toHaveAttribute("aria-valuenow", "2.5");
+  await t1.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(t1).toHaveAttribute("aria-valuenow", "2.55");
+  await page.goto("/lab/measurement-index-lab" + hash({ hideAlpha: true }), { waitUntil: "networkidle" });
+  await expect(page.getByRole("button", { name: "Reveal α" })).toBeDisabled();
+  await page.getByLabel("Your prediction of α").fill("0.8");
+  await page.getByRole("button", { name: "Reveal α" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "your guess" })).toContainText("α = 0.690");
+});
