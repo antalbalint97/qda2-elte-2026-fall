@@ -96,12 +96,13 @@ test("prototype URLs redirect to the lab routes", async ({ page }) => {
   }
 });
 
-test("unimplemented labs are not routed and are labelled honestly on /labs", async ({ page }) => {
+test("unknown lab ids are not routed; /labs links every lab and claims no pilot readiness", async ({ page }) => {
   const r = await page.goto("/lab/pca-studio");
   expect(r?.status()).toBe(404);
   await page.goto("/labs", { waitUntil: "networkidle" });
-  await expect(page.getByText("Not yet available").first()).toBeVisible();
+  await expect(page.getByText("Not yet available")).toHaveCount(0);
   await expect(page.getByText(/pilot-ready/i)).toHaveCount(0);
+  for (const route of LAB_ROUTES.filter((x) => x.startsWith("/lab/"))) await expect(page.locator(`a[href="${route}"]`).first()).toBeVisible();
 });
 
 test("keyboard: CI Explorer draws and reports coverage without a mouse", async ({ page }) => {
@@ -324,4 +325,24 @@ test("keyboard: Math Studio moves x₀ on the tangent, flags the kink, steps dow
   await p.focus();
   for (let i = 0; i < 4; i++) await page.keyboard.press("Shift+ArrowRight");
   await expect(p).toHaveAttribute("aria-valuenow", "0.7");
+});
+
+test("keyboard: Model Diagnostics Studio moves the influential point, toggles HC3 and shows VIF", async ({ page }) => {
+  await page.goto("/lab/model-diagnostics-studio" + hash({ scenario: "outlier" }), { waitUntil: "networkidle" });
+  const table = page.getByTestId("coef-table");
+  await expect(table).not.toContainText("SE HC3");
+  const before = await table.locator("tbody tr").nth(1).locator("td").nth(1).innerText();
+  const handle = page.getByRole("slider", { name: "Point 1 (y)" });
+  await expect(handle).toHaveAttribute("aria-valuenow", "18");
+  await handle.focus();
+  for (let i = 0; i < 10; i++) await page.keyboard.press("Shift+ArrowUp");
+  await expect(handle).toHaveAttribute("aria-valuenow", "68");
+  await expect(table.locator("tbody tr").nth(1).locator("td").nth(1)).not.toHaveText(before);
+  await page.getByRole("checkbox", { name: "Show HC3 (robust) standard errors" }).check();
+  await expect(table).toContainText("SE HC3");
+  await page.getByRole("button", { name: "Undo point edits" }).click();
+  await expect(handle).toHaveAttribute("aria-valuenow", "18");
+  await page.getByRole("radio", { name: "Collinear pair" }).click();
+  await expect(table).toContainText("VIF");
+  await expect(page.getByTestId("bp-test")).toContainText("df 2");
 });

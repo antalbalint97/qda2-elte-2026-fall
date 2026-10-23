@@ -59,6 +59,7 @@ const STATUS: Record<string, Partial<LabMaturity>> = {
   "measurement-index-lab": { numericallyValidated: true, accessibilityChecked: true },
   "linalg-pca-studio": { numericallyValidated: true, accessibilityChecked: true },
   "math-studio": { numericallyValidated: true, accessibilityChecked: true },
+  "model-diagnostics-studio": { numericallyValidated: true, accessibilityChecked: true },
   // probability-playground, expected-value-lab and lazarsfeld-simpson-lab are checked against closed forms
   // and a published table (tests/unit), not against an external software reference: accessibility only.
   "probability-playground": { accessibilityChecked: true },

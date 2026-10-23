@@ -31,6 +31,7 @@ export const LAB_COMPONENTS: Record<ImplementedLabId, ComponentType<LabProps>> =
   "measurement-index-lab": dynamic(() => import("./labs/measurement-index-lab/MeasurementIndexLab"), { loading: Loading, ssr: false }),
   "linalg-pca-studio": dynamic(() => import("./labs/linalg-pca-studio/LinalgPcaStudio"), { loading: Loading, ssr: false }),
   "math-studio": dynamic(() => import("./labs/math-studio/MathStudio"), { loading: Loading, ssr: false }),
+  "model-diagnostics-studio": dynamic(() => import("./labs/model-diagnostics-studio/ModelDiagnosticsStudio"), { loading: Loading, ssr: false }),
 };
 
 /** Renders a lab by id (used by /lab/[labId], lessons and the Course Builder preview). */
