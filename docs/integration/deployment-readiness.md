@@ -39,11 +39,12 @@ Per route, in `next.config.ts` via `src/lib/security-headers.ts`:
 | --- | --- |
 | lint, typecheck, unit tests (338) | PASS |
 | `npm run build`, `scripts/check-build.mjs` (secrets, source maps, external scripts) | PASS |
-| e2e (Playwright, 244 tests) | 242 PASS, 1 BLOCKED/skipped (survey package download), 1 FAIL (framing test; fails identically on the untouched baseline in this sandbox) |
+| e2e (Playwright, 244 tests), sandbox | 242 PASS, 1 BLOCKED/skipped (survey package download), 1 FAIL (framing test; fails identically on the untouched baseline in this sandbox) |
+| CI on the PR (GitHub Actions run 40013398546 on f813008) | PASS: 243 passed incl. survey in webR and the framing test, 1 skipped by design |
 | axe WCAG 2.2 AA on V3 pages, light and dark | PASS |
 | CSP and worker loading on `/r`, `/webr/*`, `/` | PASS |
 | Firefox / WebKit | BLOCKED (browsers not installed here) |
-| Vercel preview | NOT RUN (no Vercel access from this environment) |
+| Vercel preview | build PASS (Vercel reported the preview Ready); pages NOT RUN from here (the preview domain is blocked in this environment) |
 
 ### Measured locally (production build on localhost, sandbox machine; not representative of classroom networks)
 

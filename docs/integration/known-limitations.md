@@ -6,10 +6,10 @@ Each item says what is missing, why, and what would close it.
 
 | Item | Status | Detail |
 | --- | --- | --- |
-| `survey` package in browser R | BLOCKED here | The sandbox proxy denies `repo.r-wasm.org`, so the install path and the survey numbers in webR were not run here. The tests exist and run by default (CI): `r.spec.ts` survey test, acceptance student test (`trust 5.43083 0.18221 2.3872`). The expected numbers come from native R 4.3.3 + survey 4.2.1 on the same rows. |
+| `survey` package in browser R | PASS in CI, BLOCKED in the sandbox | The sandbox proxy denies `repo.r-wasm.org`. In CI (GitHub Actions run 40013398546 on f813008) the `r.spec.ts` survey test and the acceptance student test (`trust 5.43083 0.18221 2.3872`) passed against numbers from native R 4.3.3 + survey 4.2.1 on the same rows. |
 | Vercel preview | NOT RUN | No Vercel access from here. Steps in `deployment-readiness.md`. |
 | Firefox / WebKit | BLOCKED | Only Chromium is installed here. |
-| Framing e2e test | FAIL here | `network-privacy.spec.ts` "framing by another origin" fails identically on the untouched `main` baseline in this sandbox (Chromium build difference); needs confirmation in CI. |
+| Framing e2e test | PASS in CI, FAIL in the sandbox | `network-privacy.spec.ts` "framing by another origin" fails identically on the untouched `main` baseline in this sandbox (Chromium build difference) and passes in CI (GitHub Actions run 40013398546 on f813008). |
 | University network | NOT RUN | Whether `repo.r-wasm.org` (survey package) and the 11 MB WebAssembly binary load on the ELTE network is unknown. |
 
 ## Product limitations

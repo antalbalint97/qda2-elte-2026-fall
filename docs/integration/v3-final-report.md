@@ -77,7 +77,7 @@ Deviations where the prototype was numerically wrong are listed in `v3-progress.
 | Stop restarts R; state is gone | PASS |
 | CSP on `/r`, `/webr/*`, `/` (worker-only `unsafe-eval`) | PASS |
 | axe before/after a run, light and dark | PASS |
-| `survey` install and numbers in webR | BLOCKED (sandbox denies `repo.r-wasm.org`; test runs in CI) |
+| `survey` install and numbers in webR (svymean 5.4308 / SE 0.1822 vs native R) | PASS in CI (GitHub Actions run 40013398546 on f813008); BLOCKED in the sandbox (`repo.r-wasm.org` denied) |
 | Blocked install is reported as "could not be installed" | PASS |
 | R cold start + first run, localhost | 1.87–1.88 s (measured, 3 runs) |
 
@@ -99,7 +99,7 @@ Deviations where the prototype was numerically wrong are listed in `v3-progress.
 | --- | --- |
 | Acceptance: instructor workflow (`acceptance-survey.spec.ts`) | PASS |
 | Acceptance: student workflow (prediction kept, locked lab, R run, graded answers with feedback, export and delete answers, next lesson) | PASS (R step with base R) |
-| Acceptance: student R step with `survey` | BLOCKED here, runs in CI |
+| Acceptance: student R step with `survey` (`trust 5.43083 0.18221 2.3872`) | PASS in CI (GitHub Actions run 40013398546 on f813008); BLOCKED in the sandbox |
 | Lesson without an R block loads nothing from `/webr/` | PASS |
 | Unknown course/lesson/version → 404; `?v=` selects a version | PASS |
 | Review notice on not-reviewed content | PASS |
@@ -126,6 +126,7 @@ Screen-reader testing with real assistive technology: NOT RUN.
 | `npm run build` | PASS |
 | `node scripts/check-build.mjs` | PASS |
 | `E2E_NO_WEBR_REPO=1 npx playwright test` (Chromium, 244 tests) | FAIL 242 passed, 1 skipped (survey, BLOCKED), 1 failed (framing, sandbox-only, also fails on the baseline) |
+| CI (`.github/workflows/ci.yml`: lint, typecheck, unit, audit, build, check-build, e2e Chromium) | PASS (GitHub Actions run 40013398546 on f813008): e2e 243 passed, 1 skipped (the repository-unreachable test, which only runs when `E2E_NO_WEBR_REPO=1`) |
 | Firefox / WebKit e2e | BLOCKED |
 
 ## 12. Deployment preview
@@ -135,7 +136,7 @@ on it are in `deployment-readiness.md`.
 
 ## 13. Known blockers
 
-- `survey` in webR not verified here (network). CI runs it.
+- None in CI. In the sandbox: `survey` in webR (network) — PASS in CI instead.
 - Vercel preview not verified.
 - Firefox/WebKit not tested.
 
