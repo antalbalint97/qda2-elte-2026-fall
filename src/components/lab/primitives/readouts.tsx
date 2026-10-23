@@ -134,7 +134,7 @@ export function FormulaInspector({
                     }
                   }}
                   className={cn(
-                    "cursor-help rounded px-1 transition-colors",
+                    "inline-flex min-h-6 min-w-6 cursor-help items-center justify-center rounded px-1 transition-colors",
                     tm.italic && "italic",
                     hl.key === tm.key ? "bg-attention/25 text-ink" : hl.key ? "text-faint" : "text-ink hover:bg-surface-2",
                   )}

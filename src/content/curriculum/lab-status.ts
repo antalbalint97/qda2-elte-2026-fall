@@ -29,9 +29,16 @@ const NONE: LabMaturity = { integrated: false, numericallyValidated: false, acce
  */
 const STATUS: Record<string, Partial<LabMaturity>> = {
   // describe/fit/anova on the VRA scenarios: engine.test.ts "VRA base scenario", reference.json (SciPy)
-  "vra-lab": { numericallyValidated: true },
+  // accessibilityChecked for the five M2 labs: labs.spec.ts axe light/dark/Teach + keyboard tests.
+  "vra-lab": { numericallyValidated: true, accessibilityChecked: true },
+  "sampling-universe": { accessibilityChecked: true },
   // independentT/pairedT/oneSampleT/Levene/g: engine.test.ts "t-test lab numbers vs the SciPy fixture"
-  "ttest-lab": { numericallyValidated: true },
+  "ttest-lab": { numericallyValidated: true, accessibilityChecked: true },
+  // Wilson/Wald vs statsmodels proportion_confint and coverage simulations: coverage.test.ts
+  "ci-explorer": { numericallyValidated: true, accessibilityChecked: true },
+  // Not numericallyValidated: the SE after post-stratification/raking is not checked (survey-studio.test.ts
+  // covers the rest against R survey).
+  "survey-weighting-studio": { accessibilityChecked: true },
 };
 
 export function labMaturity(id: string): LabMaturity {

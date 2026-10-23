@@ -6,10 +6,14 @@ import type { ComponentType } from "react";
 import VraLab from "./labs/vra-lab/VraLab";
 import SamplingUniverse from "./labs/sampling-universe/SamplingUniverse";
 import TTestLab from "./labs/ttest-lab/TTestLab";
+import CiExplorer from "./labs/ci-explorer/CiExplorer";
+import SurveyWeightingStudio from "./labs/survey-weighting-studio/SurveyWeightingStudio";
 import type { LabProps } from "./shell/useLab";
 
 export const LAB_PAGES: Record<ImplementedLabId, ComponentType<LabProps>> = {
   "vra-lab": VraLab,
   "sampling-universe": SamplingUniverse,
   "ttest-lab": TTestLab,
+  "ci-explorer": CiExplorer,
+  "survey-weighting-studio": SurveyWeightingStudio,
 };

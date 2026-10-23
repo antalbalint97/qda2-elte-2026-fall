@@ -25,8 +25,8 @@ Local e2e needs `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium` (an optional overri
 
 | Milestone | Status |
 | --- | --- |
-| M1 Foundation — engines, data models, validation | done (this commit) |
-| M2 Lab framework + first five labs | not started |
+| M1 Foundation — engines, data models, validation | done |
+| M2 Lab framework + first five labs | done |
 | M3–M5 Remaining fifteen labs | not started |
 | M6 Browser R (webR) | not started |
 | M7 Atlas, Course Builder, snapshots | not started |
@@ -74,6 +74,48 @@ contradicts the Welch-by-default guidance"). They surface as warnings, not error
 **Checks after M1**: lint PASS · typecheck PASS · unit 174/174 PASS · build NOT RUN (no route changes yet) ·
 e2e NOT RUN (no UI changes yet).
 
+## M2 — Lab framework and the first five labs
+
+**Framework** (`src/components/lab/`): `shell/useLab.ts` (parameters, locks, instructions, share link,
+Teach mode, EN/HU), `shell/LabShell.tsx` (title bar, Teach dialog with demo strip, aside, footer with method
+and honest validation status), primitives (`ParameterControl` slider + number field, `ChoiceControl`
+radiogroup, `ToggleControl`, `SeedControl`, `StatisticReadout`, `FormulaInspector`, `DecompositionBar`,
+`AccessibleVisualization` = SVG + live text summary + data table, keyboard-operable `DragHandle`,
+`ConceptPrompt`, `PresetBar`). Config contract in `src/lib/lab-config.ts`: the hash is
+`#` + `encodeURIComponent(JSON)`; every key is coerced against `LabDefinition.params`; unknown or invalid
+keys are ignored and listed to the student. The VRA lab keeps the legacy query hash (`#s=2&…`).
+
+**Routes**: `/labs` (portfolio by family, unimplemented labs marked "Not yet available"), `/lab/[labId]`
+(static params from `IMPLEMENTED_LABS`; unknown ids 404), `/lab` keeps the original VRA lab. Prototype URLs
+`/lab/sampling`, `/lab/ttest`, `/lab/ci`, `/lab/survey-weighting` redirect permanently.
+
+**Labs**
+
+| Lab | Engine checks |
+| --- | --- |
+| `vra-lab` | SS decomposition identities; formulas shared with module 07 (`numericallyValidated`) |
+| `sampling-universe` | seeded finite population, SRSWOR with fpc SE, bootstrap |
+| `ttest-lab` | Student/Welch t, df, p, Levene, one-sample, paired, Hedges' g vs the SciPy fixture (`numericallyValidated`) |
+| `ci-explorer` | Wilson and Wald vs statsmodels `proportion_confint`; coverage simulations (below) |
+| `survey-weighting-studio` | Hájek mean, linearised SE (no fpc and first-stage fpc), closed forms and deff vs R survey 4.2.1 on samples drawn by the studio |
+
+Coverage over 20 000 simulated intervals (N = 2 000, seed 20261023; unit test uses 4 000 with tolerances):
+SRS t 95 % → 95.3 %; cluster design-based t(a − 1) → 96.9 % (conservative: the a/A sampling fraction is
+ignored); naive SRS interval on the cluster sample → 73.4 %; binary π = 0.32, n = 20: Wald 89.4 %, Wilson 95.1 %.
+
+Survey Studio validation: `scripts/validation/studio_samples.ts` exports seven samples drawn by the studio
+pipeline (SRS, stratified proportional/equal, cluster, two-stage, outcome nonresponse + raking, group
+nonresponse + post-stratification); `scripts/validation/studio_reference.R` runs `svymean` on them;
+`tests/unit/survey-studio.test.ts` matches all of them to 1e-10. **Not validated and labelled in the UI**:
+the SE after post-stratification or raking treats the adjusted weights as fixed design weights (R's
+`postStratify()`/`rake()` designs account for calibration); two-stage samples use the with-replacement
+ultimate-cluster approximation.
+
+**Checks after M2**: lint PASS · typecheck PASS · unit 193/193 PASS · build PASS (26 static pages) ·
+e2e Chromium 150/151 (same sandbox-only framing failure as the baseline) · new `tests/e2e/labs.spec.ts`
+25/25 PASS (axe WCAG 2.2 AA light/dark/Teach on all five labs and `/labs`, config hash, share round trip,
+legacy VRA hash, redirects, keyboard) · Firefox/WebKit BLOCKED (not installed).
+
 ## Deviations from the V3 package
 
 | Item | Prototype | Production | Why |
@@ -85,3 +127,10 @@ e2e NOT RUN (no UI changes yet).
 | `ds.index-120` | used for two different data sets | module 09 responses keep `ds.index-120`; generated efficacy set is `ds.efficacy-120` | ID collision |
 | Dataset provenance `kind` | `"real"` used for the ESS extract | type allows `"real"` with `n: null` | ESS data are never bundled; the instructor downloads them under ESS terms |
 | Survey reference script | F8 indexed `SE(svyby)` as a matrix; bounded calibrate with (0.7, 1.4) | vector indexing; bounds (0.5, 2) in `tryCatch` | the original script errors on survey 4.2.1 |
+| `ci-explorer` params | `population`, `showNaive`, method `z` used by the prototype but not in the lab spec | added to `LabDefinition.params` | the hash contract only accepts declared keys |
+| CI width curve | `crit·σ/√n × 2.2` for the cluster design | `t(a − 1)·√((S²_B + S̄²_W/m)/a)` from the population | the 2.2 factor was a placeholder |
+| Survey Studio params | nested `design`/`mech`/`adjust` objects; flat block configs mapped `"stratified"` to an unknown type | flat params (`stage`, `shareC`, `muC`, `rho`, `covC`, `design`, `n`, `allocation`, `a`, `m`, `nonresponse`, `rate`, `slope`, `adjustment`, `showTruth`, `seed`); `"stratified"` and `"disproportionate"` handled | block configs in `blocks.ts` use the flat keys |
+| Survey deff | `V_lin / ((1 − n/N)·S²/n)` (provisional) | `designEffect()` = R `svymean(deff = "replace")` paired with the no-fpc SE; `svyMean().deff` = `deff = TRUE` | now matches R; registry entry `deff` is `validated` |
+| Survey Studio footer | "validated vs R survey 4.x (webR run …)" | states exactly what was checked and what was not | the prototype claim had no fixture behind it |
+| Population field | 600 focusable dots | dots are decorative; a unit-id inspector and a table of sampled units are the keyboard path | 600 tab stops are unusable |
+

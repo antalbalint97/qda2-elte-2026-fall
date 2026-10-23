@@ -65,7 +65,7 @@ export function LabsPortfolio() {
               const status = maturityLabel(labMaturity(id));
               const shown = def.concepts.slice(0, 3).map(cname).filter(Boolean);
               return (
-                <li key={id} className={cn("flex flex-col rounded-2xl border border-line bg-surface p-4", !live && "opacity-80")}>
+                <li key={id} className={cn("flex flex-col rounded-2xl border bg-surface p-4", live ? "border-line" : "border-dashed border-line-strong")}>
                   <div className="flex items-center gap-2 text-[11px]">
                     <span className={cn("h-2.5 w-2.5 rounded-sm", live ? "bg-model" : "bg-line-strong")} aria-hidden />
                     <span className={cn("font-mono uppercase tracking-wide", live ? "text-model-ink" : "text-faint")}>{t.status[status]}</span>

@@ -262,3 +262,29 @@ export function systematicPps(pik: readonly number[], rand: Rand): number[] {
   }
   return [...new Set(out)];
 }
+
+/** Population settings of the Survey Design & Weighting Studio (education groups A/B/C, 20 PSUs). */
+export interface StudioPopulationSettings {
+  /** Share of group C; group B stays at 0.3 and A takes the rest. */
+  shareC: number;
+  muC: number;
+  icc: number;
+  /** Frame coverage of group C (A and B are fully covered). */
+  covC: number;
+  seed: number;
+}
+export const STUDIO_POPULATION_DEFAULTS: StudioPopulationSettings = { shareC: 0.2, muC: 72, icc: 0.15, covC: 0.6, seed: 20261023 };
+export function studioPopulation(s: StudioPopulationSettings): Population {
+  return makePopulation({
+    N: 600,
+    groups: [
+      { id: "A", label: "A", share: 1 - 0.3 - s.shareC, mu: 40, sd: 12 },
+      { id: "B", label: "B", share: 0.3, mu: 55, sd: 12 },
+      { id: "C", label: "C", share: s.shareC, mu: s.muC, sd: 10 },
+    ],
+    clusters: 20,
+    icc: s.icc,
+    frame: { C: s.covC },
+    seed: s.seed,
+  });
+}

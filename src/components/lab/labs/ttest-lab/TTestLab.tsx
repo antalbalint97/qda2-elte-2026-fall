@@ -420,7 +420,7 @@ export default function TTestLab(props: LabProps) {
                 tabIndex={0}
                 role="slider"
                 aria-label={`${G.label} ${t.meanLbl}`}
-                aria-valuenow={+G.m.toFixed(1)}
+                aria-valuenow={Math.round(G.m * 10) / 10}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 style={{ cursor: "ns-resize" }}
@@ -447,7 +447,7 @@ export default function TTestLab(props: LabProps) {
               tabIndex={0}
               role="slider"
               aria-label={`${G.label} s`}
-              aria-valuenow={+G.sd.toFixed(1)}
+              aria-valuenow={Math.round(G.sd * 10) / 10}
               aria-valuemin={0}
               aria-valuemax={50}
               onPointerDown={(e) => drag.start({ kind: "spread", k: G.k, m0: G.m, sd0: G.sd, arr0: data[G.k].slice() }, e)}

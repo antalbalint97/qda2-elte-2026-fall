@@ -13,7 +13,7 @@ import { inverse, matmul, transpose } from "./linalg";
 import { ols, type OlsResult } from "./regression";
 import { mean, sum } from "./numeric";
 import { mulberry32 } from "./rng";
-import { respond, select, type Design, type Population, type Responded, type ResponseMechanism } from "./survey-design";
+import { respond, select, type Design, type Population, type Responded, type ResponseMechanism, type Selection } from "./survey-design";
 
 // ── closed forms ────────────────────────────────────────────────────────────
 export function weightedMean(ys: readonly number[], ws: readonly number[]): number | null {
@@ -162,6 +162,52 @@ export function naiveVar(resp: readonly { y: number; r?: boolean }[]): VarianceE
   const v = describe(r.map((s) => s.y)).variance;
   return { v: v === null ? null : v / r.length, se: v === null ? null : Math.sqrt(v / r.length), method: "naive s²/n — ignores weights, strata and clusters" };
 }
+/**
+ * Closed-form variance of the mean for the design that produced `sel` (with fpc, on the respondents):
+ * SRSWOR (1 − n/N)s²/n, stratified Σ(N_h/N)²(1 − f_h)s_h²/n_h, one-stage cluster (1 − a/A)s²_e/(a m̄²).
+ * Two-stage has no closed form here (null). Each equals svymean with a first-stage fpc for that design.
+ */
+export function closedFormVar(resp: readonly { y: number; stratum: string; psu: number | string; r?: boolean }[], sel: Selection, frameN: number): VarianceEstimate {
+  const r = resp.filter((s) => s.r !== false);
+  const out = (v: number | null, method: string): VarianceEstimate => ({ v, se: v === null ? null : Math.sqrt(v), method });
+  const type = sel.design.type;
+  if (type === "srs") return out(r.length > 1 ? srsVarMean(r.map((s) => s.y), frameN) : null, "SRSWOR closed form (1 − n/N)s²/n");
+  if (type === "strat" && sel.info.Nh) {
+    const Nh = sel.info.Nh;
+    const strata = Object.keys(Nh).map((k) => ({ ys: r.filter((s) => s.stratum === k).map((s) => s.y), Nh: Nh[k] }));
+    const ok = strata.every((h) => h.ys.length > 1);
+    return out(ok ? stratVarMean(strata, frameN) : null, "stratified closed form Σ(N_h/N)²(1 − f_h)s_h²/n_h");
+  }
+  if (type === "cluster" && sel.info.A) {
+    const byC = new Map<string, number[]>();
+    r.forEach((s) => {
+      const k = String(s.psu);
+      const arr = byC.get(k);
+      if (arr) arr.push(s.y);
+      else byC.set(k, [s.y]);
+    });
+    return out(clusterVarMean([...byC.values()].map((ys) => ({ ys })), sel.info.A), "one-stage cluster ratio-mean variance (1 − a/A)s²_e/(a·m̄²)");
+  }
+  return out(null, "no closed form for two-stage; see the linearised estimate");
+}
+
+/**
+ * Design effect of the Hájek mean as R `svymean(..., deff = )` computes it: V_design / V_SRS with
+ * S²_w = n/(n − 1)·Σw(y − ȳ_w)²/Σw (R `svyvar`), N̂ = Σw and
+ *   replace = true  (R deff = "replace"): V_SRS = S²_w/n — pairs with the with-replacement (no-fpc) V_design;
+ *   replace = false (R deff = TRUE):      V_SRS = (1 − n/N̂)·S²_w/n — pairs with a V_design that has an fpc.
+ */
+export function designEffect(resp: readonly { y: number; w: number; r?: boolean }[], vDesign: number | null, replace = true): number | null {
+  const r = resp.filter((s) => s.r !== false);
+  const n = r.length;
+  if (n < 2 || vDesign === null) return null;
+  const W = sum(r.map((s) => s.w));
+  if (!(W > 0)) return null;
+  const yb = sum(r.map((s) => s.w * s.y)) / W;
+  const S2 = ((sum(r.map((s) => s.w * (s.y - yb) ** 2)) / W) * n) / (n - 1);
+  const vsrs = replace ? S2 / n : (S2 * (W - n)) / (W * n);
+  return vsrs > 0 ? vDesign / vsrs : null;
+}
 export const kishNeff = (resp: readonly { w: number; r?: boolean }[]): number | null => kishNeffW(resp.filter((s) => s.r !== false).map((s) => s.w));
 
 export type Adjustment = { type: "none" | "poststrat" | "raking" };
@@ -299,19 +345,17 @@ export function svyMean(obs: readonly SurveyObs[], opt: { fpc?: boolean } = {}):
   const est = sum(obs.map((o) => o.w * o.y)) / W;
   const v = svyTotalVar(obs.map((o) => ({ ...o, y: (o.y - est) / W })), opt);
   const neffD = kishDeff(obs.map((o) => o.w));
-  const s2 = describe(obs.map((o) => o.y)).variance;
-  const srsVar = s2 === null ? null : s2 / obs.length;
   return {
     est,
     se: v.se,
     variance: v.variance,
     df: v.nPSU - v.nStrata,
-    deff: srsVar ? v.variance / srsVar : null,
+    deff: designEffect(obs, v.variance, false),
     kishNeff: neffD ? obs.length / neffD : null,
     lonely: v.lonely,
     nPSU: v.nPSU,
     nStrata: v.nStrata,
-    method: "Hájek mean; Taylor linearisation; " + v.method + "; deff vs unweighted s²/n (differs from svymean(deff = TRUE))",
+    method: "Hájek mean; Taylor linearisation; " + v.method + "; deff as svymean(deff = TRUE)",
   };
 }
 
@@ -559,7 +603,9 @@ export const SURVEY_VALIDATION: Record<string, { state: ValidationState; referen
   greg: { state: "validated", reference: "R calibrate(calfun = 'linear') (F7, weight vector in survey.test.ts)", note: "linear calibration" },
   raking: { state: "validated", reference: "R rake() run to convergence (weight vector)", note: "unbounded raking" },
   rakingBounded: { state: "unvalidated", reference: "R calibrate(bounds =)", note: "truncation algorithm differs from survey::calibrate" },
-  deff: { state: "provisional", reference: "R svymean(deff = TRUE)", note: "denominator convention differs (unweighted s²/n here)" },
+  deff: { state: "validated", reference: "R svymean(deff = \"replace\" / TRUE) on studio samples (studio-reference.json)", note: "designEffect(); with-replacement SRS comparison pairs with the no-fpc SE" },
+  closedForms: { state: "validated", reference: "R svymean with first-stage fpc on studio samples", note: "SRSWOR, stratified and one-stage cluster closed forms" },
+  adjustedVariance: { state: "unvalidated", reference: "R postStratify() / rake() designs", note: "after post-stratification or raking the SE treats the adjusted weights as fixed design weights; the calibration step is ignored" },
   raoScott: { state: "validated", reference: "R svychisq(statistic = 'Chisq' and 'F')", note: "first- and second-order Rao–Scott" },
   replicate: { state: "validated", reference: "R as.svrepdesign(type = 'JK1' / 'JKn')", note: "Hájek mean, replicate-mean centring" },
   twoStage: { state: "unvalidated", reference: "R svydesign(ids = ~psu + id, fpc = ~A + M)", note: "two-stage variance shown with the ultimate-cluster approximation" },

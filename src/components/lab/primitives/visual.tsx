@@ -68,7 +68,7 @@ export function AccessibleVisualization({
             {t.dataTable}
           </button>
           {open && (
-            <div id={id} className="mt-2 max-h-72 overflow-auto rounded-lg border border-line">
+            <div id={id} role="region" aria-label={table.caption} tabIndex={0} className="mt-2 max-h-72 overflow-auto rounded-lg border border-line">
               <table className="w-full text-left text-xs">
                 <caption className="sr-only">{table.caption}</caption>
                 <thead className="sticky top-0 bg-surface-2">

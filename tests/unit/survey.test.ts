@@ -128,10 +128,10 @@ describe("stratified cluster survey vs R survey 4.x", () => {
     a.resp.forEach((r, i) => close(r.w, b.w[i], 1e-8, `w${i}`));
   });
   test("documented differences stay visible (not silently matched)", () => {
-    // svymean(deff = TRUE) uses a different SRS-variance denominator than the engine's deff
+    // svyMean's deff follows svymean(deff = TRUE) (designEffect, validated in survey-studio.test.ts)
     const m = E.svyMean(obs);
-    assert.ok(Math.abs((m.deff as number) - R.mean.deffR) > 1e-3, "engine deff convention differs from R; keep it labelled provisional");
-    assert.equal(E.SURVEY_VALIDATION.deff.state, "provisional");
+    close(m.deff, R.mean.deffR, 1e-9, "deff vs svymean(deff = TRUE)");
+    assert.equal(E.SURVEY_VALIDATION.deff.state, "validated");
     // two-stage with FPC at both stages is not implemented: the ultimate-cluster SE differs from R's
     assert.ok(Math.abs((E.svyMean(obs, { fpc: true }).se as number) - R.twoStage.se) > 1e-3);
     assert.equal(E.SURVEY_VALIDATION.twoStage.state, "unvalidated");
