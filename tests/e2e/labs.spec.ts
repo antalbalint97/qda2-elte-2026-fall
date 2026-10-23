@@ -195,3 +195,23 @@ test("keyboard: ANOVA Studio repeated-measures table and interaction handle", as
   await page.keyboard.press("Shift+ArrowUp");
   await expect(row).not.toHaveText(before as string);
 });
+
+test("keyboard: Survey Design Studio traces π through two PPS stages and allocates by drag", async ({ page }) => {
+  // the block config of l.sds-stages
+  await page.goto("/lab/survey-design-studio" + hash({ strata: 3, stages: 2, pps: true }), { waitUntil: "networkidle" });
+  const trace = page.getByTestId("pi-trace");
+  await expect(trace).toContainText("PSU 1 (Budapest districts");
+  await expect(trace).toContainText("π_PSU = a·M_i/ΣM");
+  await page.locator("svg [role=radio][tabindex='0']").focus();
+  await page.keyboard.press("End");
+  await expect(trace).toContainText("PSU 40 (Villages");
+  await expect(page.locator("svg [role=radio][aria-checked=true]")).toBeFocused();
+  // one-stage stratified: Σπ_k = n, and dragging an allocation handle switches to a custom allocation
+  await page.goto("/lab/survey-design-studio" + hash({ strata: 3, stages: 1 }), { waitUntil: "networkidle" });
+  await expect(page.getByText("Σ π_k over the frame").locator("..")).toContainText("160.00");
+  const handle = page.getByRole("slider", { name: "n_h: Villages" });
+  await handle.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "Custom" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByText("Σ π_k over the frame").locator("..")).toContainText("161.00");
+});

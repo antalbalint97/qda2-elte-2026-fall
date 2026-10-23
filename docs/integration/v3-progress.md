@@ -27,7 +27,7 @@ Local e2e needs `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium` (an optional overri
 | --- | --- |
 | M1 Foundation — engines, data models, validation | done |
 | M2 Lab framework + first five labs | done |
-| M3–M5 Remaining fifteen labs | in progress (8 of 15 done) |
+| M3–M5 Remaining fifteen labs | in progress (9 of 15 done) |
 | M6 Browser R (webR) | not started |
 | M7 Atlas, Course Builder, snapshots | not started |
 | M8 Lesson renderer + Survey acceptance scenario | not started |
@@ -127,10 +127,10 @@ legacy VRA hash, redirects, keyboard) · Firefox/WebKit BLOCKED (not installed).
 | `categorical-lab` | editable table, draggable mosaic (keep N and row totals, or keep both margins), expected / row % / adjusted residual views, χ² contributions | χ², V, Yates, Fisher, OR vs SciPy/statsmodels (`numericallyValidated`); `categorical-lab.test.ts` margin invariants |
 | `corr-reg-lab` | draggable scatter, covariance rectangles, residual squares, parallel-lines model with a group predictor, logistic curve | Pearson, Spearman, OLS, logit vs SciPy/statsmodels (`numericallyValidated`) |
 | `lazarsfeld-simpson-lab` | zero-order and partial bar panels with draggable partial %, draggable Z composition, classification, causal-order advice with a small DAG | `lazarsfeld-lab.test.ts`: aggregate = weighted partials to 1e-12; the published kidney-stone data reverse |
-
 | `anova-studio` | one-way, two-way and repeated-measures designs; draggable points and group means, SSB/SSW bar, post-hoc forest (none, Bonferroni, Tukey, Games–Howell), interaction plot with draggable cell means, editable scores | one-way, Welch and two-way vs statsmodels, Tukey vs SciPy, Games–Howell vs its definition; repeated measures (F, partial η², Greenhouse–Geisser ε and p) vs R `aov` + `anova.mlm` in `rm-anova.test.ts` (4 cases, 1e-9) |
+| `survey-design-studio` | strata × stages × PPS design matrix on a 40-settlement map with the frame overlaid, per-type frame coverage, draggable stratum allocation (proportional, Neyman, equal, custom), stage-by-stage π trace (keyboard: one tab stop, arrow keys), exact one-stage SE, simulated SE over 300 draws, domain SEs | `survey-design-studio.test.ts`: Hájek mean, SE and domain SEs vs R `svymean`/`svyby` on six exported samples (1e-10), PPS π vs `sampling::inclusionprobabilities` (1e-12), Neyman vs closed form, Σπ_k = n (one stage) and = E[n] (two stage), selection frequencies vs π over 2 000 draws |
 
-All eight pass axe (WCAG 2.2 AA tags) in light, dark and Teach mode and have a keyboard test in
+All nine pass axe (WCAG 2.2 AA tags) in light, dark and Teach mode and have a keyboard test in
 `tests/e2e/labs.spec.ts` (`accessibilityChecked`). None is `teachingReviewed` or pilot-ready.
 
 **Performance fix**: the old `/lab/[labId]` route imported every lab from a server component, which put all
@@ -162,6 +162,7 @@ lessons and the builder.
 | Population field | 600 focusable dots | dots are decorative; a unit-id inspector and a table of sampled units are the keyboard path | 600 tab stops are unusable |
 | Lazarsfeld "explanation" and "interpretation" tables | both X groups had the same Z composition, so the zero-order difference was 1.5 pp and the scenario showed replication, not explanation | compositions differ (X = 1 mostly in Z = high), zero-order d = 24.4 pp, partial d ≈ 0 | the prototype counts did not produce the pattern they were named after (caught by `lazarsfeld-lab.test.ts`) |
 | ANOVA repeated measures | prototype reported uncorrected F only | `rmAnova()` adds Greenhouse–Geisser ε (capped at 1) and its p; the table shows both | the lab spec lists the sphericity correction; checked against R |
+| Survey Design Studio | five flat designs (srs, strat, cluster, twostage, pps); "R survey run pending"; PPS π indexed against all PSUs while selection used frame PSUs | spec design matrix `strata` × `stages` × `pps` (so the block configs `{strata: 1, stages: 1}` and `{strata: 3, stages: 2, pps: true}` work); settlements belong to one settlement type so stratified two-stage designs are possible; validated against R | the prototype could not express the stratified PPS block config, and its R validation had not been run |
 | Lazarsfeld Simpson scenario | hand-authored "Treatment A / severe case" counts | the published kidney-stone counts (Charig et al. 1986, BMJ; as discussed by Julious & Mullee 1994) | the lab spec asks for a published example; the footer says the data are published, not synthetic |
 | Categorical lab | tile boundaries not draggable; `keep` param unused | boundaries draggable with keep-N or keep-margins; preset tables size the table unless `rows`/`cols` are set | lab spec interaction |
 | Expected Value lab | histogram counted draws by value (two outcomes with the same x collided); E marker drawn over the x labels | counts by outcome index (`sampleDiscrete().index`); marker below the labels; `hideE` + prediction | correctness and legibility |

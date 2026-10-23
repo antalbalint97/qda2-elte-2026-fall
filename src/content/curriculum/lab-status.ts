@@ -50,6 +50,8 @@ const STATUS: Record<string, Partial<LabMaturity>> = {
   // one-way/Welch/two-way ANOVA (statsmodels), Tukey (SciPy), Games–Howell: engine.test.ts; repeated measures with
   // Greenhouse–Geisser: rm-anova.test.ts (R aov Error strata + anova.mlm)
   "anova-studio": { numericallyValidated: true, accessibilityChecked: true },
+  // svymean / svyby SEs and PPS π vs R survey + sampling on the studio's own samples: survey-design-studio.test.ts
+  "survey-design-studio": { numericallyValidated: true, accessibilityChecked: true },
   // probability-playground, expected-value-lab and lazarsfeld-simpson-lab are checked against closed forms
   // and a published table (tests/unit), not against an external software reference: accessibility only.
   "probability-playground": { accessibilityChecked: true },
