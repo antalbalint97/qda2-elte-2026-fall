@@ -11,8 +11,8 @@ environment). All results below are from the sandbox (local production build, Ch
 
 ## 2. Branch and pull request
 
-Branch `claude/project-thread-z05aik`. Pull request: see the PR opened from this branch against `main`
-(not merged; merging needs Bálint's approval).
+Branch `claude/project-thread-z05aik`. Pull request:
+https://github.com/antalbalint97/qda2-elte-2026-fall/pull/9 (not merged; merging needs Bálint's approval).
 
 ## 3. Components implemented
 
