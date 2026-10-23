@@ -79,3 +79,18 @@ test("lesson pages load no lab or R runtime code they do not use", async ({ page
   await page.goto("/course/course.survey/s1/s1l1", { waitUntil: "networkidle" });
   expect(scripts.filter((u) => u.includes("/webr/"))).toEqual([]);
 });
+
+test("the home page and the footer lead to the labs, the Concept Atlas and browser R", async ({ page }) => {
+  await page.goto("/");
+  const explore = page.locator("#explore");
+  for (const [name, href] of [["Interactive labs", "/labs"], ["Concept Atlas", "/atlas"], ["R in the browser", "/r"]]) {
+    await expect(explore.getByRole("link", { name: new RegExp(`^${name}`) })).toHaveAttribute("href", href);
+  }
+  const footer = page.getByRole("navigation", { name: "Site information" });
+  await footer.getByRole("link", { name: "Concept Atlas" }).click();
+  await expect(page).toHaveURL(/\/atlas$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  // the unreviewed preview course is not listed in the navigation
+  await page.goto("/");
+  await expect(page.locator('a[href^="/course/"]')).toHaveCount(0);
+});

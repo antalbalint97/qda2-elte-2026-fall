@@ -31,7 +31,7 @@ Local e2e needs `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium` (an optional overri
 | M6 Browser R (webR) | done (survey package install BLOCKED in the sandbox: repo.r-wasm.org denied) |
 | M7 Atlas, Course Builder, snapshots | done |
 | M8 Lesson renderer + Survey acceptance scenario | done (survey-package step BLOCKED in the sandbox, covered in CI) |
-| M9 Hardening, docs, PR | not started |
+| M9 Hardening, docs, PR | done (Vercel preview NOT RUN) |
 
 ## M1 — Foundation
 
@@ -251,6 +251,18 @@ webR's CommonJS build in the server bundle, harmless) · check-build PASS · e2e
 | `npm run test:unit` | PASS | 338/338 |
 | Full e2e (Chromium) | FAIL 241/243 | 1 skipped (survey, BLOCKED), 1 failed: the known sandbox-only framing test (see baseline) |
 | Firefox / WebKit | BLOCKED | not installed |
+
+## M9 — Hardening, documentation, PR
+
+- Home page section and footer links to `/labs`, `/atlas` and `/r` (they had no entry point). The unreviewed
+  Survey Statistics course is deliberately not linked.
+- "Delete my answers" now also clears the text fields on the open lesson (they kept showing the deleted text).
+- Builder edit operations and the authoring switch have unit tests (`course-ops.test.ts`).
+- Runtime measurements and handoff docs: `architecture.md`, `deployment-readiness.md`, `known-limitations.md`,
+  `v3-final-report.md`.
+
+**Checks**: lint PASS · typecheck PASS · unit 338/338 PASS · build PASS · check-build PASS · e2e Chromium 242
+passed, 1 skipped (survey, BLOCKED), 1 failed (the known sandbox-only framing test).
 
 ## Deviations from the V3 package
 

@@ -5,6 +5,12 @@ import { ButtonLink } from "@/components/ui/Button";
 import { CHAIN, MODULES } from "@/content/modules";
 import Link from "next/link";
 
+const EXPLORE = [
+  { href: "/labs", title: "Interactive labs", text: "Twenty laboratories, from probability and t-tests to survey weighting and PCA, computed live." },
+  { href: "/atlas", title: "Concept Atlas", text: "The course's concepts, how they depend on each other and which labs and lessons use them." },
+  { href: "/r", title: "R in the browser", text: "Run R code on the course data sets. R runs on your device and your code is not sent to a server." },
+];
+
 export default function Home() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -118,6 +124,23 @@ export default function Home() {
             </p>
           </Link>
         </div>
+      </section>
+
+      <section id="explore" className="scroll-mt-20 border-t border-line py-14">
+        <div className="mb-6 flex flex-col gap-1">
+          <h2 className="font-serif text-3xl font-semibold tracking-tight text-ink">Labs, concepts and R</h2>
+          <p className="text-muted">Go beyond the modules: experiment with the statistics, see how ideas connect, run real R.</p>
+        </div>
+        <ul className="grid gap-4 sm:grid-cols-3">
+          {EXPLORE.map((e) => (
+            <li key={e.href}>
+              <Link href={e.href} className="block h-full rounded-xl border border-line p-5 transition-colors hover:border-line-strong">
+                <span className="font-semibold text-ink">{e.title}</span>
+                <span className="mt-1 block text-sm leading-relaxed text-muted">{e.text}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="border-t border-line py-14">
