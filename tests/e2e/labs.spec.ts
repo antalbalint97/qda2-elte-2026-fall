@@ -127,7 +127,7 @@ test("keyboard: Survey Studio stages and unit inspector", async ({ page }) => {
 });
 
 // Every SVG drag handle of the M3 labs is also a keyboard slider: the arrow keys change its value.
-for (const id of ["hypothesis-lab", "distribution-studio", "probability-playground", "expected-value-lab", "categorical-lab", "lazarsfeld-simpson-lab"]) {
+for (const id of ["hypothesis-lab", "distribution-studio", "probability-playground", "expected-value-lab", "categorical-lab", "lazarsfeld-simpson-lab", "anova-studio"]) {
   test(`keyboard: ${id} drag handle moves with the arrow keys`, async ({ page }) => {
     await page.goto(`/lab/${id}`, { waitUntil: "networkidle" });
     const handle = page.locator("svg [role=slider]").first();
@@ -182,4 +182,16 @@ test("keyboard: Categorical Lab keeps both margins while a tile boundary moves",
   await page.keyboard.press("ArrowUp");
   await expect(cell).not.toHaveValue(v0);
   expect(await col()).toBe(totals);
+});
+
+test("keyboard: ANOVA Studio repeated-measures table and interaction handle", async ({ page }) => {
+  await page.goto("/lab/anova-studio" + hash({ design: "rm" }), { waitUntil: "networkidle" });
+  await expect(page.getByTestId("anova-table")).toContainText("Subjects");
+  await page.goto("/lab/anova-studio" + hash({ design: "twoway", preset: "interaction" }), { waitUntil: "networkidle" });
+  const row = page.getByTestId("anova-table").locator("tr", { hasText: "A × B" });
+  const before = await row.textContent();
+  const h = page.getByRole("slider", { name: "Interaction plot (cell means): A1·B1" });
+  await h.focus();
+  await page.keyboard.press("Shift+ArrowUp");
+  await expect(row).not.toHaveText(before as string);
 });

@@ -455,3 +455,68 @@ export function twoWay(cells: readonly (readonly (readonly number[])[])[]): TwoW
     method: balanced ? "balanced two-way; SS orthogonal (Types I/II/III coincide)" : "unbalanced: sequential (Type I) SS in order A, B, A×B — not SPSS Type III",
   };
 }
+
+// ── one-way repeated-measures ANOVA ─────────────────────────────────────────
+export interface RmAnova {
+  n: number;
+  k: number;
+  means: number[];
+  subjectMeans: number[];
+  grand: number;
+  ssCond: number;
+  ssSubj: number;
+  ssErr: number;
+  sst: number;
+  dfCond: number;
+  dfErr: number;
+  F: number | null;
+  p: number | null;
+  eta2p: number | null;
+  /** Greenhouse–Geisser ε (k > 2) and the p of F on (ε·df₁, ε·df₂). */
+  epsGG: number | null;
+  pGG: number | null;
+  method: string;
+  reason?: string;
+}
+
+/**
+ * One-way repeated-measures ANOVA from data[subject][condition] (complete cases). SS_total splits into
+ * conditions, subjects and error (subject × condition); F = MS_cond / MS_err as R aov(y ~ cond +
+ * Error(subj/cond)). Greenhouse–Geisser ε from the double-centred covariance matrix, as anova.mlm(test = "Spherical").
+ */
+export function rmAnova(data: readonly (readonly number[])[]): RmAnova {
+  const n = data.length;
+  const k = n ? data[0].length : 0;
+  const method = "repeated-measures ANOVA (subjects × conditions); Greenhouse–Geisser ε from the condition covariance matrix";
+  const means = Array.from({ length: k }, (_, j) => (n ? sum(data.map((r) => r[j])) / n : NaN));
+  const subjectMeans = data.map((r) => sum(r) / k);
+  const grand = n && k ? sum(data.map((r) => sum(r))) / (n * k) : NaN;
+  const base = { n, k, means, subjectMeans, grand, method };
+  const fail = (reason: string): RmAnova => ({ ...base, ssCond: 0, ssSubj: 0, ssErr: 0, sst: 0, dfCond: Math.max(0, k - 1), dfErr: Math.max(0, (n - 1) * (k - 1)), F: null, p: null, eta2p: null, epsGG: null, pGG: null, reason });
+  if (n < 2 || k < 2) return fail("need ≥ 2 subjects and ≥ 2 conditions");
+  if (data.some((r) => r.length !== k || !r.every(Number.isFinite))) return fail("every subject needs a finite score in every condition");
+  const sst = sum(data.flatMap((r) => r.map((v) => (v - grand) ** 2)));
+  const ssCond = n * sum(means.map((m) => (m - grand) ** 2));
+  const ssSubj = k * sum(subjectMeans.map((m) => (m - grand) ** 2));
+  const ssErr = Math.max(0, sst - ssCond - ssSubj);
+  const dfCond = k - 1;
+  const dfErr = (n - 1) * (k - 1);
+  const eta2p = ssCond + ssErr > 0 ? ssCond / (ssCond + ssErr) : null;
+  if (!(ssErr > 1e-12 * Math.max(1, sst))) return { ...base, ssCond, ssSubj, ssErr, sst, dfCond, dfErr, F: null, p: null, eta2p, epsGG: null, pGG: null, reason: "no subject × condition variation: F is undefined" };
+  const F = ssCond / dfCond / (ssErr / dfErr);
+  const p = fP(F, dfCond, dfErr);
+  let epsGG: number | null = null;
+  let pGG: number | null = null;
+  if (k > 2) {
+    // sample covariance of the conditions, double-centred
+    const S = Array.from({ length: k }, (_, a) => Array.from({ length: k }, (_, b) => sum(data.map((r) => (r[a] - means[a]) * (r[b] - means[b]))) / (n - 1)));
+    const rowM = S.map((r) => sum(r) / k);
+    const allM = sum(rowM) / k;
+    const D = S.map((r, a) => r.map((v, b) => v - rowM[a] - rowM[b] + allM));
+    const tr = sum(D.map((r, a) => r[a]));
+    const tr2 = sum(D.flatMap((r) => r.map((v) => v * v)));
+    epsGG = tr2 > 0 ? Math.min(1, (tr * tr) / ((k - 1) * tr2)) : null;
+    pGG = epsGG === null ? null : fP(F, epsGG * dfCond, epsGG * dfErr);
+  }
+  return { ...base, ssCond, ssSubj, ssErr, sst, dfCond, dfErr, F, p, eta2p, epsGG, pGG };
+}

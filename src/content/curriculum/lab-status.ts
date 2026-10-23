@@ -47,6 +47,9 @@ const STATUS: Record<string, Partial<LabMaturity>> = {
   "categorical-lab": { numericallyValidated: true, accessibilityChecked: true },
   // Pearson, Spearman, OLS, logit: engine.test.ts (SciPy / statsmodels)
   "corr-reg-lab": { numericallyValidated: true, accessibilityChecked: true },
+  // one-way/Welch/two-way ANOVA (statsmodels), Tukey (SciPy), Games–Howell: engine.test.ts; repeated measures with
+  // Greenhouse–Geisser: rm-anova.test.ts (R aov Error strata + anova.mlm)
+  "anova-studio": { numericallyValidated: true, accessibilityChecked: true },
   // probability-playground, expected-value-lab and lazarsfeld-simpson-lab are checked against closed forms
   // and a published table (tests/unit), not against an external software reference: accessibility only.
   "probability-playground": { accessibilityChecked: true },

@@ -1,7 +1,7 @@
 "use client";
 
 // Lab id → React component for client code that picks a lab at run time (lessons, builder preview). Each lab
-// is code-split and rendered on the client only. The /lab routes use ./route-registry.tsx.
+// is code-split and rendered on the client only. The /lab/<id> routes import their lab directly (src/app/lab/<id>/page.tsx).
 import type { ImplementedLabId } from "@/content/curriculum/implemented-labs";
 import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
@@ -24,6 +24,7 @@ export const LAB_COMPONENTS: Record<ImplementedLabId, ComponentType<LabProps>> =
   "categorical-lab": dynamic(() => import("./labs/categorical-lab/CategoricalLab"), { loading: Loading, ssr: false }),
   "corr-reg-lab": dynamic(() => import("./labs/corr-reg-lab/CorrRegLab"), { loading: Loading, ssr: false }),
   "lazarsfeld-simpson-lab": dynamic(() => import("./labs/lazarsfeld-simpson-lab/LazarsfeldSimpsonLab"), { loading: Loading, ssr: false }),
+  "anova-studio": dynamic(() => import("./labs/anova-studio/AnovaStudio"), { loading: Loading, ssr: false }),
 };
 
 /** Renders a lab by id (used by /lab/[labId], lessons and the Course Builder preview). */
