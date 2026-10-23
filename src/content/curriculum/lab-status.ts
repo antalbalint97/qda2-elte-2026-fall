@@ -54,6 +54,8 @@ const STATUS: Record<string, Partial<LabMaturity>> = {
   "survey-design-studio": { numericallyValidated: true, accessibilityChecked: true },
   // weights, means and calibration SEs vs R postStratify / calibrate (linear, raking, bounded): calibration.test.ts
   "weighting-calibration-lab": { numericallyValidated: true, accessibilityChecked: true },
+  // svymean (± fpc), deff, JK1/JKn/BRR, domains, svychisq, svyglm vs R survey on five samples; coverage simulation: complex-survey.test.ts
+  "complex-survey-lab": { numericallyValidated: true, accessibilityChecked: true },
   // probability-playground, expected-value-lab and lazarsfeld-simpson-lab are checked against closed forms
   // and a published table (tests/unit), not against an external software reference: accessibility only.
   "probability-playground": { accessibilityChecked: true },

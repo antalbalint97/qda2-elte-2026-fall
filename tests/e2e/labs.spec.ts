@@ -236,3 +236,17 @@ test("keyboard: Weighting & Calibration Lab steps raking, hides variances until 
   await page.goto("/lab/weighting-calibration-lab" + hash({ method: "bounded", bounds: [0.95, 1.05] }), { waitUntil: "networkidle" });
   await expect(page.getByTestId("calib-status")).toContainText("Did not converge");
 });
+
+test("keyboard: Complex Survey Lab switches views, gates BRR and exports R code", async ({ page }) => {
+  await page.goto("/lab/complex-survey-lab" + hash({ strata: 4, psuPerStratum: 6, method: "taylor" }), { waitUntil: "networkidle" });
+  await expect(page.getByTestId("coverage")).toContainText("%");
+  await expect(page.getByRole("radio", { name: "BRR" })).toBeDisabled();
+  await page.getByRole("radio", { name: "Standard errors" }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("heading", { name: "Domain estimate: group = C" })).toBeVisible();
+  await page.goto("/lab/complex-survey-lab" + hash({ psuPerStratum: 2, method: "brr", view: "export" }), { waitUntil: "networkidle" });
+  await expect(page.getByTestId("r-code")).toContainText('as.svrepdesign(des, type = "BRR")');
+  await expect(page.getByTestId("r-code")).toContainText("svyglm(y ~ x + group, design = des)");
+  await page.goto("/lab/complex-survey-lab" + hash({ view: "test" }), { waitUntil: "networkidle" });
+  await expect(page.getByTestId("rao-scott")).toContainText("F =");
+});

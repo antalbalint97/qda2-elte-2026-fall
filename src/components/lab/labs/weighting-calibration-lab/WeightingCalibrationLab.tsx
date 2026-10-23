@@ -286,7 +286,7 @@ export default function WeightingCalibrationLab(props: LabProps) {
                   </div>
                   <details className="mt-2">
                     <summary className="cursor-pointer text-xs text-muted">{t.logTitle}</summary>
-                    <ol className="mt-1 max-h-40 overflow-auto font-mono text-xs text-ink">
+                    <ol tabIndex={0} aria-label={t.logTitle} className="mt-1 max-h-40 overflow-auto font-mono text-xs text-ink">
                       {adj.log.map((e, k) => (
                         <li key={k}>{t.logLine.replace("{k}", String(k + 1)).replace("{e}", e.toExponential(2))}</li>
                       ))}

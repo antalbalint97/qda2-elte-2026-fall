@@ -613,5 +613,6 @@ export const SURVEY_VALIDATION: Record<string, { state: ValidationState; referen
   twoStage: { state: "unvalidated", reference: "R svydesign(ids = ~psu + id, fpc = ~A + M)", note: "two-stage variance shown with the ultimate-cluster approximation" },
   svyGlm: { state: "validated", reference: "R svyglm (gaussian)", note: "coefficients and design-based SEs" },
   ppsInclusion: { state: "validated", reference: "sampling::inclusionprobabilities (F10)", note: "inclusion probabilities" },
+  brr: { state: "validated", reference: "R as.svrepdesign(type = 'BRR') on Complex Survey Lab samples (complex-survey-reference.json)", note: "brrWeights() in complex-survey-lab/model.ts; survey::hadamard matrices for up to 8 strata" },
   ppsVariance: { state: "unvalidated", reference: "—", note: "PPS-WOR design variance (joint π) is not implemented" },
 };

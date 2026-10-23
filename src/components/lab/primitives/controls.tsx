@@ -96,6 +96,8 @@ export function ParameterControl({
 export interface ChoiceOption<T extends string | number> {
   value: T;
   label: ReactNode;
+  /** Unavailable option: shown but not selectable and skipped by the arrow keys. */
+  disabled?: boolean;
 }
 
 /** Radiogroup with arrow-key navigation (segmented look). */
@@ -125,10 +127,16 @@ export function ChoiceControl<T extends string | number>({
   const labelId = useId();
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (isLocked) return;
+    const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
     let next = -1;
-    if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (idx + 1) % options.length;
-    if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = (idx - 1 + options.length) % options.length;
-    if (next >= 0) {
+    for (let k = 1; step && k <= options.length; k++) {
+      const j = (idx + step * k + options.length * k) % options.length;
+      if (!options[j].disabled) {
+        next = j;
+        break;
+      }
+    }
+    if (next >= 0 && next !== idx) {
       e.preventDefault();
       onChange(options[next].value);
       refs.current[next]?.focus();
@@ -162,8 +170,8 @@ export function ChoiceControl<T extends string | number>({
               role="radio"
               aria-checked={active}
               tabIndex={active || (idx < 0 && i === 0) ? 0 : -1}
-              disabled={isLocked && !active}
-              onClick={() => !isLocked && onChange(o.value)}
+              disabled={(isLocked && !active) || (!!o.disabled && !active)}
+              onClick={() => !isLocked && !o.disabled && onChange(o.value)}
               className={cn(
                 "rounded-md font-medium transition",
                 size === "sm" ? "px-2.5 py-1 text-xs" : "px-3.5 py-1.5 text-sm",

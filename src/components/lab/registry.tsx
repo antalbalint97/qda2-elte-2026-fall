@@ -27,6 +27,7 @@ export const LAB_COMPONENTS: Record<ImplementedLabId, ComponentType<LabProps>> =
   "anova-studio": dynamic(() => import("./labs/anova-studio/AnovaStudio"), { loading: Loading, ssr: false }),
   "survey-design-studio": dynamic(() => import("./labs/survey-design-studio/SurveyDesignStudio"), { loading: Loading, ssr: false }),
   "weighting-calibration-lab": dynamic(() => import("./labs/weighting-calibration-lab/WeightingCalibrationLab"), { loading: Loading, ssr: false }),
+  "complex-survey-lab": dynamic(() => import("./labs/complex-survey-lab/ComplexSurveyLab"), { loading: Loading, ssr: false }),
 };
 
 /** Renders a lab by id (used by /lab/[labId], lessons and the Course Builder preview). */
