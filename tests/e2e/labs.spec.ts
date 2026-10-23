@@ -271,3 +271,33 @@ test("keyboard: Measurement & Index Lab toggles items, moves thresholds and hide
   await page.getByRole("button", { name: "Reveal α" }).click();
   await expect(page.getByRole("status").filter({ hasText: "your guess" })).toContainText("α = 0.690");
 });
+
+test("keyboard: PCA Studio rotates the probe to PC1, flags a Heywood case, edits a matrix and steps k-means", async ({ page }) => {
+  await page.goto("/lab/linalg-pca-studio" + hash({ dims: 2, standardize: true, theta: 43 }), { waitUntil: "networkidle" });
+  const axis = page.getByRole("slider", { name: "Probe axis" });
+  await expect(axis).toHaveAttribute("aria-valuenow", "43");
+  await expect(page.getByText("you found the first principal component")).toBeVisible();
+  await axis.focus();
+  await page.keyboard.press("Shift+ArrowRight");
+  await expect(axis).toHaveAttribute("aria-valuenow", "48");
+  await expect(page.getByText("you found the first principal component")).toHaveCount(0);
+  await page.getByRole("button", { name: "Snap to PC1" }).click();
+  await expect(axis).toHaveAttribute("aria-valuenow", "45");
+  await page.goto("/lab/linalg-pca-studio" + hash({ view: "items", method: "paf" }), { waitUntil: "networkidle" });
+  await expect(page.getByTestId("paf-status")).toContainText("converged");
+  await page.getByRole("radio", { name: "2", exact: true }).click();
+  await expect(page.getByTestId("paf-status")).toContainText("Heywood");
+  await page.goto("/lab/linalg-pca-studio" + hash({ view: "matrix" }), { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: "Rotation 90°" }).click();
+  await expect(page.getByTestId("eigen-readout")).toContainText("No real eigenvectors");
+  await page.getByRole("button", { name: "Symmetric [[2,1],[1,2]]" }).click();
+  await expect(page.getByTestId("eigen-readout")).toContainText("λ = 3.000");
+  await page.getByLabel("A[1,2]").fill("0");
+  await page.getByLabel("A[2,1]").fill("0");
+  await expect(page.getByTestId("eigen-readout")).toContainText("λ = 2.000, v = (1.000, 0.000)");
+  await page.goto("/lab/linalg-pca-studio" + hash({ view: "kmeans", k: 3, step: 0 }), { waitUntil: "networkidle" });
+  await expect(page.getByTestId("kmeans-step")).toContainText("Lloyd step 1/");
+  await page.getByRole("button", { name: "Next step" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByTestId("kmeans-step")).toContainText("Lloyd step 2/");
+});

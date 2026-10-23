@@ -178,6 +178,10 @@ export interface KMeans {
   centroids: number[][];
   assign: number[];
   sswHistory: number[];
+  /** Every Lloyd step: the centroids used for the assignment, the assignment and its SSW. */
+  steps: { centroids: number[][]; assign: number[]; ssw: number }[];
+  /** True when some step left a cluster without members (its centroid is then kept, not re-seeded). */
+  emptyCluster: boolean;
   ssw: number;
   iterations: number;
   converged: boolean;
@@ -194,6 +198,8 @@ export function kmeans(points: number[][], k: number, seed: number, maxIt = 50):
   let cent = pickIdx.map((i) => points[i].slice());
   let assign: number[] = [];
   const hist: number[] = [];
+  const steps: KMeans["steps"] = [];
+  let emptyCluster = false;
   let converged = false;
   let it = 0;
   for (; it < maxIt; it++) {
@@ -210,8 +216,10 @@ export function kmeans(points: number[][], k: number, seed: number, maxIt = 50):
       return best;
     });
     hist.push(sum(points.map((p, i) => sum(p.map((v, m) => (v - cent[assign[i]][m]) ** 2)))));
+    steps.push({ centroids: cent.map((c) => c.slice()), assign: assign.slice(), ssw: hist[hist.length - 1] });
     const nc = cent.map((c, j) => {
       const mem = points.filter((_, i) => assign[i] === j);
+      if (!mem.length) emptyCluster = true;
       return mem.length ? c.map((_, m) => mean(mem.map((p) => p[m])) as number) : c;
     });
     const same = nc.every((c, j) => c.every((v, m) => Math.abs(v - cent[j][m]) < 1e-12));
@@ -221,5 +229,58 @@ export function kmeans(points: number[][], k: number, seed: number, maxIt = 50):
       break;
     }
   }
-  return { centroids: cent, assign, sswHistory: hist, ssw: hist[hist.length - 1], iterations: it + 1, converged };
+  return { centroids: cent, assign, sswHistory: hist, steps, emptyCluster, ssw: hist[hist.length - 1], iterations: it + 1, converged };
+}
+
+export interface Paf {
+  /** Loadings, one array per factor (unrotated), sign fixed so the largest |loading| is positive. */
+  loadings: Vector[];
+  communalities: number[];
+  uniqueness: number[];
+  /** Eigenvalues of the final reduced correlation matrix (communalities on the diagonal). */
+  reducedEigenvalues: number[];
+  iterations: number;
+  converged: boolean;
+  /** A communality reached 1 or more (Heywood case): the solution is not admissible. */
+  heywood: boolean;
+  method: string;
+}
+/**
+ * Principal-axis factoring of a correlation matrix: start from squared multiple correlations, put the
+ * communalities on the diagonal, take the first `nf` eigenpairs, recompute the communalities and repeat
+ * until they change by less than `tol` (at most `maxIt` iterations). No rotation. Null when p < 2 or nf ≥ p.
+ */
+export function paf(R: Matrix, nf: number, maxIt = 100, tol = 1e-6): Paf | null {
+  const p = R.length;
+  if (p < 2 || nf < 1 || nf >= p) return null;
+  const inv = inverse(R);
+  let h = R.map((r, i) => (inv ? 1 - 1 / inv[i][i] : Math.max(...r.filter((_, j) => j !== i).map(Math.abs))));
+  let e = eigenSym(R);
+  let converged = false;
+  let it = 0;
+  while (it < maxIt) {
+    it++;
+    e = eigenSym(R.map((r, i) => r.map((v, j) => (i === j ? h[i] : v))));
+    const L = e.vectors.slice(0, nf).map((v, k) => v.map((x) => x * Math.sqrt(Math.max(0, e.values[k]))));
+    const hn = R.map((_, i) => sum(L.map((l) => l[i] ** 2)));
+    const d = Math.max(...hn.map((v, i) => Math.abs(v - h[i])));
+    h = hn;
+    if (d < tol) {
+      converged = true;
+      break;
+    }
+  }
+  const reduced = eigenSym(R.map((r, i) => r.map((v, j) => (i === j ? h[i] : v))));
+  const loadings = reduced.vectors.slice(0, nf).map((v, k) => v.map((x) => x * Math.sqrt(Math.max(0, reduced.values[k]))));
+  const comm = R.map((_, i) => sum(loadings.map((l) => l[i] ** 2)));
+  return {
+    loadings,
+    communalities: comm,
+    uniqueness: comm.map((c) => 1 - c),
+    reducedEigenvalues: reduced.values,
+    iterations: it,
+    converged,
+    heywood: comm.some((c) => c >= 1),
+    method: "principal-axis factoring (iterated communalities from SMC, unrotated)",
+  };
 }
