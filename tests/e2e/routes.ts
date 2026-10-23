@@ -3,4 +3,4 @@ export const MODULE_ROUTES = ["/measurement", "/crosstabs", "/lazarsfeld", "/p-v
 export const ROUTES = ["/", ...MODULE_ROUTES, "/review", "/go-further", "/bonus/sopranos", "/about", "/privacy"];
 
 /** V3 laboratories integrated so far (src/content/curriculum/implemented-labs.ts) and the portfolio. */
-export const LAB_ROUTES = ["/labs", "/lab/vra-lab", "/lab/sampling-universe", "/lab/ttest-lab", "/lab/ci-explorer", "/lab/survey-weighting-studio", "/lab/hypothesis-lab", "/lab/distribution-studio", "/lab/probability-playground", "/lab/expected-value-lab", "/lab/categorical-lab", "/lab/corr-reg-lab", "/lab/lazarsfeld-simpson-lab", "/lab/anova-studio", "/lab/survey-design-studio"];
+export const LAB_ROUTES = ["/labs", "/lab/vra-lab", "/lab/sampling-universe", "/lab/ttest-lab", "/lab/ci-explorer", "/lab/survey-weighting-studio", "/lab/hypothesis-lab", "/lab/distribution-studio", "/lab/probability-playground", "/lab/expected-value-lab", "/lab/categorical-lab", "/lab/corr-reg-lab", "/lab/lazarsfeld-simpson-lab", "/lab/anova-studio", "/lab/survey-design-studio", "/lab/weighting-calibration-lab"];

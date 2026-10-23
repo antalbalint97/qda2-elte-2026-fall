@@ -26,6 +26,7 @@ export const LAB_COMPONENTS: Record<ImplementedLabId, ComponentType<LabProps>> =
   "lazarsfeld-simpson-lab": dynamic(() => import("./labs/lazarsfeld-simpson-lab/LazarsfeldSimpsonLab"), { loading: Loading, ssr: false }),
   "anova-studio": dynamic(() => import("./labs/anova-studio/AnovaStudio"), { loading: Loading, ssr: false }),
   "survey-design-studio": dynamic(() => import("./labs/survey-design-studio/SurveyDesignStudio"), { loading: Loading, ssr: false }),
+  "weighting-calibration-lab": dynamic(() => import("./labs/weighting-calibration-lab/WeightingCalibrationLab"), { loading: Loading, ssr: false }),
 };
 
 /** Renders a lab by id (used by /lab/[labId], lessons and the Course Builder preview). */

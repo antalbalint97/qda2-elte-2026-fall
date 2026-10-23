@@ -27,7 +27,7 @@ Local e2e needs `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium` (an optional overri
 | --- | --- |
 | M1 Foundation — engines, data models, validation | done |
 | M2 Lab framework + first five labs | done |
-| M3–M5 Remaining fifteen labs | in progress (9 of 15 done) |
+| M3–M5 Remaining fifteen labs | in progress (10 of 15 done) |
 | M6 Browser R (webR) | not started |
 | M7 Atlas, Course Builder, snapshots | not started |
 | M8 Lesson renderer + Survey acceptance scenario | not started |
@@ -129,8 +129,9 @@ legacy VRA hash, redirects, keyboard) · Firefox/WebKit BLOCKED (not installed).
 | `lazarsfeld-simpson-lab` | zero-order and partial bar panels with draggable partial %, draggable Z composition, classification, causal-order advice with a small DAG | `lazarsfeld-lab.test.ts`: aggregate = weighted partials to 1e-12; the published kidney-stone data reverse |
 | `anova-studio` | one-way, two-way and repeated-measures designs; draggable points and group means, SSB/SSW bar, post-hoc forest (none, Bonferroni, Tukey, Games–Howell), interaction plot with draggable cell means, editable scores | one-way, Welch and two-way vs statsmodels, Tukey vs SciPy, Games–Howell vs its definition; repeated measures (F, partial η², Greenhouse–Geisser ε and p) vs R `aov` + `anova.mlm` in `rm-anova.test.ts` (4 cases, 1e-9) |
 | `survey-design-studio` | strata × stages × PPS design matrix on a 40-settlement map with the frame overlaid, per-type frame coverage, draggable stratum allocation (proportional, Neyman, equal, custom), stage-by-stage π trace (keyboard: one tab stop, arrow keys), exact one-stage SE, simulated SE over 300 draws, domain SEs | `survey-design-studio.test.ts`: Hájek mean, SE and domain SEs vs R `svymean`/`svyby` on six exported samples (1e-10), PPS π vs `sampling::inclusionprobabilities` (1e-12), Neyman vs closed form, Σπ_k = n (one stage) and = E[n] (two stage), selection frequencies vs π over 2 000 draws |
+| `weighting-calibration-lab` | post-stratification, raking, linear (GREG) and bounded raking on education, region and age; margin bars with a Newton-step stepper and iteration log, distribution of g = w/d, estimates and calibration SEs per outcome (optionally hidden until predicted), model-based estimate, bias over 200 repeated samples, MNAR switch | `calibration.test.ts`: weights (1e-7), calibrated means (1e-8) and calibration SEs (1e-6) vs R `postStratify` / `calibrate` on nine respondent sets; totals to 1e-9; infeasible bounds reported as R does |
 
-All nine pass axe (WCAG 2.2 AA tags) in light, dark and Teach mode and have a keyboard test in
+All ten pass axe (WCAG 2.2 AA tags) in light, dark and Teach mode and have a keyboard test in
 `tests/e2e/labs.spec.ts` (`accessibilityChecked`). None is `teachingReviewed` or pilot-ready.
 
 **Performance fix**: the old `/lab/[labId]` route imported every lab from a server component, which put all
@@ -163,6 +164,7 @@ lessons and the builder.
 | Lazarsfeld "explanation" and "interpretation" tables | both X groups had the same Z composition, so the zero-order difference was 1.5 pp and the scenario showed replication, not explanation | compositions differ (X = 1 mostly in Z = high), zero-order d = 24.4 pp, partial d ≈ 0 | the prototype counts did not produce the pattern they were named after (caught by `lazarsfeld-lab.test.ts`) |
 | ANOVA repeated measures | prototype reported uncorrected F only | `rmAnova()` adds Greenhouse–Geisser ε (capped at 1) and its p; the table shows both | the lab spec lists the sphericity correction; checked against R |
 | Survey Design Studio | five flat designs (srs, strat, cluster, twostage, pps); "R survey run pending"; PPS π indexed against all PSUs while selection used frame PSUs | spec design matrix `strata` × `stages` × `pps` (so the block configs `{strata: 1, stages: 1}` and `{strata: 3, stages: 2, pps: true}` work); settlements belong to one settlement type so stratified two-stage designs are possible; validated against R | the prototype could not express the stratified PPS block config, and its R validation had not been run |
+| Weighting & Calibration Lab | IPF raking with truncation for "bounded"; SE with the final weights treated as fixed; "parity with R pending" | `calibration.ts`: port of `survey:::grake` (Newton, bounds on g, `MASS::ginv`), calibration variance by residual projection as `svyrecvar`; age added as a continuous auxiliary; base weight d = N/r | truncated IPF is a different algorithm from `calibrate(bounds =)`; with only categorical auxiliaries every cell shares one g, so binding bounds were almost always infeasible; the calibration SE is what R reports |
 | Lazarsfeld Simpson scenario | hand-authored "Treatment A / severe case" counts | the published kidney-stone counts (Charig et al. 1986, BMJ; as discussed by Julious & Mullee 1994) | the lab spec asks for a published example; the footer says the data are published, not synthetic |
 | Categorical lab | tile boundaries not draggable; `keep` param unused | boundaries draggable with keep-N or keep-margins; preset tables size the table unless `rows`/`cols` are set | lab spec interaction |
 | Expected Value lab | histogram counted draws by value (two outcomes with the same x collided); E marker drawn over the x labels | counts by outcome index (`sampleDiscrete().index`); marker below the labels; `hideE` + prediction | correctness and legibility |

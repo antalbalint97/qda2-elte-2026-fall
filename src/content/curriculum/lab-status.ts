@@ -52,6 +52,8 @@ const STATUS: Record<string, Partial<LabMaturity>> = {
   "anova-studio": { numericallyValidated: true, accessibilityChecked: true },
   // svymean / svyby SEs and PPS π vs R survey + sampling on the studio's own samples: survey-design-studio.test.ts
   "survey-design-studio": { numericallyValidated: true, accessibilityChecked: true },
+  // weights, means and calibration SEs vs R postStratify / calibrate (linear, raking, bounded): calibration.test.ts
+  "weighting-calibration-lab": { numericallyValidated: true, accessibilityChecked: true },
   // probability-playground, expected-value-lab and lazarsfeld-simpson-lab are checked against closed forms
   // and a published table (tests/unit), not against an external software reference: accessibility only.
   "probability-playground": { accessibilityChecked: true },

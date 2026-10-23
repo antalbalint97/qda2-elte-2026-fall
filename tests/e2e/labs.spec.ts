@@ -215,3 +215,24 @@ test("keyboard: Survey Design Studio traces π through two PPS stages and alloca
   await expect(page.getByRole("radio", { name: "Custom" })).toHaveAttribute("aria-checked", "true");
   await expect(page.getByText("Σ π_k over the frame").locator("..")).toContainText("161.00");
 });
+
+test("keyboard: Weighting & Calibration Lab steps raking, hides variances until predicted, reports infeasible bounds", async ({ page }) => {
+  await page.goto("/lab/weighting-calibration-lab" + hash({ method: "raking", hideVar: true }), { waitUntil: "networkidle" });
+  const status = page.getByTestId("calib-status");
+  await expect(status).toContainText("Converged after");
+  await page.getByRole("button", { name: "One step back" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(status).toContainText("not converged yet");
+  await page.getByRole("button", { name: "Run to convergence" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(status).toContainText("Converged after");
+  const table = page.getByTestId("outcome-table");
+  await expect(table.locator("tbody tr").first()).toContainText("?");
+  await page.getByRole("radio", { name: "Online hours" }).first().focus();
+  await page.keyboard.press("Enter");
+  await page.getByRole("button", { name: "Show the variances" }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Largest reduction" })).toBeVisible();
+  await expect(table.locator("tbody tr").first()).not.toContainText("?");
+  await page.goto("/lab/weighting-calibration-lab" + hash({ method: "bounded", bounds: [0.95, 1.05] }), { waitUntil: "networkidle" });
+  await expect(page.getByTestId("calib-status")).toContainText("Did not converge");
+});
