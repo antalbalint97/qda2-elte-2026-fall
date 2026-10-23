@@ -43,3 +43,6 @@ next-env.d.ts
 # browser tests
 /test-results/
 /playwright-report/
+
+# webR runtime copied from node_modules by scripts/copy-webr.mjs
+/public/webr/

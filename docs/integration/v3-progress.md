@@ -28,7 +28,7 @@ Local e2e needs `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium` (an optional overri
 | M1 Foundation — engines, data models, validation | done |
 | M2 Lab framework + first five labs | done |
 | M3–M5 Remaining fifteen labs | done (15 of 15; all 20 labs implemented) |
-| M6 Browser R (webR) | not started |
+| M6 Browser R (webR) | done (survey package install BLOCKED in the sandbox: repo.r-wasm.org denied) |
 | M7 Atlas, Course Builder, snapshots | not started |
 | M8 Lesson renderer + Survey acceptance scenario | not started |
 | M9 Hardening, docs, PR | not started |
@@ -116,7 +116,7 @@ e2e Chromium 150/151 (same sandbox-only framing failure as the baseline) · new 
 25/25 PASS (axe WCAG 2.2 AA light/dark/Teach on all five labs and `/labs`, config hash, share round trip,
 legacy VRA hash, redirects, keyboard) · Firefox/WebKit BLOCKED (not installed).
 
-## M3 — Probability, inference and association labs (in progress)
+## M3–M5 — Probability, inference, survey, measurement and modelling labs
 
 | Lab | What it does | Numbers checked by |
 | --- | --- | --- |
@@ -148,6 +148,46 @@ lessons and the builder.
 
 **Checks at this point**: lint PASS · typecheck PASS · unit 219/219 PASS · build PASS · e2e Chromium
 186/187 (the known sandbox-only framing failure).
+
+## M6 — Browser R (webR)
+
+**What exists**
+
+- `webr` 0.4.2 and CodeMirror 6 (`@codemirror/*`, `@lezer/highlight`) pinned exactly. `scripts/copy-webr.mjs`
+  (run by `predev`, `prebuild`, `postinstall`) copies the runtime (R.bin.js/.wasm, BLAS/LAPACK, worker, R's
+  virtual file system; ≈ 40 MB on disk; a first base-R run fetched 10 files, 8.9 MB, from `next start` locally — the host's compression may change this) to `public/webr/0.4.2/`,
+  which is git-ignored and served from the site's own origin with a one-year immutable cache.
+- `src/lib/r/webr-adapter.ts`: one lazily started runtime per page, PostMessage channel (no COOP/COEP needed).
+  Limits: 20 000 code characters, 2 000 output lines, 8 plots (640 × 440), 60 s per run, 5 000 dataset rows.
+  Stop and the timeout terminate the worker and start a fresh R (the PostMessage channel cannot interrupt).
+  Packages: allow-list `["survey"]`, fetched from repo.r-wasm.org only on request, and verified with
+  `requireNamespace` afterwards (webR reports a failed download only as a message). Course datasets are bound as
+  data frames from `datasetR()` (identifier-checked). `reset()` clears the global environment (for lessons, M8).
+- `src/components/r/CodeEditor.tsx` (CodeMirror loaded on demand, labelled textarea until then, Ctrl/⌘+Enter runs;
+  Tab is not captured), `RCodeBlock.tsx` (Run / Stop / Reset code, `role=status` line, output rendered as text
+  nodes, plots as PNG images with alt text, `onResult` for M8 grading), `RConsole.tsx` + route `/r` (EN/HU,
+  dataset picker, opt-in survey package with a note that repo.r-wasm.org sees the download, examples).
+- CSP: `/r` and `/course/*` add `'wasm-unsafe-eval'`, `connect-src https://repo.r-wasm.org` and `worker-src blob:`;
+  pages never get `'unsafe-eval'`. The runtime files (`/webr/*`) carry their own CSP, which also has
+  `'unsafe-eval'`: a same-origin dedicated worker is governed by its script's response CSP, and Emscripten's
+  dynamic linker evaluates generated glue code when it loads R's shared libraries. Without it R does not start in
+  the production build (verified: "Exception" in the worker). The effect is confined to the R worker (no DOM,
+  no cookies, network limited by the same CSP). Note that R code in webR can reach the worker's JavaScript through
+  webR's own R API; the worker, not a code filter, is the security boundary.
+- `/privacy` describes browser R and the optional package download.
+
+**Checks** (`tests/e2e/r.spec.ts`, production build, Chromium): base R from the self-hosted runtime with no
+external request · datasets bound (`nrow(news_knowledge)` = 15, factor levels) · errors and warnings as text (an
+R error containing `<b>` is not rendered as HTML) · plot image with alt text · Stop restarts R and state is gone ·
+CSP headers on `/r`, `/webr/*` and `/` · axe WCAG 2.2 AA before/after a run, light and dark — all PASS.
+The survey install test (asserts `svymean` 5.4308 / SE 0.1822 and the Towns `svyby` row from native R 4.3.3 +
+survey on the same rows) is **BLOCKED** here: the sandbox proxy denies repo.r-wasm.org. It runs by default (CI);
+`E2E_NO_WEBR_REPO=1` skips it and instead runs a test that the blocked install is reported as "could not be
+installed" (PASS). `tests/unit/webr-adapter.test.ts` covers limits, allow-list and timeouts.
+
+**Checks at this point**: lint PASS · typecheck PASS · unit 317/317 PASS · build PASS (one webpack warning from
+webR's CommonJS build in the server bundle, harmless) · check-build PASS · e2e Chromium 221 passed, 1 skipped
+(survey, BLOCKED), 1 failed (the known sandbox-only framing test).
 
 ## Deviations from the V3 package
 

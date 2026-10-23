@@ -94,6 +94,14 @@ export default function Page() {
             explanation inside your browser and does not contact any AI service. The &ldquo;Copy link&rdquo; button in
             the bonus lab only writes a link to your clipboard when you press it.
           </p>
+          <p>
+            <strong>Browser R</strong> (the <Link href="/r" className="text-accent underline underline-offset-2 hover:no-underline">R in the browser</Link>{" "}
+            page and R blocks in course lessons) runs R inside your browser tab. The R runtime is downloaded from this
+            site&apos;s own address the first time you press Run. The code you type and its output stay in the tab and
+            are not saved or sent. Only if you ask for the <strong>survey</strong> package does your browser download
+            it from the webR package repository (repo.r-wasm.org, run by the webR project); that server then receives an
+            ordinary download request from your browser, including your IP address, but not your code or data.
+          </p>
         </Section>
 
         <Section id="hosting" title="4. Hosting and request logs">

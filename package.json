@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/copy-webr.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/copy-webr.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -11,13 +13,21 @@
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./tests/unit/register.mjs --test tests/unit/*.test.ts",
     "test:e2e": "playwright test",
-    "validate:reference": "python3 scripts/validation/reference.py"
+    "validate:reference": "python3 scripts/validation/reference.py",
+    "postinstall": "node scripts/copy-webr.mjs"
   },
   "dependencies": {
+    "@codemirror/commands": "6.10.0",
+    "@codemirror/language": "6.11.3",
+    "@codemirror/legacy-modes": "6.5.2",
+    "@codemirror/state": "6.5.2",
+    "@codemirror/view": "6.38.6",
+    "@lezer/highlight": "1.2.5",
     "katex": "0.18.11",
     "next": "15.5.28",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "webr": "0.4.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.11.3",
