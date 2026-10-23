@@ -179,8 +179,9 @@ export function DragHandle({
   selected,
   children,
   className,
-  cursor = "ns-resize",
+  cursor,
   disabled,
+  orientation = "vertical",
 }: {
   x: number;
   y: number;
@@ -201,6 +202,8 @@ export function DragHandle({
   className?: string;
   cursor?: string;
   disabled?: boolean;
+  /** Which arrow keys move the handle (both pairs always work for "both"). */
+  orientation?: "vertical" | "horizontal" | "both";
 }) {
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (disabled) return;
@@ -214,7 +217,7 @@ export function DragHandle({
       onValue(max);
       return;
     }
-    const d = arrowDelta(e, step, "vertical");
+    const d = arrowDelta(e, step, orientation);
     if (d === null) return;
     e.preventDefault();
     onValue(Math.min(max, Math.max(min, value + d)));
@@ -222,7 +225,7 @@ export function DragHandle({
   return (
     <g
       className={cn("lab-handle", className)}
-      style={{ transform: `translate(${x}px, ${y}px)`, cursor: disabled ? "default" : cursor }}
+      style={{ transform: `translate(${x}px, ${y}px)`, cursor: disabled ? "default" : (cursor ?? (orientation === "horizontal" ? "ew-resize" : orientation === "both" ? "move" : "ns-resize")) }}
       role="slider"
       tabIndex={disabled ? -1 : 0}
       aria-label={label}
@@ -231,7 +234,7 @@ export function DragHandle({
       aria-valuemax={max}
       aria-valuetext={valueText}
       aria-disabled={disabled || undefined}
-      aria-orientation="vertical"
+      aria-orientation={orientation === "both" ? undefined : orientation}
       onPointerDown={disabled ? undefined : onStart}
       onKeyDown={onKeyDown}
       onFocus={onFocus}

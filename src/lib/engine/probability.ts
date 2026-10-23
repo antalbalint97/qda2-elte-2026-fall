@@ -71,6 +71,7 @@ export function sampleDiscrete(out: readonly Outcome[], n: number, seed: number)
     cdf.push(c);
   });
   const draws: number[] = [];
+  const index: number[] = [];
   const running: number[] = [];
   let s = 0;
   for (let i = 0; i < n && rv.outcomes.length; i++) {
@@ -79,10 +80,11 @@ export function sampleDiscrete(out: readonly Outcome[], n: number, seed: number)
     if (k < 0) k = cdf.length - 1;
     const x = rv.outcomes[k].x;
     draws.push(x);
+    index.push(k);
     s += x;
     running.push(s / (i + 1));
   }
-  return { draws, running, mean: draws.length ? s / draws.length : null, rv };
+  return { draws, index, running, mean: draws.length ? s / draws.length : null, rv };
 }
 
 /** Exact distribution of the sum of m fair k-sided dice. */

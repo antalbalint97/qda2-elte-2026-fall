@@ -125,3 +125,61 @@ test("keyboard: Survey Studio stages and unit inspector", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(page.getByText("n_eff,w (Kish)")).toBeVisible();
 });
+
+// Every SVG drag handle of the M3 labs is also a keyboard slider: the arrow keys change its value.
+for (const id of ["hypothesis-lab", "distribution-studio", "probability-playground", "expected-value-lab", "categorical-lab", "lazarsfeld-simpson-lab"]) {
+  test(`keyboard: ${id} drag handle moves with the arrow keys`, async ({ page }) => {
+    await page.goto(`/lab/${id}`, { waitUntil: "networkidle" });
+    const handle = page.locator("svg [role=slider]").first();
+    const before = await handle.getAttribute("aria-valuenow");
+    const [up, down] = (await handle.getAttribute("aria-orientation")) === "horizontal" ? ["ArrowRight", "ArrowLeft"] : ["ArrowUp", "ArrowDown"];
+    await handle.focus();
+    await page.keyboard.press(up);
+    if ((await handle.getAttribute("aria-valuenow")) === before) {
+      await page.keyboard.press(down);
+      await page.keyboard.press(down);
+    }
+    await expect(handle).not.toHaveAttribute("aria-valuenow", before as string);
+  });
+}
+
+test("keyboard: Correlation & Regression point moves and r updates", async ({ page }) => {
+  await page.goto("/lab/corr-reg-lab", { waitUntil: "networkidle" });
+  const pt = page.locator("svg [aria-roledescription='movable point']").first();
+  const label = (await pt.getAttribute("aria-label")) as string;
+  const r0 = await page.getByText("r (Pearson)").locator("..").textContent();
+  await pt.focus();
+  await page.keyboard.press("Shift+ArrowUp");
+  await expect(pt).not.toHaveAttribute("aria-label", label);
+  expect(await page.getByText("r (Pearson)").locator("..").textContent()).not.toBe(r0);
+});
+
+test("keyboard: Lazarsfeld & Simpson classification on the published kidney-stone data", async ({ page }) => {
+  await page.goto("/lab/lazarsfeld-simpson-lab" + hash({ scenario: "simpson", hideAnswer: true }), { waitUntil: "networkidle" });
+  await expect(page.getByText("hidden until you classify")).toBeVisible();
+  await page.getByRole("button", { name: "Simpson's paradox", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("status").filter({ hasText: "Correct" })).toBeVisible();
+  await expect(page.getByText("Charig et al. (1986)")).toBeVisible();
+});
+
+test("keyboard: Expected Value Lab hides E[X] until a prediction is revealed", async ({ page }) => {
+  await page.goto("/lab/expected-value-lab" + hash({ preset: "lottery", hideE: true }), { waitUntil: "networkidle" });
+  await expect(page.getByText("hidden until you predict")).toBeVisible();
+  await page.getByRole("textbox", { name: "Your prediction of E[X]" }).fill("50");
+  await page.getByRole("button", { name: "Reveal E[X]" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("status").filter({ hasText: "E[X] = -60" })).toBeVisible();
+});
+
+test("keyboard: Categorical Lab keeps both margins while a tile boundary moves", async ({ page }) => {
+  await page.goto("/lab/categorical-lab" + hash({ keep: "margins" }), { waitUntil: "networkidle" });
+  const col = async () => (await page.locator("table tbody tr").last().textContent())?.replace(/\s+/g, " ");
+  const totals = await col();
+  const cell = page.getByRole("spinbutton", { name: "Count: Women × Trusts parliament" });
+  const v0 = await cell.inputValue();
+  await page.locator("svg [role=slider]").first().focus();
+  await page.keyboard.press("ArrowUp");
+  await expect(cell).not.toHaveValue(v0);
+  expect(await col()).toBe(totals);
+});

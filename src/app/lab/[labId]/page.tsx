@@ -1,4 +1,4 @@
-import { LAB_PAGES } from "@/components/lab/server-registry";
+import { LabRoute } from "@/components/lab/route-registry";
 import { IMPLEMENTED_LABS, isImplemented } from "@/content/curriculum/implemented-labs";
 import { LABS } from "@/content/curriculum/labs";
 import type { Metadata } from "next";
@@ -19,6 +19,5 @@ export async function generateMetadata({ params }: { params: Promise<{ labId: st
 export default async function LabPage({ params }: { params: Promise<{ labId: string }> }) {
   const { labId } = await params;
   if (!isImplemented(labId)) notFound();
-  const Lab = LAB_PAGES[labId];
-  return <Lab />;
+  return <LabRoute id={labId} />;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 // Lab id → React component for client code that picks a lab at run time (lessons, builder preview). Each lab
-// is code-split and rendered on the client only. The /lab routes use ./server-registry.tsx.
+// is code-split and rendered on the client only. The /lab routes use ./route-registry.tsx.
 import type { ImplementedLabId } from "@/content/curriculum/implemented-labs";
 import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
@@ -17,6 +17,13 @@ export const LAB_COMPONENTS: Record<ImplementedLabId, ComponentType<LabProps>> =
   "ttest-lab": dynamic(() => import("./labs/ttest-lab/TTestLab"), { loading: Loading, ssr: false }),
   "ci-explorer": dynamic(() => import("./labs/ci-explorer/CiExplorer"), { loading: Loading, ssr: false }),
   "survey-weighting-studio": dynamic(() => import("./labs/survey-weighting-studio/SurveyWeightingStudio"), { loading: Loading, ssr: false }),
+  "hypothesis-lab": dynamic(() => import("./labs/hypothesis-lab/HypothesisLab"), { loading: Loading, ssr: false }),
+  "distribution-studio": dynamic(() => import("./labs/distribution-studio/DistributionStudio"), { loading: Loading, ssr: false }),
+  "probability-playground": dynamic(() => import("./labs/probability-playground/ProbabilityPlayground"), { loading: Loading, ssr: false }),
+  "expected-value-lab": dynamic(() => import("./labs/expected-value-lab/ExpectedValueLab"), { loading: Loading, ssr: false }),
+  "categorical-lab": dynamic(() => import("./labs/categorical-lab/CategoricalLab"), { loading: Loading, ssr: false }),
+  "corr-reg-lab": dynamic(() => import("./labs/corr-reg-lab/CorrRegLab"), { loading: Loading, ssr: false }),
+  "lazarsfeld-simpson-lab": dynamic(() => import("./labs/lazarsfeld-simpson-lab/LazarsfeldSimpsonLab"), { loading: Loading, ssr: false }),
 };
 
 /** Renders a lab by id (used by /lab/[labId], lessons and the Course Builder preview). */

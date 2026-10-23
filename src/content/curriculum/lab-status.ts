@@ -29,7 +29,7 @@ const NONE: LabMaturity = { integrated: false, numericallyValidated: false, acce
  */
 const STATUS: Record<string, Partial<LabMaturity>> = {
   // describe/fit/anova on the VRA scenarios: engine.test.ts "VRA base scenario", reference.json (SciPy)
-  // accessibilityChecked for the five M2 labs: labs.spec.ts axe light/dark/Teach + keyboard tests.
+  // accessibilityChecked: labs.spec.ts axe light/dark/Teach + a keyboard test for each flagged lab.
   "vra-lab": { numericallyValidated: true, accessibilityChecked: true },
   "sampling-universe": { accessibilityChecked: true },
   // independentT/pairedT/oneSampleT/Levene/g: engine.test.ts "t-test lab numbers vs the SciPy fixture"
@@ -39,6 +39,19 @@ const STATUS: Record<string, Partial<LabMaturity>> = {
   // Not numericallyValidated: the SE after post-stratification/raking is not checked (survey-studio.test.ts
   // covers the rest against R survey).
   "survey-weighting-studio": { accessibilityChecked: true },
+  // nct CDF, power and t tails: engine.test.ts "distributions vs SciPy"
+  "hypothesis-lab": { numericallyValidated: true, accessibilityChecked: true },
+  // quantile functions, binomial/Poisson, type-7 quantiles and skewness: engine.test.ts (SciPy)
+  "distribution-studio": { numericallyValidated: true, accessibilityChecked: true },
+  // χ², V, Yates, Fisher, OR: engine.test.ts "categorical and correlation vs SciPy"; edits: categorical-lab.test.ts
+  "categorical-lab": { numericallyValidated: true, accessibilityChecked: true },
+  // Pearson, Spearman, OLS, logit: engine.test.ts (SciPy / statsmodels)
+  "corr-reg-lab": { numericallyValidated: true, accessibilityChecked: true },
+  // probability-playground, expected-value-lab and lazarsfeld-simpson-lab are checked against closed forms
+  // and a published table (tests/unit), not against an external software reference: accessibility only.
+  "probability-playground": { accessibilityChecked: true },
+  "expected-value-lab": { accessibilityChecked: true },
+  "lazarsfeld-simpson-lab": { accessibilityChecked: true },
 };
 
 export function labMaturity(id: string): LabMaturity {

@@ -27,7 +27,7 @@ Local e2e needs `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium` (an optional overri
 | --- | --- |
 | M1 Foundation — engines, data models, validation | done |
 | M2 Lab framework + first five labs | done |
-| M3–M5 Remaining fifteen labs | not started |
+| M3–M5 Remaining fifteen labs | in progress (7 of 15 done) |
 | M6 Browser R (webR) | not started |
 | M7 Atlas, Course Builder, snapshots | not started |
 | M8 Lesson renderer + Survey acceptance scenario | not started |
@@ -116,6 +116,29 @@ e2e Chromium 150/151 (same sandbox-only framing failure as the baseline) · new 
 25/25 PASS (axe WCAG 2.2 AA light/dark/Teach on all five labs and `/labs`, config hash, share round trip,
 legacy VRA hash, redirects, keyboard) · Firefox/WebKit BLOCKED (not installed).
 
+## M3 — Probability, inference and association labs (in progress)
+
+| Lab | What it does | Numbers checked by |
+| --- | --- | --- |
+| `hypothesis-lab` | H₀/H₁ curves with draggable critical value and observed t, simulated null, power curves, m-test grid | `engine.test.ts` nct CDF, power, t tails vs SciPy (`numericallyValidated`) |
+| `distribution-studio` | theory mode (density/PMF, interval handles, CDF) and data mode (histogram, boxplot, normal fit) | quantiles, binomial/Poisson, type-7 quantiles, skewness vs SciPy (`numericallyValidated`) |
+| `probability-playground` | area model with three draggable partitions, natural-frequency tree, two-dice grid, seeded simulation | closed forms in `engine.test.ts` (no external software reference) |
+| `expected-value-lab` | editable payoff table with draggable bars, balance point and ±SD, running mean with E ± 2·SD/√n, frequencies vs exact p, "hide E until predicted" | `expected-value.test.ts`: E, Var exact for the presets; running mean within 3·SD/√n at n = 10 000 for 19+/20 seeds |
+| `categorical-lab` | editable table, draggable mosaic (keep N and row totals, or keep both margins), expected / row % / adjusted residual views, χ² contributions | χ², V, Yates, Fisher, OR vs SciPy/statsmodels (`numericallyValidated`); `categorical-lab.test.ts` margin invariants |
+| `corr-reg-lab` | draggable scatter, covariance rectangles, residual squares, parallel-lines model with a group predictor, logistic curve | Pearson, Spearman, OLS, logit vs SciPy/statsmodels (`numericallyValidated`) |
+| `lazarsfeld-simpson-lab` | zero-order and partial bar panels with draggable partial %, draggable Z composition, classification, causal-order advice with a small DAG | `lazarsfeld-lab.test.ts`: aggregate = weighted partials to 1e-12; the published kidney-stone data reverse |
+
+All seven pass axe (WCAG 2.2 AA tags) in light, dark and Teach mode and have a keyboard test in
+`tests/e2e/labs.spec.ts` (`accessibilityChecked`). None is `teachingReviewed` or pilot-ready.
+
+**Performance fix**: the `/lab/[labId]` route imported every lab from a server component, which put all
+labs into one 83 kB page chunk. Labs now come from a client registry of `next/dynamic` imports
+(`src/components/lab/route-registry.tsx`): the page chunk is 1.6 kB and each page loads only its own lab,
+still server-rendered into the static HTML.
+
+**Checks at this point**: lint PASS · typecheck PASS · unit 213/213 PASS · build PASS · e2e Chromium
+181/182 (the known sandbox-only framing failure) · `labs.spec.ts` 56/56 PASS.
+
 ## Deviations from the V3 package
 
 | Item | Prototype | Production | Why |
@@ -133,4 +156,8 @@ legacy VRA hash, redirects, keyboard) · Firefox/WebKit BLOCKED (not installed).
 | Survey deff | `V_lin / ((1 − n/N)·S²/n)` (provisional) | `designEffect()` = R `svymean(deff = "replace")` paired with the no-fpc SE; `svyMean().deff` = `deff = TRUE` | now matches R; registry entry `deff` is `validated` |
 | Survey Studio footer | "validated vs R survey 4.x (webR run …)" | states exactly what was checked and what was not | the prototype claim had no fixture behind it |
 | Population field | 600 focusable dots | dots are decorative; a unit-id inspector and a table of sampled units are the keyboard path | 600 tab stops are unusable |
-
+| Lazarsfeld "explanation" and "interpretation" tables | both X groups had the same Z composition, so the zero-order difference was 1.5 pp and the scenario showed replication, not explanation | compositions differ (X = 1 mostly in Z = high), zero-order d = 24.4 pp, partial d ≈ 0 | the prototype counts did not produce the pattern they were named after (caught by `lazarsfeld-lab.test.ts`) |
+| Lazarsfeld Simpson scenario | hand-authored "Treatment A / severe case" counts | the published kidney-stone counts (Charig et al. 1986, BMJ; as discussed by Julious & Mullee 1994) | the lab spec asks for a published example; the footer says the data are published, not synthetic |
+| Categorical lab | tile boundaries not draggable; `keep` param unused | boundaries draggable with keep-N or keep-margins; preset tables size the table unless `rows`/`cols` are set | lab spec interaction |
+| Expected Value lab | histogram counted draws by value (two outcomes with the same x collided); E marker drawn over the x labels | counts by outcome index (`sampleDiscrete().index`); marker below the labels; `hideE` + prediction | correctness and legibility |
+| Correlation & Regression, binary view | y axis relabelled 0–1 while the points stayed on the 0–100 scale | left axis y, right axis P̂(y = 1); separation is reported with what to change | the relabelled axis misread the data |
