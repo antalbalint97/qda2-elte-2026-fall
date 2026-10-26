@@ -32,9 +32,18 @@ export const MODULES: ModuleMeta[] = [
     chain: [1, 2, 3],
   },
   {
+    slug: "indices",
+    href: "/indices",
+    number: "02",
+    title: "Building an Index",
+    short: "Index",
+    blurb: "From several survey items to one number: reverse-scoring, Cronbach's alpha, item selection and categories.",
+    chain: [1, 3, 6, 7],
+  },
+  {
     slug: "crosstabs",
     href: "/crosstabs",
-    number: "02",
+    number: "03",
     title: "Crosstabs",
     short: "Crosstabs",
     blurb: "Denominators, row vs column percentages, expected counts, χ² and Cramer's V.",
@@ -43,7 +52,7 @@ export const MODULES: ModuleMeta[] = [
   {
     slug: "lazarsfeld",
     href: "/lazarsfeld",
-    number: "03",
+    number: "04",
     title: "Lazarsfeld Paradigm",
     short: "Lazarsfeld",
     blurb: "What happens to X → Y when you control for Z: replication, specification, explanation, interpretation.",
@@ -52,7 +61,7 @@ export const MODULES: ModuleMeta[] = [
   {
     slug: "p-values",
     href: "/p-values",
-    number: "04",
+    number: "05",
     title: "p-values",
     short: "p-values",
     blurb: "The null distribution, tail areas, sample size, and why significant does not mean important.",
@@ -61,7 +70,7 @@ export const MODULES: ModuleMeta[] = [
   {
     slug: "correlation",
     href: "/correlation",
-    number: "05",
+    number: "06",
     title: "Correlation",
     short: "Correlation",
     blurb: "Direction and strength of linear association, Pearson vs Spearman, and what r cannot tell you.",
@@ -70,7 +79,7 @@ export const MODULES: ModuleMeta[] = [
   {
     slug: "t-tests",
     href: "/t-tests",
-    number: "06",
+    number: "07",
     title: "t-tests",
     short: "t-tests",
     blurb: "One-sample, independent-samples and paired-samples: choose the comparison, read the output.",
@@ -79,7 +88,7 @@ export const MODULES: ModuleMeta[] = [
   {
     slug: "anova",
     href: "/anova",
-    number: "07",
+    number: "08",
     title: "ANOVA Mathematics Lab",
     short: "ANOVA",
     blurb: "Derive sums of squares, F and eta squared by hand, then change the data interactively.",
@@ -88,20 +97,11 @@ export const MODULES: ModuleMeta[] = [
   {
     slug: "variance",
     href: "/variance",
-    number: "08",
+    number: "09",
     title: "Spread, Variance & Error",
     short: "Variance",
     blurb: "Why averages are not enough: variance as squares, residuals, error terms and unequal spread.",
     chain: [5, 7, 8],
-  },
-  {
-    slug: "indices",
-    href: "/indices",
-    number: "09",
-    title: "Building an Index",
-    short: "Index",
-    blurb: "From several survey items to one number: reverse-scoring, Cronbach's alpha, item selection and categories.",
-    chain: [1, 3, 6, 7],
   },
 ];
 

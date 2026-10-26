@@ -25,7 +25,7 @@ describe("Measurement & Index Lab vs R", () => {
         close(it.alphaIfDeleted, ref.alphaIfDeleted[j], 1e-12, `alpha if deleted ${j}`);
         close(it.corrected, ref.corrected[j], 1e-12, `corrected r ${j}`);
       });
-      // the module 09 implementation (respondents × items) agrees
+      // the module 02 implementation (respondents × items) agrees
       const m = c.items[0].map((_, i) => c.items.map((x) => x[i]));
       close(cronbachAlpha(m), ref.alpha, 1e-12, "reliability.ts alpha");
     });

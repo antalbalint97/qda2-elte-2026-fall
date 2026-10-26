@@ -12,7 +12,7 @@ import { qAgeRole, qChildren, qLevelVsRole, qPolInterest } from "@/content/quest
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Measurement Levels" };
-const meta = MODULES[0];
+const meta = MODULES.find((m) => m.slug === "measurement")!;
 
 export default function Page() {
   return (

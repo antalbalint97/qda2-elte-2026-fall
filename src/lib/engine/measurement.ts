@@ -1,5 +1,5 @@
 // Reliability of summated scales. The alpha formula is the one already validated in src/lib/reliability.ts
-// (module 09); this module adds reverse-coding, α-if-deleted and the standardised α for the lab.
+// (module 02); this module adds reverse-coding, α-if-deleted and the standardised α for the lab.
 import { describe } from "./descriptives";
 import { pearson } from "./inference";
 import { mean, sum } from "./numeric";

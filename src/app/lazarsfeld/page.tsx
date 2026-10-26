@@ -20,7 +20,7 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Lazarsfeld Paradigm" };
-const meta = MODULES[2];
+const meta = MODULES.find((m) => m.slug === "lazarsfeld")!;
 
 export default function Page() {
   return (

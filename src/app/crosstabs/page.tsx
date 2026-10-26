@@ -14,7 +14,7 @@ import { chiSquareTest, noLeadingZero } from "@/lib/stats";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Crosstabs" };
-const meta = MODULES[1];
+const meta = MODULES.find((m) => m.slug === "crosstabs")!;
 
 export default function Page() {
   const t = chiSquareTest(COUNTS);

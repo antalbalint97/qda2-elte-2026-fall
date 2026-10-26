@@ -14,7 +14,7 @@ import { qPMeaning, qPN, qPNonSig, qExpected } from "@/content/questions";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "p-values" };
-const meta = MODULES[3];
+const meta = MODULES.find((m) => m.slug === "p-values")!;
 
 export default function Page() {
   return (

@@ -13,7 +13,7 @@ import type { ChoiceQuestion } from "@/content/quiz-types";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "Correlation" };
-const meta = MODULES[4];
+const meta = MODULES.find((m) => m.slug === "correlation")!;
 
 const OUTPUT_QS: ChoiceQuestion[] = [
   {

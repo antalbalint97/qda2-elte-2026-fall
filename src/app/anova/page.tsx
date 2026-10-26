@@ -21,7 +21,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = { title: "ANOVA" };
-const meta = MODULES[6];
+const meta = MODULES.find((m) => m.slug === "anova")!;
 
 const baseline = anova(ORIGINAL);
 

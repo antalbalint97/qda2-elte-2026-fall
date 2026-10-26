@@ -1,4 +1,4 @@
-// Measurement & Index Lab model: the two course item sets (ds.index-120, the module 09 trust-in-science
+// Measurement & Index Lab model: the two course item sets (ds.index-120, the module 02 trust-in-science
 // responses, and ds.efficacy-120), Cronbach's α with item statistics (engine measurement.ts), the summated
 // index with absolute / tercile / quartile cuts, and an attenuation simulation: random error added to every
 // item lowers the index's correlation with a fixed criterion by √(reliability of the noisy index).
