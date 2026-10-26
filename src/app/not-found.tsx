@@ -9,7 +9,7 @@ export default function NotFound() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-14 sm:px-6">
       <p className="font-mono text-xs tracking-widest text-faint">404</p>
-      <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-ink">This page does not exist</h1>
+      <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink">This page does not exist</h1>
       <p className="mt-4 leading-relaxed text-muted">
         The address may be mistyped, or the page may have moved. Every module is listed below.
       </p>

@@ -16,7 +16,7 @@ export default function GoFurtherPage() {
             Not part of basic mastery
           </span>
         </div>
-        <h1 className="mt-3 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">Go Further</h1>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">Go Further</h1>
         <p className="mt-4 max-w-3xl text-lg leading-relaxed text-muted">
           Advanced tools for students who want to go beyond the required course minimum. You do not need these topics
           for the basic task. They explain ideas that already appeared in some homework submissions and questions.

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
     <section id={id} className="scroll-mt-24">
-      <h2 className="font-serif text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+      <h2 className="text-2xl font-semibold tracking-tight text-ink">{title}</h2>
       <div className="mt-3 space-y-3 leading-relaxed text-muted [&_strong]:text-ink">{children}</div>
     </section>
   );
@@ -23,7 +23,7 @@ export default function Page() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6 sm:pt-14">
       <p className="font-mono text-xs tracking-widest text-faint">PRIVACY & LOCAL DATA</p>
-      <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+      <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
         How this site handles data
       </h1>
       <p className="mt-4 text-lg leading-relaxed text-muted">
@@ -72,7 +72,7 @@ export default function Page() {
         </Section>
 
         <section aria-labelledby="controls-heading" className="space-y-3">
-          <h2 id="controls-heading" className="font-serif text-2xl font-semibold tracking-tight text-ink">
+          <h2 id="controls-heading" className="text-2xl font-semibold tracking-tight text-ink">
             2. See and delete your local data
           </h2>
           <LocalDataControls />

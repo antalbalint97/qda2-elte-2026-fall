@@ -31,7 +31,7 @@ export function CaseSection({
             </span>
             <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-faint">{kicker}</span>
           </div>
-          <h2 className="mt-3 font-serif text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{title}</h2>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{title}</h2>
           {intro && <div className="mt-3 max-w-3xl leading-relaxed text-muted">{intro}</div>}
           {aside && <p className="mt-3 font-serif text-sm italic text-accent">{aside}</p>}
         </header>

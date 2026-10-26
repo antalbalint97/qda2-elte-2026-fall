@@ -47,7 +47,7 @@ export function VarianceSquares() {
     <Panel>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-serif text-xl font-semibold text-ink">Variance is an average square</h3>
+          <h3 className="tracking-tight text-xl font-semibold text-ink">Variance is an average square</h3>
           <p className="mt-1 max-w-2xl text-sm text-muted">
             Synthetic data: how many books six respondents read last year. Drag a dot up or down, or choose a
             respondent and use the slider.

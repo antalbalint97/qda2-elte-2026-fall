@@ -5,6 +5,11 @@ import type { BlockType, Lang } from "@/content/curriculum/types";
 const en = {
   type: { concept: "Concept", lab: "Laboratory", math: "Mathematics", dataset: "Dataset", prediction: "Prediction", experiment: "Experiment", r: "R code", assessment: "Knowledge check", software: "Software", reflection: "Reflection", connection: "Connection" } as Record<BlockType, string>,
   outline: "Course outline",
+  barNotReviewed: "preview · not reviewed for teaching",
+  barLocal: "local draft · not published",
+  atlasLink: "Concept Atlas",
+  privacyLink: "Privacy & data",
+  appBar: "Course",
   lesson: "Lesson",
   prev: "Previous lesson",
   next: "Next lesson",
@@ -73,6 +78,11 @@ type LessonStrings = typeof en;
 const hu: LessonStrings = {
   type: { concept: "Fogalom", lab: "Labor", math: "Matematika", dataset: "Adatsor", prediction: "Jóslás", experiment: "Kísérlet", r: "R-kód", assessment: "Ellenőrző kérdések", software: "Szoftver", reflection: "Reflexió", connection: "Kapcsolat" },
   outline: "A kurzus felépítése",
+  barNotReviewed: "előzetes · oktatásra nem lektorált",
+  barLocal: "helyi vázlat · nem publikált",
+  atlasLink: "Fogalomatlasz",
+  privacyLink: "Adatvédelem",
+  appBar: "Kurzus",
   lesson: "Lecke",
   prev: "Előző lecke",
   next: "Következő lecke",

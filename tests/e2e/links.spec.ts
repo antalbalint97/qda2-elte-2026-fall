@@ -16,7 +16,8 @@ test("every internal link resolves, and every #fragment exists on its target pag
     const [path, hash] = link.split("#");
     const res = await request.get(path || "/");
     if (res.status() !== 200) broken.push(`${link} → ${res.status()}`);
-    if (hash) (fragments.get(path) ?? fragments.set(path, new Set()).get(path)!).add(hash);
+    // on /lab/* the hash is the lab's state (#s=2, #{json}), not a fragment id; lab-state links are covered in labs.spec.ts
+    if (hash && !path.startsWith("/lab/")) (fragments.get(path) ?? fragments.set(path, new Set()).get(path)!).add(hash);
   }
   for (const [path, hashes] of fragments) {
     await page.goto(path);

@@ -28,7 +28,7 @@ export function VarianceExplorer() {
     <Panel>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-serif text-xl font-semibold text-ink">Move the groups. Watch the sums of squares.</h3>
+          <h3 className="tracking-tight text-xl font-semibold text-ink">Move the groups. Watch the sums of squares.</h3>
           <p className="mt-1 max-w-2xl text-sm text-muted">
             The starting values reproduce the 11 observations of the ANOVA calculation video. Moving the sliders
             creates a teaching simulation, not new survey data.

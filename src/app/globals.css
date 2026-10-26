@@ -3,25 +3,34 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --bg: #faf9f6;
+  /* QDA2 design system (V3): midnight ink on warm off-white; teal = model, blue = data, coral = residual,
+     violet = explained, amber = attention. Text colours meet WCAG AA (4.5:1) on bg, surface and surface-2. */
+  --bg: #f7f6f1;
   --surface: #ffffff;
-  --surface-2: #f3f1ec;
-  --surface-3: #e9e6df;
-  --border: #e3dfd6;
-  --border-strong: #cfc9bc;
-  --ink: #1b1c20;
-  --muted: #585b66;
+  --surface-2: #eceae3;
+  --surface-3: #e1dfd7;
+  --border: #e1dfd7;
+  --border-strong: #c9c6bb;
+  --ink: #101b2b;
+  --muted: #3c414c;
   /* faint and warn were darkened to reach WCAG AA (4.5:1) contrast for small text */
-  --faint: #676a74;
-  --accent: #2e4fb8;
+  --faint: #5b606b;
+  --accent: #096f61;
   --accent-ink: #ffffff;
-  --accent-soft: #e8edfb;
-  --pos: #1d7a55;
+  --accent-soft: #e3f2ef;
+  /* midnight surfaces (landing hero, guidance cards, primary buttons on light) */
+  --night: #101b2b;
+  --night-2: #15223a;
+  --night-line: #243349;
+  --night-ink: #f7f6f1;
+  --night-muted: #c9d2de;
+  --night-faint: #9fb0c3;
+  --pos: #1a7050;
   --pos-soft: #e3f3eb;
   --neg: #b0412c;
   --neg-soft: #fbe9e4;
-  --warn: #865a12;
-  --warn-soft: #fbf1dc;
+  --warn: #7d5a10;
+  --warn-soft: #f8eed8;
   /* Variable-role colours are used consistently across the whole site */
   --x: #2f6fd6;
   --x-soft: #e6eefb;
@@ -33,15 +42,15 @@
   --x-ink: #2a5fb8;
   --y-ink: #9a4d10;
   --z-ink: #6b3fae;
-  --grid: #ebe8e1;
+  --grid: #e8e6df;
   /* Lab semantic roles (V3): model/fit, observed data, residual/error, explained variation, attention.
      The *-ink shades are for text (AA on surface); the base colours are for marks. --x/--y/--z stay as is. */
   --model: #20bfa9;
-  --model-ink: #0b7a6b;
+  --model-ink: #096f61;
   --data: #548fd0;
   --data-ink: #2f66a6;
   --residual: #ed896f;
-  --residual-ink: #b14f35;
+  --residual-ink: #a2472f;
   --explained: #9688e8;
   --explained-ink: #5e4fc0;
   --attention: #d9a441;
@@ -49,18 +58,24 @@
 }
 
 .dark {
-  --bg: #0f1115;
-  --surface: #161920;
-  --surface-2: #1c2029;
-  --surface-3: #252a35;
-  --border: #282d38;
-  --border-strong: #3a404d;
-  --ink: #e8e9ed;
-  --muted: #a5a9b5;
-  --faint: #8a8f9c;
-  --accent: #8aa2ff;
-  --accent-ink: #0f1115;
-  --accent-soft: #1d2540;
+  --bg: #0b1320;
+  --surface: #101b2b;
+  --surface-2: #15223a;
+  --surface-3: #1d2b44;
+  --border: #243349;
+  --border-strong: #34465f;
+  --ink: #f7f6f1;
+  --muted: #c9d2de;
+  --faint: #9fb0c3;
+  --accent: #20bfa9;
+  --accent-ink: #101b2b;
+  --accent-soft: #123430;
+  --night: #101b2b;
+  --night-2: #15223a;
+  --night-line: #243349;
+  --night-ink: #f7f6f1;
+  --night-muted: #c9d2de;
+  --night-faint: #9fb0c3;
   --pos: #4fc28e;
   --pos-soft: #13281f;
   --neg: #f08068;
@@ -76,7 +91,7 @@
   --x-ink: var(--x);
   --y-ink: var(--y);
   --z-ink: var(--z);
-  --grid: #222731;
+  --grid: #1c2940;
   --model: #3fd4be;
   --model-ink: #5fe0cc;
   --data: #7aa9e3;
@@ -102,6 +117,12 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-line: var(--night-line);
+  --color-night-ink: var(--night-ink);
+  --color-night-muted: var(--night-muted);
+  --color-night-faint: var(--night-faint);
   --color-pos: var(--pos);
   --color-pos-soft: var(--pos-soft);
   --color-neg: var(--neg);
@@ -128,9 +149,13 @@
   --color-explained-ink: var(--explained-ink);
   --color-attention: var(--attention);
   --color-attention-ink: var(--attention-ink);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --color-explained: var(--explained);
+  --color-explained-ink: var(--explained-ink);
+  --color-attention: var(--attention);
+  --color-attention-ink: var(--attention-ink);
+  --font-sans: var(--font-instrument), var(--font-serif4), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif4), ui-serif, Georgia, serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-mono: var(--font-fira), ui-monospace, monospace;
 }
 
 html {

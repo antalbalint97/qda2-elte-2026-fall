@@ -157,7 +157,7 @@ export default function SopranosLab() {
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--cream-muted)]">
             QDA2 · Bonus case file · Prepared for Simon Nicholas Hill
           </p>
-          <h1 className="mt-4 font-serif text-4xl font-semibold tracking-tight text-[var(--cream)] sm:text-6xl">
+          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-[var(--cream)] sm:text-6xl">
             THE SOPRANOS
             <br />
             QDA2 LAB
@@ -731,7 +731,7 @@ export default function SopranosLab() {
         <section id="report" className="scroll-mt-28">
           <div className="rounded-2xl border border-line-strong bg-bg p-4 shadow-[0_10px_40px_-12px_rgb(0_0_0/0.6)] sm:p-8">
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Final report</p>
-            <h2 className="mt-2 font-serif text-2xl font-semibold text-ink sm:text-3xl">Case closed (for now)</h2>
+            <h2 className="tracking-tight mt-2 text-2xl font-semibold text-ink sm:text-3xl">Case closed (for now)</h2>
             <div className="mt-6">
               <Profile />
             </div>

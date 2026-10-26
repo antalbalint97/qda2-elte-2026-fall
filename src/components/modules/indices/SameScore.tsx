@@ -41,7 +41,7 @@ export function SameScore() {
 
   return (
     <Panel>
-      <h3 className="font-serif text-xl font-semibold text-ink">Two respondents, one number</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">Two respondents, one number</h3>
       <p className="mt-1 max-w-2xl text-sm text-muted">
         Four items of a trust index, already pointing the same way (1 = low trust, 5 = high trust). Respondent A answers
         consistently; change respondent B&rsquo;s answers and watch what the index keeps and what it throws away.

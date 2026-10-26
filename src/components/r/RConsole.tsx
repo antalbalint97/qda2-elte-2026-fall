@@ -77,7 +77,7 @@ export function RConsole() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="font-mono text-xs tracking-widest text-faint">{t.eyebrow}</p>
-          <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-ink">{t.title}</h1>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink">{t.title}</h1>
         </div>
         <div role="group" aria-label="Language / Nyelv" className="flex gap-1">
           {(["en", "hu"] as const).map((l) => (

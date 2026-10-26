@@ -145,7 +145,7 @@ export function Scenarios() {
       <div key={s.id} className="animate-fade-up rounded-2xl border border-line bg-surface">
         <div className="space-y-4 border-b border-line p-4 sm:p-6">
           <p className="font-mono text-xs text-faint">Scenario {active + 1} of {SCENARIOS.length}</p>
-          <h3 className="font-serif text-xl font-semibold text-ink">{s.title}</h3>
+          <h3 className="tracking-tight text-xl font-semibold text-ink">{s.title}</h3>
           <p className="leading-relaxed text-muted">{s.story}</p>
           <MiniTable
             caption={`${s.yLabel} by ${s.x.toLowerCase()}, zero-order and within categories of ${s.z.toLowerCase()}`}

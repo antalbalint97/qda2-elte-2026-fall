@@ -64,7 +64,7 @@ export default function IndicesPage() {
         <div className="space-y-8">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="rounded-xl border border-line bg-surface p-5">
-              <h3 className="font-serif text-xl font-semibold text-ink">More valid</h3>
+              <h3 className="tracking-tight text-xl font-semibold text-ink">More valid</h3>
               <p className="mt-2 text-sm text-muted">
                 Validity: measuring what you mean to measure. A single question such as &ldquo;Do you trust
                 science?&rdquo; leaves every respondent to decide what &ldquo;science&rdquo; and &ldquo;trust&rdquo;
@@ -73,7 +73,7 @@ export default function IndicesPage() {
               </p>
             </div>
             <div className="rounded-xl border border-line bg-surface p-5">
-              <h3 className="font-serif text-xl font-semibold text-ink">More reliable</h3>
+              <h3 className="tracking-tight text-xl font-semibold text-ink">More reliable</h3>
               <p className="mt-2 text-sm text-muted">
                 Reliability: getting the same result when you measure again under the same conditions. One answer on a
                 0–10 scale wobbles from day to day; the average of several answers wobbles much less, because the

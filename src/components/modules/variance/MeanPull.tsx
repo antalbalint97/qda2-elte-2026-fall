@@ -19,7 +19,7 @@ export function MeanPull() {
 
   return (
     <Panel>
-      <h3 className="font-serif text-xl font-semibold text-ink">One person can move the mean, but not the median</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">One person can move the mean, but not the median</h3>
       <p className="mt-1 max-w-2xl text-sm text-muted">
         Synthetic monthly net incomes (thousand HUF) of nine people. Raise the ninth person&rsquo;s income and watch
         where the balance point goes.

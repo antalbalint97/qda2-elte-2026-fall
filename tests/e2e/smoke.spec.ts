@@ -29,7 +29,8 @@ test("refreshing a nested route and direct deep links keep working", async ({ pa
 test("client-side navigation between modules", async ({ page }) => {
   const errors = watchErrors(page);
   await page.goto("/");
-  await page.getByRole("navigation", { name: "Modules" }).getByRole("link", { name: "p-values" }).click();
+  await page.getByRole("navigation", { name: "Main" }).getByRole("button", { name: "Modules" }).click();
+  await page.getByRole("navigation", { name: "Modules" }).getByRole("link", { name: /p-values/ }).click();
   await expect(page).toHaveURL(/\/p-values$/);
   await expect(page.locator("h1")).toHaveText("p-values");
   await page.getByRole("link", { name: /Next/ }).click();
