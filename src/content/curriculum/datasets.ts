@@ -98,7 +98,7 @@ function index120(): Dataset {
   return {
     id: "ds.index-120",
     title: { en: "Trust in science items (120 respondents)", hu: "Tudományba vetett bizalom itemek (120 válaszadó)" },
-    provenance: { kind: "synthetic", n: RESPONSES.length, generator: "scripts/indices/generate.py (seeded); module 09 Building an Index", license: "CC-BY", limits: "T3 and T5 are negatively worded; T6 measures interest, not trust" },
+    provenance: { kind: "synthetic", n: RESPONSES.length, generator: "scripts/indices/generate.py (seeded); module 02 Building an Index", license: "CC-BY", limits: "T3 and T5 are negatively worded; T6 measures interest, not trust" },
     columns: [
       { name: "id", type: "number", label: "Respondent" },
       { name: "T1", type: "number", label: "Scientists mostly act in the public interest (1–5)" },

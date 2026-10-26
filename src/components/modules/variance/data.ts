@@ -1,4 +1,4 @@
-// Constructed (synthetic) teaching data for module 08. None of these numbers come from a survey.
+// Constructed (synthetic) teaching data for module 09. None of these numbers come from a survey.
 // The small datasets are checked against SciPy in tests/unit (scripts/validation/reference.py).
 import { gaussian, linearFit, mulberry32 } from "@/lib/stats";
 

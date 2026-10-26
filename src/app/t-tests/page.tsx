@@ -12,7 +12,7 @@ import { qEffectSize, qLevene, qTInd, qTOne, qTOutput, qTPaired } from "@/conten
 import type { Metadata } from "next";
 
 export const metadata: Metadata = { title: "t-tests" };
-const meta = MODULES[5];
+const meta = MODULES.find((m) => m.slug === "t-tests")!;
 
 export default function Page() {
   return (

@@ -1,4 +1,4 @@
-// 09 Building an Index: the reliability statistics against an independent NumPy/SciPy computation
+// 02 Building an Index: the reliability statistics against an independent NumPy/SciPy computation
 // (covariance form of alpha), every item subset the builder can produce, and the teaching claims
 // printed on the page.
 import assert from "node:assert/strict";

@@ -26,7 +26,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = { title: "Spread, Variance & Error" };
-const meta = MODULES[7];
+const meta = MODULES.find((m) => m.slug === "variance")!;
 
 const f2 = (v: number) => v.toFixed(2);
 

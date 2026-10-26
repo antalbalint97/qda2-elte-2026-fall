@@ -4,7 +4,7 @@ import type { Lang } from "@/content/curriculum/types";
 const mi_t_en = {
   title: "Measurement & Index Lab",
   set: "Item set",
-  sets: { trust: "Trust in science (module 09)", efficacy: "Political efficacy" },
+  sets: { trust: "Trust in science (module 02)", efficacy: "Political efficacy" },
   view: "View",
   views: { alpha: "Reliability", index: "Index & cuts", atten: "Attenuation" },
   items: "Items",
@@ -68,9 +68,9 @@ const mi_t_en = {
     atten: "Unreliable measurement does not create relationships; it hides real ones. Correcting for attenuation needs an estimate of ρ_xx, for example α.",
   },
   methodNote:
-    "Course data sets: ds.index-120 (module 09 responses) and ds.efficacy-120 (one-factor model, seed 120). α, corrected item-total r, α-if-deleted and standardised α as SPSS Reliability Analysis. Attenuation: seeded normal error on every item; the criterion is Y = 0.6·z(clean index) + 0.8·noise, so its own reliability is 1.",
+    "Course data sets: ds.index-120 (module 02 responses) and ds.efficacy-120 (one-factor model, seed 120). α, corrected item-total r, α-if-deleted and standardised α as SPSS Reliability Analysis. Attenuation: seeded normal error on every item; the criterion is Y = 0.6·z(clean index) + 0.8·noise, so its own reliability is 1.",
   validation:
-    "α, α-if-deleted, corrected item-total r and standardised α match base R (covariance form) on four keyed item matrices to 1e-12, and the module 09 implementation agrees (tests/unit/measurement-lab.test.ts); a 20 000-case simulation confirms r_obs = r_true·√ρ_xx within 0.01.",
+    "α, α-if-deleted, corrected item-total r and standardised α match base R (covariance form) on four keyed item matrices to 1e-12, and the module 02 implementation agrees (tests/unit/measurement-lab.test.ts); a 20 000-case simulation confirms r_obs = r_true·√ρ_xx within 0.01.",
   live: "α = {a}",
 };
 type MiStrings = typeof mi_t_en;
@@ -78,7 +78,7 @@ type MiStrings = typeof mi_t_en;
 const mi_t_hu: MiStrings = {
   title: "Mérés és index labor",
   set: "Itemkészlet",
-  sets: { trust: "Bizalom a tudományban (9. modul)", efficacy: "Politikai hatékonyság" },
+  sets: { trust: "Bizalom a tudományban (2. modul)", efficacy: "Politikai hatékonyság" },
   view: "Nézet",
   views: { alpha: "Megbízhatóság", index: "Index és vágások", atten: "Attenuáció" },
   items: "Itemek",
@@ -138,9 +138,9 @@ const mi_t_hu: MiStrings = {
     atten: "A megbízhatatlan mérés nem hoz létre összefüggést; a valódit rejti el. Az attenuáció korrekciójához ρ_xx becslése kell, például α.",
   },
   methodNote:
-    "Kurzus-adatok: ds.index-120 (a 9. modul válaszai) és ds.efficacy-120 (egyfaktoros modell, seed 120). α, korrigált item-totál r, α-ha-törölve és standardizált α az SPSS Reliability Analysis szerint. Attenuáció: seedelt normális hiba minden itemen; a kritérium Y = 0,6·z(tiszta index) + 0,8·zaj, így saját megbízhatósága 1.",
+    "Kurzus-adatok: ds.index-120 (a 2. modul válaszai) és ds.efficacy-120 (egyfaktoros modell, seed 120). α, korrigált item-totál r, α-ha-törölve és standardizált α az SPSS Reliability Analysis szerint. Attenuáció: seedelt normális hiba minden itemen; a kritérium Y = 0,6·z(tiszta index) + 0,8·zaj, így saját megbízhatósága 1.",
   validation:
-    "Az α, α-ha-törölve, korrigált item-totál r és standardizált α 1e-12 pontossággal egyezik a base R (kovariancia-alak) eredményével négy kódolt itemmátrixon, és a 9. modul implementációja is egyezik (tests/unit/measurement-lab.test.ts); egy 20 000 esetes szimuláció 0,01-en belül igazolja: r_megf = r_valódi·√ρ_xx.",
+    "Az α, α-ha-törölve, korrigált item-totál r és standardizált α 1e-12 pontossággal egyezik a base R (kovariancia-alak) eredményével négy kódolt itemmátrixon, és a 2. modul implementációja is egyezik (tests/unit/measurement-lab.test.ts); egy 20 000 esetes szimuláció 0,01-en belül igazolja: r_megf = r_valódi·√ρ_xx.",
   live: "α = {a}",
 };
 
