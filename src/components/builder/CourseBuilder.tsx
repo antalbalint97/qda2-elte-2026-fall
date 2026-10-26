@@ -3,6 +3,7 @@
 // Course Builder (port of "QDA2 Course Builder.dc.html"). Local-first: drafts are kept in this browser only,
 // exported as qda2-course/2 JSON and published by adding the reviewed export to src/content/published. The
 // Builder never writes to the server and is only served where authoring is enabled (src/lib/authoring.ts).
+import { BrandLink } from "@/components/BrandMark";
 import { LessonView } from "@/components/lesson/LessonView";
 import { BLOCKS } from "@/content/curriculum/blocks";
 import { CONCEPTS } from "@/content/curriculum/concepts";
@@ -15,6 +16,7 @@ import { addSnapshotVersion, buildSnapshot, courseFromTemplate, exportCourse, lo
 import * as ops from "@/lib/course/ops";
 import { loadDrafts, saveDrafts, takeAtlasPending, type DraftMeta, type DraftStore, type StoreStatus } from "@/lib/course/storage";
 import { parseCourseImport } from "@/lib/course/validate";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Inspector } from "./Inspector";
 import { BUILDER_T, fill, type BuilderStrings } from "./strings";
@@ -181,17 +183,28 @@ export function CourseBuilder() {
   ];
 
   return (
-    <div lang={lang} className="mx-auto max-w-[1600px] px-4 pb-16 pt-6 sm:px-6">
-      <div className="flex flex-wrap items-center gap-3">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight text-ink">{t.title}</h1>
-        <div role="group" aria-label="Language / Nyelv" className="ml-auto flex gap-1">
+    <div lang={lang}>
+      {/* builder app bar (V3): the site header is hidden on this full-screen tool */}
+      <div className="sticky top-0 z-30 flex min-h-14 flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-bg/95 px-4 py-2.5 backdrop-blur sm:px-5">
+        <BrandLink compact />
+        <h1 className="text-[15px] font-semibold tracking-tight text-ink">{t.title}</h1>
+        <nav aria-label={t.title} className="ml-auto flex items-center gap-1 text-[13px]">
+          <Link href="/labs" className="rounded-md px-2 py-1 text-muted hover:text-ink">
+            Labs
+          </Link>
+          <Link href="/atlas" className="rounded-md px-2 py-1 text-muted hover:text-ink">
+            Concept Atlas
+          </Link>
+        </nav>
+        <div role="group" aria-label="Language / Nyelv" className="flex overflow-hidden rounded-md border border-line font-mono text-xs">
           {(["en", "hu"] as const).map((l) => (
-            <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)} className={cn("rounded-md border px-2.5 py-1 font-mono text-xs uppercase", lang === l ? "border-accent bg-accent text-accent-ink" : "border-line text-muted hover:text-ink")}>
-              {l}
+            <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)} className={cn("px-2 py-1", lang === l ? "bg-ink text-bg" : "text-muted hover:text-ink")}>
+              {l === "en" ? "EN" : "hu"}
             </button>
           ))}
         </div>
       </div>
+      <div className="mx-auto max-w-[1600px] px-4 pb-16 pt-4 sm:px-6">
       <p className="mt-2 max-w-4xl rounded-xl border border-warn/40 bg-warn-soft px-4 py-2 text-sm text-ink">{t.localOnly}</p>
       <details className="mt-1 max-w-4xl text-sm">
         <summary className="cursor-pointer text-accent">{t.howPublish}</summary>
@@ -572,6 +585,7 @@ export function CourseBuilder() {
           })()}
         </div>
       )}
+      </div>
     </div>
   );
 }

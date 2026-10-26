@@ -31,7 +31,7 @@ export function SpreadPatterns() {
 
   return (
     <Panel>
-      <h3 className="font-serif text-xl font-semibold text-ink">Is the error the same size everywhere?</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">Is the error the same size everywhere?</h3>
       <p className="mt-1 max-w-2xl text-sm text-muted">
         Simulated data, {SPREAD_N} respondents. All three versions have the same line and the same average error; only
         <em> where</em> the error is large changes. The lower chart plots each residual (observed minus predicted)

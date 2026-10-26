@@ -271,7 +271,7 @@ export function ConceptAtlas({ authoring }: { authoring: boolean }) {
   return (
     <div lang={lang} className="mx-auto max-w-[1600px] px-4 pb-16 pt-6 sm:px-6">
       <div className="flex flex-wrap items-end gap-3">
-        <h1 className="mr-2 font-serif text-3xl font-semibold tracking-tight text-ink">{t.title}</h1>
+        <h1 className="mr-2 text-3xl font-semibold tracking-tight text-ink">{t.title}</h1>
         <label className="flex flex-col text-xs text-muted">
           {t.search}
           <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={t.searchPh} className="mt-0.5 w-60 rounded-lg border border-line bg-surface px-2.5 py-1.5 text-sm text-ink" />
@@ -387,7 +387,7 @@ export function ConceptAtlas({ authoring }: { authoring: boolean }) {
                 <p className="font-mono text-[11px] tracking-widest text-accent">
                   {c.domain} · {DOM[c.domain][lang === "hu" ? 1 : 0]} · {fill(t.level_, { n: c.level })}
                 </p>
-                <h2 id="atlas-panel-h" ref={panelRef} tabIndex={-1} className="mt-1 font-serif text-2xl font-semibold text-ink">
+                <h2 id="atlas-panel-h" ref={panelRef} tabIndex={-1} className="tracking-tight mt-1 text-2xl font-semibold text-ink">
                   {c.name[lang]}
                 </h2>
                 <p className="text-sm text-muted">{lang === "hu" ? c.name.en : c.name.hu}</p>

@@ -3,6 +3,7 @@
 import { maturityLabel, labMaturity } from "@/content/curriculum/lab-status";
 import type { Lang } from "@/content/curriculum/types";
 import { cn } from "@/lib/cn";
+import { BrandLink } from "@/components/BrandMark";
 import Link from "next/link";
 import { createContext, useContext, useState, type ReactNode } from "react";
 import { common, type CommonStrings } from "./i18n";
@@ -96,19 +97,28 @@ export function LabShell<P extends Record<string, unknown>>({
         lang={lang}
         data-lab={lab.id}
         data-present={present ? "true" : undefined}
-        className={cn(present ? "fixed inset-0 z-50 overflow-auto bg-bg" : lab.embedded ? "" : "mx-auto max-w-[1500px] px-4 pb-10 pt-4 sm:px-6")}
+        className={cn(present ? "fixed inset-0 z-50 overflow-auto bg-bg" : lab.embedded ? "" : "min-h-dvh pb-10")}
         role={present ? "dialog" : undefined}
         aria-modal={present ? true : undefined}
         aria-label={present ? `${title} · ${t.teach}` : undefined}
       >
-        <div className={cn("flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-line pb-3", present && "sticky top-0 z-10 bg-bg px-5 pt-3")}>
+        {/* full-screen app bar (V3): brand, lab title, stage tabs and scenario, then Teach / Reset / Share / language */}
+        <div
+          className={cn(
+            "flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line",
+            lab.embedded && !present ? "pb-3" : "sticky top-0 z-30 min-h-14 bg-bg/95 px-4 py-2.5 backdrop-blur sm:px-5",
+          )}
+        >
           {!lab.embedded && !present && (
-            <Link href="/labs" className="text-sm text-muted hover:text-ink">
-              {t.labs} /
-            </Link>
+            <nav aria-label={t.labs} className="flex items-center gap-3">
+              <BrandLink compact />
+              <Link href="/labs" className="text-[13px] text-faint hover:text-ink">
+                {t.labs} /
+              </Link>
+            </nav>
           )}
           <div className="min-w-0">
-            <Heading className={cn("font-semibold tracking-tight text-ink", lab.embedded && !present ? "text-base" : "text-xl")}>{title}</Heading>
+            <Heading className={cn("tracking-tight", lab.embedded && !present ? "text-base font-semibold text-ink" : "text-[15px] font-medium text-muted")}>{title}</Heading>
           </div>
           {toolbar && <div className="flex flex-wrap items-center gap-2">{toolbar}</div>}
           <div className="ml-auto flex flex-wrap items-center gap-2">
@@ -158,7 +168,7 @@ export function LabShell<P extends Record<string, unknown>>({
           </div>
         )}
 
-        <div className={cn(present && "px-5 pb-8 [zoom:1.15]")}>
+        <div className={cn(present ? "px-5 pb-8 [zoom:1.15]" : !lab.embedded && "px-4 sm:px-5")}>
           {subtitle && <div className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">{subtitle}</div>}
 
           {lab.instructions && (
@@ -204,7 +214,7 @@ export function LabShell<P extends Record<string, unknown>>({
 
 const btn = (on: boolean) =>
   cn(
-    "h-8 rounded-lg border px-3 text-sm font-medium transition-colors",
+    "h-8 rounded-[7px] border px-3 text-[13px] font-medium transition-colors",
     on ? "border-ink bg-ink text-bg" : "border-line bg-surface text-ink hover:border-line-strong hover:bg-surface-2",
   );
 const darkBtn = "rounded-md border border-white/30 px-3 py-1 text-sm hover:bg-white/10";

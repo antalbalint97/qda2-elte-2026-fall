@@ -27,7 +27,7 @@ export function ErrorDance() {
     <Panel>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-serif text-xl font-semibold text-ink">Where the error term comes from, and why it matters</h3>
+          <h3 className="tracking-tight text-xl font-semibold text-ink">Where the error term comes from, and why it matters</h3>
           <p className="mt-1 max-w-2xl text-sm text-muted">
             A simulation: in an invented population, knowledge = {POP.intercept} + {POP.slope} × news hours + error.
             The error is everything else that differs between people. Each sample gives a slightly different line.

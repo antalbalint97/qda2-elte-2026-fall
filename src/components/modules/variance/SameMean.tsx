@@ -64,7 +64,7 @@ export function SameMean() {
     <Panel>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-serif text-xl font-semibold text-ink">Four groups, one average</h3>
+          <h3 className="tracking-tight text-xl font-semibold text-ink">Four groups, one average</h3>
           <p className="mt-1 max-w-2xl text-sm text-muted">
             Synthetic data: four groups of 20 respondents rate their trust in parliament from 0 to 10. A report says
             &ldquo;average trust: 5.0, median 5&rdquo; for every group. Are the groups alike?

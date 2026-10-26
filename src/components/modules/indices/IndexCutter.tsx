@@ -49,7 +49,7 @@ export function IndexCutter() {
 
   return (
     <Panel>
-      <h3 className="font-serif text-xl font-semibold text-ink">Three ways to cut the same index</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">Three ways to cut the same index</h3>
       <p className="mt-1 max-w-2xl text-sm text-muted">
         The final index (mean of T1–T5, T3 and T5 reversed) for the 120 respondents. It runs from 1 to 5 in steps of
         0.2. Sample mean: {fmt(MEAN)}. Choose how to turn it into three categories.

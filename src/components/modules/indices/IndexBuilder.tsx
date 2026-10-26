@@ -188,7 +188,7 @@ export function IndexBuilder() {
     <Panel>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h3 className="font-serif text-xl font-semibold text-ink">Index builder: trust in science</h3>
+          <h3 className="tracking-tight text-xl font-semibold text-ink">Index builder: trust in science</h3>
           <p className="mt-1 max-w-2xl text-sm text-muted">
             120 synthetic respondents answered six items ({SCALE_LABEL}). We want one index where a high value means
             more trust. Reverse the items that are worded the other way, then drop items that do not belong, one at a

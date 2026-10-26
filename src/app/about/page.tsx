@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section>
-      <h2 className="font-serif text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+      <h2 className="text-2xl font-semibold tracking-tight text-ink">{title}</h2>
       <div className="mt-3 space-y-3 leading-relaxed text-muted [&_strong]:text-ink">{children}</div>
     </section>
   );
@@ -24,7 +24,7 @@ export default function Page() {
   return (
     <div className="mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6 sm:pt-14">
       <p className="font-mono text-xs tracking-widest text-faint">ABOUT</p>
-      <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{SITE.name}</h1>
+      <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{SITE.name}</h1>
       <p className="mt-4 text-lg leading-relaxed text-muted">
         {SITE.name} ({SITE.product}) is an interactive web companion for <em>Quantitative Data Analysis 2</em>, an
         undergraduate course in quantitative methods for sociology students. It helps students build statistical

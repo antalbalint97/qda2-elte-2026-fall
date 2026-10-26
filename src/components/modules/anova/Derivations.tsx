@@ -102,7 +102,7 @@ export function CramerDerivation() {
 
   return (
     <section>
-      <h3 className="font-serif text-xl font-semibold text-ink">A. From a crosstab to χ² and Cramér&rsquo;s V</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">A. From a crosstab to χ² and Cramér&rsquo;s V</h3>
       <p className="mt-2 text-muted">
         {N} students are grouped by how intensively they studied (X) and whether they passed the exam (Y). The
         question: is passing associated with study intensity?
@@ -221,7 +221,7 @@ export function CorrelationDerivation() {
 
   return (
     <section>
-      <h3 className="font-serif text-xl font-semibold text-ink">B. Pearson and Spearman, one row at a time</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">B. Pearson and Spearman, one row at a time</h3>
       <p className="mt-2 text-muted">
         Six students: weekly study hours (x) and exam score (y). Pearson&rsquo;s r uses the original numbers;
         Spearman&rsquo;s ρ uses only their ranks.

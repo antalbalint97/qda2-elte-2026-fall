@@ -20,7 +20,7 @@ export function ModuleShell({ meta, lede, children }: { meta: ModuleMeta; lede: 
     <div className="mx-auto max-w-5xl px-4 pb-24 sm:px-6">
       <header className="pt-10 pb-8 sm:pt-14">
         <p className="font-mono text-xs tracking-widest text-faint">MODULE {meta.number}</p>
-        <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{meta.title}</h1>
+        <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink sm:text-5xl">{meta.title}</h1>
         <div className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">{lede}</div>
         <p className="mt-3 max-w-2xl text-xs leading-relaxed text-faint">
           Examples on this page use constructed or simulated teaching data, not empirical findings.{" "}
@@ -109,7 +109,7 @@ export function Step({
     <section id={id} className={cn("scroll-mt-32", className)}>
       {alias && <span id={alias} className="block scroll-mt-32" aria-hidden />}
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">{KIND_LABEL[kind]}</p>
-      <h2 className="mt-1.5 font-serif text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{title}</h2>
+      <h2 className="mt-1.5 text-2xl font-semibold tracking-tight text-ink sm:text-3xl">{title}</h2>
       {intro && <div className="mt-3 max-w-3xl leading-relaxed text-muted">{intro}</div>}
       <div className="mt-7">{children}</div>
     </section>

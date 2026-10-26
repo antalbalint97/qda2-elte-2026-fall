@@ -30,7 +30,7 @@ export function CourseOverview(props: {
           <p className="font-mono text-xs tracking-widest text-faint">
             {t.course.toUpperCase()} · {fill(t.version, { v: props.version })}
           </p>
-          <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-ink">{props.title[lang]}</h1>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink">{props.title[lang]}</h1>
         </div>
         <div role="group" aria-label="Language / Nyelv" className="flex gap-1">
           {(["en", "hu"] as const).map((l) => (

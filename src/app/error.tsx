@@ -7,7 +7,7 @@ export default function Error({ reset }: { error: Error & { digest?: string }; r
   return (
     <div role="alert" className="mx-auto max-w-3xl px-4 pb-24 pt-14 sm:px-6">
       <p className="font-mono text-xs tracking-widest text-faint">SOMETHING WENT WRONG</p>
-      <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-ink">This page could not be displayed</h1>
+      <h1 className="mt-2 text-4xl font-semibold tracking-tight text-ink">This page could not be displayed</h1>
       <p className="mt-4 leading-relaxed text-muted">
         An interactive element stopped working in this browser. Your saved progress is not affected. Try again, or
         reload the page. If the problem persists, try another up-to-date browser.

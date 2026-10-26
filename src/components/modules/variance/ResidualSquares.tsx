@@ -30,7 +30,7 @@ export function ResidualSquares() {
 
   return (
     <Panel>
-      <h3 className="font-serif text-xl font-semibold text-ink">From total spread to what is left over</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">From total spread to what is left over</h3>
       <p className="mt-1 max-w-2xl text-sm text-muted">
         Synthetic data: weekly hours of news use (X) and a political knowledge score (Y) for eight respondents.
         Choose what we use to predict each person&rsquo;s score, and compare the squares that are left.

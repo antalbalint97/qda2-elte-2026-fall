@@ -66,7 +66,7 @@ export function LocalDataControls() {
 
   return (
     <div className="rounded-2xl border border-line bg-surface p-4 sm:p-6">
-      <h3 className="font-serif text-xl font-semibold text-ink">What this browser holds for this site</h3>
+      <h3 className="tracking-tight text-xl font-semibold text-ink">What this browser holds for this site</h3>
       {snapshot === "unavailable" ? (
         <p className="mt-3 text-sm text-muted">
           Local storage is blocked or unavailable in this browser. The site still works, but progress is kept only

@@ -40,7 +40,7 @@ export default function AnovaPage() {
             ["ANOVA", "Distance between group means, relative to variation within groups.", "F; η²"],
           ].map(([head, sub, metric]) => (
             <div className="rounded-xl border border-line bg-surface p-5" key={head}>
-              <h3 className="font-serif text-xl font-semibold text-ink">{head}</h3>
+              <h3 className="tracking-tight text-xl font-semibold text-ink">{head}</h3>
               <p className="mt-3 text-sm text-muted">{sub}</p>
               <p className="mt-4 text-xs font-semibold text-accent">{metric}</p>
             </div>
@@ -70,7 +70,7 @@ export default function AnovaPage() {
         </div>
         <h3 className="sr-only">The step-by-step derivation</h3>
         <AnovaDerivation />
-        <h3 className="mt-14 mb-4 font-serif text-xl font-semibold text-ink">Now change the data</h3>
+        <h3 className="tracking-tight mt-14 mb-4 text-xl font-semibold text-ink">Now change the data</h3>
         <VarianceExplorer />
         <p className="mt-4 text-xs text-muted">Live recalculation of the original data: F = {fmt(baseline.f,3)}, η² = {fmt(baseline.eta,3)}.</p>
       </Step>

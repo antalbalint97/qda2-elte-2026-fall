@@ -29,7 +29,7 @@ export function AdvancedLab() {
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-faint">Progress</p>
-            <h2 className="mt-1 font-serif text-2xl font-semibold text-ink">Advanced exploration</h2>
+            <h2 className="tracking-tight mt-1 text-2xl font-semibold text-ink">Advanced exploration</h2>
             <p className="mt-2 text-sm text-muted">No extra grade. Core course mastery remains separate.</p>
           </div>
           <div className="text-right">
@@ -81,7 +81,7 @@ function OptionalSection({
       <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div className="max-w-3xl">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">Optional / advanced</p>
-          <h2 className="mt-1.5 font-serif text-3xl font-semibold tracking-tight text-ink">{title}</h2>
+          <h2 className="mt-1.5 text-3xl font-semibold tracking-tight text-ink">{title}</h2>
           <p className="mt-3 text-sm leading-relaxed text-muted">
             You do not need this for the basic task. This section explains what some of your classmates already explored.
           </p>

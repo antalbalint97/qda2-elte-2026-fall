@@ -80,12 +80,23 @@ test("lesson pages load no lab or R runtime code they do not use", async ({ page
   expect(scripts.filter((u) => u.includes("/webr/"))).toEqual([]);
 });
 
-test("the home page and the footer lead to the labs, the Concept Atlas and browser R", async ({ page }) => {
+test("the home page and the footer lead to the topics, labs, Concept Atlas and browser R", async ({ page }) => {
   await page.goto("/");
-  const explore = page.locator("#explore");
-  for (const [name, href] of [["Interactive labs", "/labs"], ["Concept Atlas", "/atlas"], ["R in the browser", "/r"]]) {
-    await expect(explore.getByRole("link", { name: new RegExp(`^${name}`) })).toHaveAttribute("href", href);
+  const main = page.getByRole("navigation", { name: "Main" });
+  for (const [name, href] of [["Topics", "/topics"], ["Labs", "/labs"], ["Concept Atlas", "/atlas"], ["R", "/r"]]) {
+    await expect(main.getByRole("link", { name, exact: true })).toHaveAttribute("href", href);
   }
+  await expect(page.getByRole("link", { name: "Enter the Lab" })).toHaveAttribute("href", "/lab/vra-lab");
+  await expect(page.getByRole("link", { name: "Explore Topics" })).toHaveAttribute("href", "/topics");
+  // the hero is a real least-squares fit: moving a point changes r
+  const readout = page.locator("figure p[aria-live]");
+  const before = await readout.textContent();
+  await page.getByRole("slider", { name: /^Point 15:/ }).focus();
+  await page.keyboard.press("Shift+ArrowDown");
+  await page.keyboard.press("Shift+ArrowDown");
+  await expect(readout).not.toHaveText(before ?? "");
+  await page.getByRole("button", { name: "Reset" }).click();
+  await expect(readout).toHaveText(before ?? "");
   const footer = page.getByRole("navigation", { name: "Site information" });
   await footer.getByRole("link", { name: "Concept Atlas" }).click();
   await expect(page).toHaveURL(/\/atlas$/);
@@ -93,4 +104,25 @@ test("the home page and the footer lead to the labs, the Concept Atlas and brows
   // the unreviewed preview course is not listed in the navigation
   await page.goto("/");
   await expect(page.locator('a[href^="/course/"]')).toHaveCount(0);
+});
+
+test("topics map: five domains, filter, and every link is a module or an integrated lab", async ({ page }) => {
+  await page.goto("/topics", { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { level: 2 })).toHaveCount(5);
+  const hrefs = await page.locator("main section a[href]").evaluateAll((as) => as.map((a) => a.getAttribute("href") ?? ""));
+  expect(hrefs.length).toBeGreaterThan(30);
+  for (const h of hrefs) expect(h).toMatch(/^\/(lab\/[a-z-]+(#.*)?|[a-z-]+)$/);
+  await page.getByRole("group", { name: "Show topics" }).getByRole("button", { name: "Modules" }).click();
+  await expect(page.getByRole("heading", { level: 3, name: "Distributions" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { level: 3, name: "Crosstabs" })).toBeVisible();
+  await page.getByRole("button", { name: "hu", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 2, name: "Kapcsolatok" })).toBeVisible();
+});
+
+test("lab and lesson pages use their own app bar instead of the site header", async ({ page }) => {
+  for (const path of ["/lab/vra-lab", "/course/course.survey/s1/s1l1"]) {
+    await page.goto(path, { waitUntil: "networkidle" });
+    await expect(page.getByRole("navigation", { name: "Main" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /: home$/ })).toHaveAttribute("href", "/");
+  }
 });

@@ -5,7 +5,8 @@ import { cn } from "@/lib/cn";
 import { PRESENT_KEY, THEME_KEY } from "@/lib/theme";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { BrandLink } from "./BrandMark";
 
 function subscribeHtmlClass(onChange: () => void) {
   const observer = new MutationObserver(onChange);
@@ -72,54 +73,111 @@ function ThemeToggle() {
   );
 }
 
+/** Routes that bring their own full-screen app bar (labs, lessons, the Course Builder); the site chrome steps aside. */
+export function isAppRoute(path: string | null): boolean {
+  if (!path) return false;
+  if (path === "/lab" || path.startsWith("/lab/") || path.startsWith("/builder")) return true;
+  // lesson pages: /course/<course>/<unit>/<lesson>
+  return /^\/course\/[^/]+\/[^/]+\/[^/]+/.test(path);
+}
+
+const PRIMARY = [
+  { href: "/topics", label: "Topics" },
+  { href: "/labs", label: "Labs" },
+  { href: "/atlas", label: "Concept Atlas" },
+  { href: "/r", label: "R" },
+];
+
+function ModulesMenu({ onNavigate }: { onNavigate: () => void }) {
+  const [open, setOpen] = useState(false);
+  const path = usePathname();
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent) => {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [open]);
+  const current = MODULES.some((m) => m.href === path);
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls="modules-menu"
+        onClick={() => setOpen((o) => !o)}
+        className={cn("flex items-center gap-1 rounded-md px-2.5 py-1.5 text-sm hover:text-ink", current || open ? "text-ink" : "text-muted")}
+      >
+        Modules
+        <svg viewBox="0 0 12 12" className={cn("h-3 w-3 transition-transform", open && "rotate-180")} aria-hidden>
+          <path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+        </svg>
+      </button>
+      {open && (
+        <nav id="modules-menu" aria-label="Modules" className="absolute left-0 top-full z-50 mt-2 w-80 rounded-xl border border-line bg-surface p-2 shadow-lg">
+          <ul>
+            {MODULES.map((m) => (
+              <li key={m.slug}>
+                <Link
+                  href={m.href}
+                  onClick={() => {
+                    setOpen(false);
+                    onNavigate();
+                  }}
+                  aria-current={path === m.href ? "page" : undefined}
+                  className="flex items-baseline gap-3 rounded-md px-2.5 py-2 text-sm text-ink hover:bg-surface-2"
+                >
+                  <span className="font-mono text-xs text-faint">{m.number}</span>
+                  <span>{m.short}</span>
+                </Link>
+              </li>
+            ))}
+            <li className="mt-1 border-t border-line pt-1">
+              <Link href="/go-further" onClick={() => setOpen(false)} className="flex items-baseline gap-3 rounded-md px-2.5 py-2 text-sm text-ink hover:bg-surface-2">
+                <span className="font-mono text-xs text-faint">+</span>Go Further (optional)
+              </Link>
+            </li>
+            <li>
+              <Link href="/bonus/sopranos" onClick={() => setOpen(false)} className="flex items-baseline gap-3 rounded-md px-2.5 py-2 text-sm text-ink hover:bg-surface-2">
+                <span className="font-mono text-xs text-faint">★</span>The Sopranos bonus lab
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      )}
+    </div>
+  );
+}
+
 export function SiteHeader() {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  if (isAppRoute(path)) return null;
+  // the landing page opens on the midnight hero; its header is part of it
+  const night = path === "/";
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-6xl 2xl:max-w-7xl items-center gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex shrink-0 items-center gap-2 whitespace-nowrap font-semibold text-ink" onClick={() => setOpen(false)}>
-          <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden>
-            <rect x="2" y="2" width="20" height="20" rx="5" className="fill-accent" />
-            <path d="M6 16.5c2.2 0 2.6-9 6-9s3.8 9 6 9" fill="none" stroke="var(--accent-ink)" strokeWidth="1.7" strokeLinecap="round" />
-          </svg>
-          <span>
-            QDA2 <span className="font-normal text-muted">Lab</span>
-          </span>
-        </Link>
-        <nav aria-label="Modules" className="ml-4 hidden flex-1 items-center gap-0.5 lg:flex">
-          {MODULES.map((m) => (
-            <Link
-              key={m.slug}
-              href={m.href}
-              className={cn(
-                "whitespace-nowrap rounded-md px-2 py-1.5 text-sm transition-colors xl:px-2.5",
-                path === m.href ? "bg-surface-2 text-ink" : "text-muted hover:text-ink",
-              )}
-            >
-              {m.short}
-            </Link>
+    <header className={cn("sticky top-0 z-40 border-b", night ? "dark border-night-line bg-night" : "border-line bg-bg/90 backdrop-blur")}>
+      <div className="mx-auto flex h-14 max-w-[1240px] items-center gap-3 px-4 sm:px-7">
+        <BrandLink tagline="Interactive laboratory for statistical thinking" onClick={() => setOpen(false)} />
+        <nav aria-label="Main" className="ml-auto hidden items-center gap-0.5 lg:flex">
+          {PRIMARY.slice(0, 1).map((l) => (
+            <NavLink key={l.href} {...l} active={path === l.href} />
+          ))}
+          <ModulesMenu onNavigate={() => setOpen(false)} />
+          {PRIMARY.slice(1).map((l) => (
+            <NavLink key={l.href} {...l} active={path === l.href || (l.href === "/labs" && path === "/labs")} />
           ))}
         </nav>
-        <div className="ml-auto flex shrink-0 items-center gap-1 whitespace-nowrap">
-          <Link
-            href="/go-further"
-            className={cn(
-              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium 2xl:block",
-              path === "/go-further" ? "bg-warn-soft text-warn" : "text-muted hover:bg-surface-2 hover:text-ink",
-            )}
-          >
-            Go Further
-          </Link>
-          <Link
-            href="/bonus/sopranos"
-            className={cn(
-              "hidden rounded-md px-2.5 py-1.5 text-sm font-medium 2xl:block",
-              path === "/bonus/sopranos" ? "bg-surface-2 text-ink" : "text-muted hover:bg-surface-2 hover:text-ink",
-            )}
-          >
-            Sopranos
-          </Link>
+        <div className="ml-auto flex shrink-0 items-center gap-1 whitespace-nowrap lg:ml-2">
           <Link
             href="/review"
             className={cn(
@@ -145,53 +203,54 @@ export function SiteHeader() {
         </div>
       </div>
       {open && (
-        <nav aria-label="Modules" className="animate-fade-up border-t border-line bg-bg px-4 py-3 lg:hidden">
-          <ul className="grid gap-1 sm:grid-cols-2">
-            {MODULES.map((m) => (
-              <li key={m.slug}>
-                <Link
-                  href={m.href}
-                  onClick={() => setOpen(false)}
-                  className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm text-ink hover:bg-surface-2"
-                >
-                  <span className="font-mono text-xs text-faint">{m.number}</span>
-                  {m.title}
+        <div className="animate-fade-up border-t border-line bg-bg px-4 py-3 lg:hidden">
+          <nav aria-label="Main (mobile)">
+            <ul className="grid gap-1 sm:grid-cols-2">
+              {[...PRIMARY, { href: "/review", label: "Quick review" }].map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} onClick={() => setOpen(false)} className="block rounded-md px-2 py-2 text-sm font-medium text-ink hover:bg-surface-2">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <nav aria-label="Modules" className="mt-2 border-t border-line pt-2">
+            <ul className="grid gap-1 sm:grid-cols-2">
+              {MODULES.map((m) => (
+                <li key={m.slug}>
+                  <Link href={m.href} onClick={() => setOpen(false)} className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm text-ink hover:bg-surface-2">
+                    <span className="font-mono text-xs text-faint">{m.number}</span>
+                    {m.title}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/go-further" onClick={() => setOpen(false)} className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm text-ink hover:bg-surface-2">
+                  <span className="font-mono text-xs text-faint">+</span>Go Further (optional)
                 </Link>
               </li>
-            ))}
-            <li>
-              <Link
-                href="/go-further"
-                onClick={() => setOpen(false)}
-                className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm font-medium text-warn hover:bg-warn-soft"
-              >
-                <span className="font-mono text-xs text-faint">+</span>
-                Go Further (optional)
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/bonus/sopranos"
-                onClick={() => setOpen(false)}
-                className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm font-medium text-ink hover:bg-surface-2"
-              >
-                <span className="font-mono text-xs text-faint">★</span>
-                The Sopranos bonus lab
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/review"
-                onClick={() => setOpen(false)}
-                className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm font-medium text-accent hover:bg-surface-2"
-              >
-                <span className="font-mono text-xs text-faint">★</span>
-                Quick review
-              </Link>
-            </li>
-          </ul>
-        </nav>
+              <li>
+                <Link href="/bonus/sopranos" onClick={() => setOpen(false)} className="flex items-baseline gap-3 rounded-md px-2 py-2 text-sm text-ink hover:bg-surface-2">
+                  <span className="font-mono text-xs text-faint">★</span>The Sopranos bonus lab
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </div>
       )}
     </header>
+  );
+}
+
+function NavLink({ href, label, active }: { href: string; label: string; active: boolean }) {
+  return (
+    <Link
+      href={href}
+      aria-current={active ? "page" : undefined}
+      className={cn("whitespace-nowrap rounded-md px-2.5 py-1.5 text-sm transition-colors", active ? "bg-surface-2 text-ink" : "text-muted hover:text-ink")}
+    >
+      {label}
+    </Link>
   );
 }
