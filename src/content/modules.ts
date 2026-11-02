@@ -95,6 +95,15 @@ export const MODULES: ModuleMeta[] = [
     chain: [1, 3, 4, 5, 6, 7, 8],
   },
   {
+    slug: "pca",
+    href: "/pca",
+    number: "10",
+    title: "Principal Component Analysis",
+    short: "PCA",
+    blurb: "From indices and Z-scores to communality, eigenvalues, component loadings and saved SPSS scores.",
+    chain: [1, 3, 4, 5, 6, 7, 8],
+  },
+  {
     slug: "variance",
     href: "/variance",
     number: "09",
@@ -117,4 +126,5 @@ export const REVIEW_TOPICS = [
   { id: "anova", label: "ANOVA by hand", href: "/anova#try" },
   { id: "variance", label: "Variance and residuals", href: "/variance#squares" },
   { id: "index", label: "Index and Cronbach's alpha", href: "/indices#try" },
+  { id: "pca", label: "Principal components", href: "/pca#try" },
 ] as const;
