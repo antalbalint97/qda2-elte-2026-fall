@@ -95,15 +95,6 @@ export const MODULES: ModuleMeta[] = [
     chain: [1, 3, 4, 5, 6, 7, 8],
   },
   {
-    slug: "pca",
-    href: "/pca",
-    number: "10",
-    title: "Principal Component Analysis",
-    short: "PCA",
-    blurb: "From indices and Z-scores to communality, eigenvalues, component loadings and saved SPSS scores.",
-    chain: [1, 3, 4, 5, 6, 7, 8],
-  },
-  {
     slug: "variance",
     href: "/variance",
     number: "09",
@@ -111,6 +102,15 @@ export const MODULES: ModuleMeta[] = [
     short: "Variance",
     blurb: "Why averages are not enough: variance as squares, residuals, error terms and unequal spread.",
     chain: [5, 7, 8],
+  },
+  {
+    slug: "pca",
+    href: "/pca",
+    number: "10",
+    title: "Principal Component Analysis",
+    short: "PCA",
+    blurb: "From indices and Z-scores to communality, eigenvalues, component loadings and saved SPSS scores.",
+    chain: [1, 3, 4, 5, 6, 7, 8],
   },
 ];
 
