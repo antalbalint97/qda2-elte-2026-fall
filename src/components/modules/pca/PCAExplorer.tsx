@@ -33,7 +33,7 @@ export function PCAExplorer() {
               <div className="h-full rounded-full bg-accent" style={{ width: `${pct}%` }} />
               <span className="absolute inset-y-0 left-1/4 border-l border-dashed border-ink" />
             </div>
-            <p className="mt-1 text-xs text-muted">{pct.toFixed(1)}% of this item's variance captured {pct < 25 ? "· below course threshold" : ""}</p>
+            <p className="mt-1 text-xs text-muted">{pct.toFixed(1)}% of this item&apos;s variance captured {pct < 25 ? "· below course threshold" : ""}</p>
           </div>;
         })}</div>}
       <p className="mt-4 text-xs text-muted">Dashed line: .25 course rule of thumb, not a universal cutoff. Source: course PDF pp. 10–11.</p>
